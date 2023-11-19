@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
+import Navbar from '../layouts/Navbar';
 
 function Login() {
     const navigate = useNavigate();
@@ -24,7 +25,9 @@ function Login() {
     };
   
     return (
-      <div className="container">
+      <>
+      <Navbar/>
+      <div className="container pt-3">
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">
@@ -55,6 +58,7 @@ function Login() {
           </button>
         </form>
       </div>
+      </>
     );
 }
 

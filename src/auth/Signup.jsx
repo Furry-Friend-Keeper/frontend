@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
+import Navbar from '../layouts/Navbar';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="container">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -73,6 +76,7 @@ const Signup = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

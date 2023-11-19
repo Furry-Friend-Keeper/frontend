@@ -27,7 +27,10 @@ const router = createBrowserRouter([
     path : "/keepers",
     element : <KeeperDetail />
   }
-])
+  ], 
+  // { basename : "/keepers"
+  // }
+)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
