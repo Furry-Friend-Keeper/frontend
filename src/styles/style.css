@@ -81,7 +81,49 @@ a {
   cursor: pointer;
 }
 
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
 
+.btn-primary {
+  background-color: #ffbaba !important;
+  color: black;
+  border: #ffbaba !important
+}
+.btn:hover {
+  background-color: #f79999 !important;
+  color: black;
+}
+.btn:active {
+  color: black !important;
+}
+
+a:visited {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: #f79999;
+  background-color: transparent;
+  text-decoration: underline;
+}
+/* a:active {
+  background-color: #ffbaba;
+} */
+
+
+.navbar-toggler:hover {
+  border-color: #5e5e5e;
+}
+
+.dropdown-item:hover {
+  background-color: #ffd1d1;
+}
 /* @media (min-width: 992px) {
   .keeper {
     width: 300px !important;
@@ -96,3 +138,84 @@ a {
     }
   }
 } */
+
+.wrapper {
+  width: auto;
+  margin: 10px;
+  border-radius: 20px;
+  /* top: 100px; */
+}
+
+.cover {
+  height: 300px;
+}
+
+.cover img {
+  width: 100%;
+  height: 300px;
+  border-radius: 20px;
+}
+
+.logo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.profile-img {
+  width: 200px;
+  height: 100px;
+  border-radius:50%;
+  position: relative;
+  top: -100px;
+  left: 30px
+}
+
+.pic {
+  width: 100%;
+  height: 200px;
+}
+
+.keeperpic {
+  width: auto;
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+}
+
+.keepercontact {
+  width: auto;
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+  
+}
+
+.keeperdetail {
+  width: auto;
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+  display: flex;
+}
+
+.keepermap {
+  /* width: auto; */
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+}
+
+.keeperreview {
+  /* width: auto; */
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+}
+
+.keeperrating {
+  /* width: auto; */
+  margin: 5px;
+  border-radius: 20px;
+  background-color: gray;
+}

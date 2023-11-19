@@ -3,6 +3,7 @@ import { useState } from 'react';
 function App() {
   const [contents, setContents] = useState([
     {
+      id : 1,
       image : "/assets/cat.jpg",
       title : "Item 1",
       distance : "2 km",
@@ -10,6 +11,7 @@ function App() {
       favorite : false,
     },
     {
+      id : 2,
       image : "/assets/dog.jpg",
       title : "Item 2",
       distance : "1.5 km",
@@ -17,6 +19,7 @@ function App() {
       favorite : false
     },
     {
+      id : 3,
       image : "/assets/cat.jpg",
       title : "Item 3",
       distance : "3 km",
@@ -24,6 +27,7 @@ function App() {
       favorite : false
     },
     {
+      id : 4,
       image : "/assets/dog.jpg",
       title : "Item 4",
       distance : "0.5 km",
@@ -31,6 +35,7 @@ function App() {
       favorite : false
     },
     {
+      id : 5,
       image : "/assets/cat.jpg",
       title : "Item 5",
       distance : "2.8 km",
@@ -56,6 +61,8 @@ function App() {
     updateContents[index].favorite = !updateContents[index].favorite
     setContents(updateContents);
   } 
+  
+
   return (
     <>
     {/* Navbar */}
@@ -85,8 +92,8 @@ function App() {
       <div className="container">
         <div className="col-sm-9 col-md-6 col-lg-4 col-xl-3">
         <form className="p-2 d-flex" role="search" onSubmit={handleSearch}>
-          <input className="form-control me-2" type="search" placeholder="Search" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} aria-label="Search"  />
-          <button className="btn btn-outline-success" type="submit">Search</button>
+          <input className="form-control me-2" type="search" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} aria-label="Search"  />
+          <button className="btn fw-semibold btn-primary" type="submit">Search</button>
         </form>
         </div>
         <div className="container p-2">
@@ -97,20 +104,19 @@ function App() {
                   <img src={item.image} alt={item.title} />
                   <div className="card-body ">
                     <div className="d-flex justify-content-center">
-                      <h5>{item.title}</h5>
+                      <h5><a href="/keepers">{item.title}</a></h5>
                       <div className="ms-2">
                         <span className="favorite" onClick={() => handleFavorite(index)} >
                           { item.favorite ? <i className="bi bi-star-fill"></i> : <i className="bi bi-star"></i>}
                         </span>
                       </div>
                     </div>
-                    <span>distance: {item.distance}</span>
-                    <span>rating: {item.rating}</span>
+                    <span>distance: {item.distance} | rating: {item.rating}</span>
                   </div>
                 </div>
               </div>
             ))}
-            {search.length === 0 && <div>Don't Found</div>}
+            {search.length === 0 && <div>Not Found</div>}
           </div>
         </div>
       </div>

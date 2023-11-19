@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const clickToLogin = () => navigate('/login');
+  
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -64,7 +68,7 @@ const Signup = () => {
             onChange={handlePasswordChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn fw-semibold btn-primary" onClick={clickToLogin}>
           Sign Up
         </button>
       </form>

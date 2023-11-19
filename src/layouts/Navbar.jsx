@@ -8,7 +8,7 @@ function Navbar() {
     <>
    <nav className="navbar navbar-expand-lg ">
       <div className="container">
-        <a className="navbar-brand navbar-head fw-bold text-uppercase" href="#">
+        <a className="navbar-brand navbar-head fw-bold text-uppercase" href="/">
           Furry Friend Keeper
         </a>
         <div className="dropdown">
@@ -23,15 +23,17 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            <li><a className="dropdown-item" href="#">Action</a></li>
-            <li><a className="dropdown-item" href="#">Another action</a></li>
-            <li><a className="dropdown-item" href="#">Something else here</a></li>
+            <li><a className="dropdown-item" href="/">Home</a></li>
+            <li><a className="dropdown-item" href="#">About</a></li>
+            <li><a className="dropdown-item" href="#">Contact</a></li>
+            <li><a className="dropdown-item" href="/login">Login</a></li>
+            <li><a className="dropdown-item" href="/signup">Sign up</a></li>
           </ul>
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
+              <a className="nav-link" aria-current="page" href="/">
                 Home
               </a>
             </li>
@@ -46,13 +48,13 @@ function Navbar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <a className="nav-link" href="/login">
                 Login
               </a>
             </li>
             <li className="nav-item">
-              <a className="btn btn-outline-primary" href="#">
-                Sign up
+              <a className="btn fw-semibold btn-primary" href="/signup">
+                Sign Up
               </a>
             </li>
             {/* <li className="nav-item">

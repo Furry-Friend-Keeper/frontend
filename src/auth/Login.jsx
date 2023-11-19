@@ -1,6 +1,10 @@
 import { useState } from "react";
+import {useNavigate} from 'react-router-dom';
 
 function Login() {
+    const navigate = useNavigate();
+    const clickToRoot = () => navigate('/');
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
   
@@ -46,7 +50,7 @@ function Login() {
               onChange={handlePasswordChange}
             />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn fw-semibold btn-primary" onClick={clickToRoot}>
             Submit
           </button>
         </form>
