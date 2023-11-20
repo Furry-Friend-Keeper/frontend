@@ -12,7 +12,7 @@ function App() {
     },
     {
       id : 2,
-      image : "/assets/dog.jpg",
+      image : "/assets/dogs.jpg",
       title : "Item 2",
       distance : "1.5 km",
       rating : "4.2",
@@ -89,7 +89,7 @@ function App() {
       </div>
     </div> */}
     {/* Content */}
-      <div className="container">
+      <div className="container pt-3">
         <div className="col-sm-9 col-md-6 col-lg-4 col-xl-3">
         <form className="p-2 d-flex" role="search" onSubmit={handleSearch}>
           <input className="form-control me-2" type="search" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} aria-label="Search"  />
@@ -114,6 +114,7 @@ function App() {
                     <span>distance: {item.distance} | rating: {item.rating}</span>
                   </div>
                 </div>
+                {/* </div> */}
               </div>
             ))}
             {search.length === 0 && <div>Not Found</div>}

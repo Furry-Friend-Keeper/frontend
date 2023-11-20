@@ -6,7 +6,7 @@ function Navbar() {
 
   return (
     <>
-   <nav className="navbar navbar-expand-lg ">
+   <nav className="navbar navbar-expand-lg">
       <div className="container">
         <a className="navbar-brand navbar-head fw-bold text-uppercase" href="/">
           Furry Friend Keeper
@@ -54,7 +54,7 @@ function Navbar() {
             </li>
             <li className="nav-item">
               <a className="btn fw-semibold btn-primary" href="/signup">
-                Sign Up
+                Sign up
               </a>
             </li>
             {/* <li className="nav-item">
