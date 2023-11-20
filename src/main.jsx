@@ -8,7 +8,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx'
 import Login from './auth/Login.jsx';
-import OwnerSignup from './auth/Owner/OwnerSignup.jsx';
+import OwnerSignup from './auth/owner/OwnerSignup.jsx';
 import KeeperSignup from './auth/KeeperSignup.jsx';
 import SignUp from './auth/SignUp.jsx';
 import KeeperDetail from './KeeperDetail.jsx';
