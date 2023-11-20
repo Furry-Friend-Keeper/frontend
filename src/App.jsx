@@ -12,7 +12,7 @@ function App() {
     },
     {
       id : 2,
-      image : "/assets/dog.jpg",
+      image : "/assets/dogs.jpg",
       title : "Item 2",
       distance : "1.5 km",
       rating : "4.2",
@@ -89,7 +89,7 @@ function App() {
       </div>
     </div> */}
     {/* Content */}
-      <div className="container">
+      <div className="container pt-3">
         <div className="col-sm-9 col-md-6 col-lg-4 col-xl-3">
         <form className="p-2 d-flex" role="search" onSubmit={handleSearch}>
           <input className="form-control me-2" type="search" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} aria-label="Search"  />
@@ -100,8 +100,11 @@ function App() {
           <div className="row">
             {search.map((item, index) => (
               <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 d-flex align-items-stretch my-2 justify-content-center">
-                <div className="card shadow-lg text-center border-0">
-                  <img src={item.image} alt={item.title} />
+                <div className="card shadow-lg text-center border-0 keeper">
+                  {/* <div className="row align-items-start"> */}
+                    <img src={item.image} alt={item.title} />
+                  {/* </div> */}
+                  {/* <div className="row align-items-end"> */}
                   <div className="card-body ">
                     <div className="d-flex justify-content-center">
                       <h5><a href="/keepers">{item.title}</a></h5>
@@ -114,6 +117,7 @@ function App() {
                     <span>distance: {item.distance} | rating: {item.rating}</span>
                   </div>
                 </div>
+                {/* </div> */}
               </div>
             ))}
             {search.length === 0 && <div>Not Found</div>}

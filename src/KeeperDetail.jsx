@@ -1,5 +1,4 @@
 import Navbar from './layouts/Navbar.jsx';
-import { DatePicker } from 'antd';
 
 function KeeperDetail() {
 
@@ -13,20 +12,20 @@ function KeeperDetail() {
                   <img src="../public/assets/background.jpg" alt="background" />
                 </div>
                 <div className="profile-img">
-                  <img src="../public/assets/dogs.jpg" className="logo" />
+                  <img src="../public/assets/dog.jpg" className="logo" />
                 </div>
               </div>
               <div className="row">
                 <div className="col-sm-8">
                   <div className="row">
                     <div className="col keeperpic">
-                      <img src="../public/assets/dogs.jpg" className="pic" />
+                      <img src="../public/assets/dog.jpg" className="pic" />
                     </div>
                     <div className="col keeperpic">
-                      <img src="../public/assets/dogs.jpg" className="pic" />
+                      <img src="../public/assets/dog.jpg" className="pic" />
                     </div>
                     <div className="col keeperpic">
-                      <img src="../public/assets/dogs.jpg" className="pic" />
+                      <img src="../public/assets/dog.jpg" className="pic" />
                     </div>
                   </div>
                 </div>
@@ -41,7 +40,6 @@ function KeeperDetail() {
                     map
                   </div>
                 </div>
-                <DatePicker />
                 {/* <div className="row justify-content-between">
                   <div className="col-sm-8 keeperreview">
                     dsds

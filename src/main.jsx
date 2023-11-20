@@ -5,15 +5,18 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import './styles/style.css'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import App from './App.jsx'
-import Login from './auth/login.jsx';
-import Signup from './auth/signup.jsx';
+import Login from './auth/Login.jsx';
+import OwnerSignup from './auth/Owner/OwnerSignup.jsx';
+import KeeperSignup from './auth/KeeperSignup.jsx';
+import SignUp from './auth/SignUp.jsx';
 import KeeperDetail from './KeeperDetail.jsx';
 
 
 const router = createBrowserRouter([
   {
     path : "/",
-    element : <App />
+    element : <App/>,
+    
   },
   {
     path : "/login",
@@ -21,15 +24,21 @@ const router = createBrowserRouter([
   },
   {
     path : "/signup",
-    element : <Signup />
+    element : <SignUp />
+  },
+  {
+    path : "/signup/owner",
+    element : <OwnerSignup />
+  },
+  {
+    path : "/signup/keeper",
+    element : <KeeperSignup />
   },
   {
     path : "/keepers",
     element : <KeeperDetail />
   }
   ], 
-  // { basename : "/keepers"
-  // }
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
