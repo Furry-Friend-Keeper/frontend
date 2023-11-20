@@ -28,7 +28,7 @@ function App() {
     },
     {
       id : 4,
-      image : "/assets/dog.jpg",
+      image : "/assets/dogs.jpg",
       title : "Item 4",
       distance : "0.5 km",
       rating : "3.9",
@@ -100,7 +100,7 @@ function App() {
           <div className="row">
             {search.map((item, index) => (
               <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 d-flex align-items-stretch my-2 justify-content-center">
-                <div className="card shadow-lg text-center border-0">
+                <div className="keeper card shadow-lg text-center border-0">
                   <img src={item.image} alt={item.title} />
                   <div className="card-body ">
                     <div className="d-flex justify-content-center">

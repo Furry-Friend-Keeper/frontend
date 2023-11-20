@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import {useNavigate} from 'react-router-dom';
 
 function Navbar() {
 
-  const navigate = useNavigate();
-  // const clickToLogin = () => navigate('/login');
-  // const clickToSignUp = () => navigate('/login');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
