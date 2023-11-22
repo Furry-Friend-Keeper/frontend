@@ -6,7 +6,7 @@ function Navbar() {
 
   return (
     <>
-   <nav className="navbar navbar-expand-lg">
+   <nav className="navbar navbar-expand-lg bg-white">
       <div className="container">
         <a className="navbar-brand navbar-head fw-bold text-uppercase" href="/">
           Furry Friend Keeper

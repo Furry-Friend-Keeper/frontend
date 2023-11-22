@@ -13,6 +13,10 @@
   font-weight: 400;
 }
 
+body {
+  background: rgba(244,245,244,255);
+}
+
 a {
    text-decoration: none !important;
 }
@@ -355,7 +359,26 @@ a:hover {
   margin-left: 5px !important;
 }
 
-.keeper-detail, .keeper-map {
+.bg-shadow {
   box-shadow: 2px 1px 3px 3px rgba(0, 0, 0, 0.05);
 
+}
+
+.keeper-detail {
+  padding: 3rem;
+
+}
+
+.table {
+  & tr {
+    border-color: rgba(0, 0, 0, 0.150); ;
+
+  }
+}
+
+.rating {
+  & .bi-star-fill::before, .rating-score {
+    color: rgb(244,110,20) !important;
+    font-size: 20px;
+  } 
 }

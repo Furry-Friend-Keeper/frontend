@@ -1,6 +1,8 @@
 import Navbar from './layouts/Navbar.jsx';
+import Footer from './layouts/Footer.jsx';
 import { useState } from "react";
 import Slider from "react-slick";
+import { GoogleMap, LoadScript, StandaloneSearchBox, MarkerF } from '@react-google-maps/api';
 
 
 function KeeperDetail() {
@@ -8,6 +10,8 @@ function KeeperDetail() {
   const [slider1, setSlider1] = useState(null);
   const [slider2, setSlider2] = useState(null);
 
+  const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
+  const [ libraries ] = useState(['places']);
   const slider_main = {
     asNavFor : slider2,
     slidesToShow : 1,
@@ -50,8 +54,8 @@ function KeeperDetail() {
   return (
     <>
         <Navbar />
-        <div className="container">
-          <div className="carousel col-md-12">
+        <div className="container pt-lg-4">
+          <div className="carousel col-md-11">
             <div className="slider-for">
               <Slider className="slider"
                 ref={(slider) => setSlider1(slider)}
@@ -79,10 +83,10 @@ function KeeperDetail() {
             </div>
           </div>
         </div>
-        <div className="container">
-          <div className="row">
+        <div className="container pb-lg-5">
+          <div className="row mx-auto col-11">
             <div className="col-lg-8">
-              <div className="keeper-detail p-5">
+              <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                 <div className="title d-flex justify-content-between align-items-center">
                   <h2 className="mb-lg-4 mt-lg-3">Dog Hub Frienly Pet</h2>
                   <span className="fs-3"><i className="bi bi-star"></i></span>
@@ -92,15 +96,88 @@ function KeeperDetail() {
                   <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque cumque eligendi beatae optio ex quod assumenda minus ab perspiciatis, sit, doloribus tenetur, repellendus tempora soluta. Officiis soluta unde similique esse?</p>
                 </div>
               </div>
+              <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
+                <div className="title">
+                  <h2>Contact</h2>
+                </div>
+                <div className="table">
+                  <table className="w-100">
+                      <tr>
+                        <td>Name</td>
+                        <td className="text-end">Mr.Dogy</td>
+                      </tr>
+                      <tr>
+                        <td>SurName</td>
+                        <td className="text-end">Catforever</td>
+                      </tr>
+                      <tr>
+                        <td>Phone</td>
+                        <td className="text-end">099-999999</td>
+                      </tr>
+
+                    </table>
+                </div>
+              </div>
             </div>
             <div className="col-lg col-12">
-              <div className="p-5">
-                <div></div>
-                <div></div>
-              </div>
+                <div className="bg-shadow mt-4">
+                  <LoadScript googleMapsApiKey={API_KEY} libraries={libraries}>
+                  <GoogleMap
+                    // onLoad={onLoad}
+                    center={{ lat: -33.8688, lng: 151.2195 }}
+                    zoom={13}
+                    mapContainerStyle={{ width: '100%', height: '200px' }}
+                  ></GoogleMap>
+                  </LoadScript>
+                  <div className="keeper-address p-md-2 bg-white">
+                    <div className="table">
+                      <table className="w-100">
+                        <tr>
+                          <td>Address 1</td>
+                          <td className="text-end">123 Main St</td>
+                        </tr>
+                        <tr>
+                          <td>District</td>
+                          <td className="text-end">Central District</td>
+                        </tr>
+                        <tr>
+                          <td>Province</td>
+                          <td className="text-end">xample Province</td>
+                        </tr>
+                        <tr>
+                          <td>PostalCode</td>
+                          <td className="text-end">12345</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
+                  <div className="title">
+                    <h4>Reviews</h4>
+                  </div>
+                  <div className="des">
+                    <div className="rating">
+                      <span className="fs-3 rating-score me-2">5.0</span>
+                      <i className="bi bi-star-fill"></i>
+                      <i className="bi bi-star-fill"></i>
+                      <i className="bi bi-star-fill"></i>
+                      <i className="bi bi-star-fill"></i>
+                      <i className="bi bi-star-fill"></i>
+                      {/* <span className="">10 review</span> */}
+                    </div>
+                    <div className="review-des mt-3">
+                      <textarea className="form-control"  cols="30" rows="5" placeholder="Message to reviews"></textarea>
+                    </div>
+                    <div className="review-btn mt-3">
+                      <button className="btn btn-success w-100">Save</button>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
+        <Footer />
     </>
   )
 }
