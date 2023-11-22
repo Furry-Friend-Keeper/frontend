@@ -81,11 +81,23 @@ function KeeperDetail() {
         </div>
         <div className="container">
           <div className="row">
-            <div className="keeper-detail col-lg-8 me-2">
-              Description
+            <div className="col-lg-8">
+              <div className="keeper-detail p-5">
+                <div className="title d-flex justify-content-between align-items-center">
+                  <h2 className="mb-lg-4 mt-lg-3">Dog Hub Frienly Pet</h2>
+                  <span className="fs-3"><i className="bi bi-star"></i></span>
+                </div>
+                <div className="des">
+                  <h4>Description</h4>
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque cumque eligendi beatae optio ex quod assumenda minus ab perspiciatis, sit, doloribus tenetur, repellendus tempora soluta. Officiis soluta unde similique esse?</p>
+                </div>
+              </div>
             </div>
-            <div className="keeper-map col-lg col-12 ms-2">
-              Location
+            <div className="col-lg col-12">
+              <div className="p-5">
+                <div></div>
+                <div></div>
+              </div>
             </div>
           </div>
         </div>
