@@ -7,20 +7,19 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Navbar from '../../layouts/Navbar';
 import Information from './Information';
-import Account from './Account';
-import Image from './Image';
+import KeeperDetail from './KeeperDetail';
+import Map from './Map';
 
-
-const steps = ['Account', 'Information', 'Image'];
+const steps = ['Information', 'Keeper Detail', 'Map'];
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return <Account />;
-    case 1:
       return <Information/>;
+    case 1:
+      return <KeeperDetail />;
     default:
-      return <Image />;
+      return <Map />;
   }
 }
 

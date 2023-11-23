@@ -56,7 +56,6 @@ function Login() {
           <button type="submit" className="btn fw-semibold btn-primary" onClick={clickToRoot}>
             Submit
           </button>
-          <div>asdasd</div>
         </form>
       </div>
       </>

@@ -6,42 +6,31 @@ import { styled } from '@mui/system';
 import clsx from 'clsx';
 
 export default function BasicFormControl() {
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [petname, setPetname] = useState('');
+  const [name, setName] = useState('');
+  const [contact, setContact] = useState('');
 
-
-  const handleFirstnameChange = (event) => {
-    setFirstname(event.target.value);
+  const handleNameChange = (event) => {
+    setName(event.target.value);
   };
 
-  const handleLastnameChange = (event) => {
-    setLastname(event.target.value);
-  };
-
-  const handlePetnameChange = (event) => {
-    setPetname(event.target.value);
+  const handleContactChange = (event) => {
+    setContact(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Add your signup logic here
-    console.log('Firstname:', firstname);
-    console.log('Lastname:', lastname);
-    console.log('Petname:', petname);
+    console.log('Name:', name);
+    console.log('Contact:', contact);
   };
 
   return (
-    <FormControl onSubmit={handleSubmit} required>
-      <Label className="pt-3">Firstname</Label>
-      <StyledInput onChange={handleFirstnameChange} value={firstname} type="text" placeholder="Write your Firstname here" />
-      {/* <input type="email" onChange={handleEmailChange} value={email} /> */}
+    <FormControl onSubmit={handleSubmit} defaultValue="" required>
+      <Label className="pt-3">Name</Label>
+      <StyledInput onChange={handleNameChange} value={name} placeholder="Write your Name here" />
       <HelperText />
-      <Label className="pt-3">Lastname</Label>
-      <StyledInput onChange={handleLastnameChange} value={lastname} type="text" placeholder="Write your Lastname here" />
-      <HelperText />
-      <Label className="pt-3">Petname</Label>
-      <StyledInput onChange={handlePetnameChange} value={petname} type="text" placeholder="Write your petname here" />
+      <Label className="pt-3">Contact</Label>
+      <StyledInput onChange={handleContactChange} value={contact} placeholder="Write your Contact here" />
       <HelperText />
     </FormControl>
   );

@@ -3,46 +3,46 @@ import * as React from 'react';
 import { FormControl, useFormControlContext } from '@mui/base/FormControl';
 import { Input, inputClasses } from '@mui/base/Input';
 import { styled } from '@mui/system';
-import clsx from 'clsx';
+import clsx from 'clsx'
+// import * as React from 'react';
+import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function BasicFormControl() {
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
-  const [petname, setPetname] = useState('');
+  const [detail, setDetail] = useState('');
 
-
-  const handleFirstnameChange = (event) => {
-    setFirstname(event.target.value);
-  };
-
-  const handleLastnameChange = (event) => {
-    setLastname(event.target.value);
-  };
-
-  const handlePetnameChange = (event) => {
-    setPetname(event.target.value);
+  const handleDetailChange = (event) => {
+    setDetail(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Add your signup logic here
-    console.log('Firstname:', firstname);
-    console.log('Lastname:', lastname);
-    console.log('Petname:', petname);
+    console.log('Detail:', detail);
   };
 
   return (
-    <FormControl onSubmit={handleSubmit} required>
-      <Label className="pt-3">Firstname</Label>
-      <StyledInput onChange={handleFirstnameChange} value={firstname} type="text" placeholder="Write your Firstname here" />
-      {/* <input type="email" onChange={handleEmailChange} value={email} /> */}
+    <FormControl onSubmit={handleSubmit} defaultValue="" required>
+      <Label className="pt-3">Detail</Label>
+      <StyledInput onChange={handleDetailChange} value={detail} placeholder="Write your Detail here" />
       <HelperText />
-      <Label className="pt-3">Lastname</Label>
-      <StyledInput onChange={handleLastnameChange} value={lastname} type="text" placeholder="Write your Lastname here" />
-      <HelperText />
-      <Label className="pt-3">Petname</Label>
-      <StyledInput onChange={handlePetnameChange} value={petname} type="text" placeholder="Write your petname here" />
-      <HelperText />
+      <Label className="pt-3">Upload Image</Label>
+      <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+      Upload file
+      <VisuallyHiddenInput type="file" />
+      </Button>
     </FormControl>
   );
 }

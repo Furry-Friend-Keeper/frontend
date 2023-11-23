@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import * as React from 'react';
 import { FormControl, useFormControlContext } from '@mui/base/FormControl';
 import { Input, inputClasses } from '@mui/base/Input';
@@ -5,17 +6,37 @@ import { styled } from '@mui/system';
 import clsx from 'clsx';
 
 export default function BasicFormControl() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Add your signup logic here
+    console.log('Email:', email);
+    console.log('Password:', password);
+  };
+
   return (
-    <FormControl defaultValue="" required>
+    <FormControl onSubmit={handleSubmit} required>
       <Label className="pt-3">Email</Label>
-      <StyledInput placeholder="Write your Email here" />
+      <StyledInput onChange={handleEmailChange} value={email} type="email" placeholder="Write your Email here" />
+      {/* <input type="email" onChange={handleEmailChange} value={email} /> */}
       <HelperText />
       <Label className="pt-3">Password</Label>
-      <StyledInput placeholder="Write your password here" />
+      <StyledInput onChange={handlePasswordChange} value={password} type="password" placeholder="Write your password here" />
       <HelperText />
       <Label className="pt-3">Confirm Password</Label>
       <StyledInput placeholder="Confirm password here" />
       <HelperText />
+      
     </FormControl>
   );
 }
