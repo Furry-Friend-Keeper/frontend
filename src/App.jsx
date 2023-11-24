@@ -1,5 +1,12 @@
 import Navbar from './layouts/Navbar.jsx';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Slider from "react-slick";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Button from '@mui/material/Button';
+import { InputAdornment, TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+
 function App() {
   const [contents, setContents] = useState([
     {
@@ -12,7 +19,7 @@ function App() {
     },
     {
       id : 2,
-      image : "/assets/dogs.jpg",
+      image : "/assets/cover.jpeg",
       title : "Item 2",
       distance : "1.5 km",
       rating : "4.2",
@@ -45,6 +52,46 @@ function App() {
 
   ])
 
+  const slider_main = {
+    slidesToShow : 4,
+    slidesToScroll : 1,
+    infinite: false,
+    arrows : false,
+    draggable : false,
+    afterChange: (current) => {
+      setCurrentSlide(current);
+    },
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow : 4,
+        }
+      },
+      {
+        breakpoint: 992,
+        settings: {
+          slidesToShow : 3,
+        }
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow : 2,
+        }
+      },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow : 1,
+        }
+      },
+    ]
+  }
+
+  const slider = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   const [search, setSearch] = useState(contents)
   const [searchInput, setSearchInput] = useState('')
 
@@ -56,11 +103,31 @@ function App() {
     setSearch(filteredContent);
   }
 
+  useEffect(() => {
+    const filteredContent = contents.filter((item) =>
+    item.title.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setSearch(filteredContent);
+  }
+  ,[searchInput, contents])
+
   const handleFavorite = (index) => {
     const updateContents = [...contents]
     updateContents[index].favorite = !updateContents[index].favorite
     setContents(updateContents);
   } 
+
+  const handlePrevSlide = () => {
+    if (slider.current) {
+      slider.current.slickPrev();
+    }
+  };
+
+  const handleNextSlide = () => {
+    if (slider.current) {
+      slider.current.slickNext();
+    }
+  };
   
 
   return (
@@ -90,34 +157,64 @@ function App() {
     </div> */}
     {/* Content */}
       <div className="container pt-3">
+        <div className="row">
         <div className="col-sm-9 col-md-6 col-lg-4 col-xl-3">
-        <form className="p-2 d-flex" role="search" onSubmit={handleSearch}>
-          <input className="form-control me-2" type="search" placeholder="Search..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} aria-label="Search"  />
-          <button className="btn fw-semibold btn-primary" type="submit">Search</button>
-        </form>
+          {/* <form className="px-3 d-flex" role="search" onSubmit={handleSearch}> */}
+          <div>
+
+          <TextField className="px-3 w-100 search-keeper" id="outlined-search" type="search" label="Search"  value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
+          sx={{ width: 600 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}  />
+          </div>
+            {/* <button className="btn fw-semibold btn-primary" type="reset">Reset</button> */}
+          {/* </form> */}
+        </div>
+        <div className="col-sm-3 col-md-6 col-lg-8 col-xl-9">
+          <div className="d-flex justify-content-end align-items-center h-100 px-3 gap-3">
+            <Button  onClick={handlePrevSlide} disabled={currentSlide === 0} className="prev-icon">
+              <ArrowBackIosNewIcon fontSize='small' color='inherit' />
+            </Button>
+            <Button onClick={handleNextSlide} disabled={currentSlide === search.length - slider_main.slidesToShow} className="next-icon">
+              <ArrowForwardIosIcon  fontSize='small' />
+            </Button>
+           
+          </div>
+        </div>
+
         </div>
         <div className="container p-2">
-          <div className="row">
-            {search.map((item, index) => (
-              <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 d-flex align-items-stretch my-2 justify-content-center">
-                <div className="keeper card shadow-lg text-center border-0">
-                  <img src={item.image} alt={item.title} />
-                  <div className="card-body ">
-                    <div className="d-flex justify-content-center">
-                      <h5><a href="/keepers">{item.title}</a></h5>
-                      <div className="ms-2">
-                        <span className="favorite" onClick={() => handleFavorite(index)} >
-                          { item.favorite ? <i className="bi bi-star-fill"></i> : <i className="bi bi-star"></i>}
-                        </span>
+          <div className="keeper-list row">
+            {search.length > 0 && <Slider ref={slider} className="slider" {...slider_main}>
+              {search.map((item, index) => (
+                <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 d-flex justify-content-center align-items-stretch px-2">
+                  <div className="keeper card bg-shadow text-center border-0">
+                    <img src={item.image} alt={item.title} />
+                    <div className="card-body ">
+                      <div className="d-flex justify-content-center">
+                        <h5><a href="/keepers">{item.title}</a></h5>
+                        <div className="ms-2">
+                          <span className="favorite" onClick={() => handleFavorite(index)} >
+                            { item.favorite ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
+                          </span>
+                        </div>
                       </div>
+                      <span>distance: {item.distance} | rating: {item.rating}</span>
                     </div>
-                    <span>distance: {item.distance} | rating: {item.rating}</span>
                   </div>
+                  {/* </div> */}
                 </div>
-                {/* </div> */}
-              </div>
-            ))}
-            {search.length === 0 && <div>Not Found</div>}
+              ))}
+            </Slider>}
+            {search.length === 0 && 
+            <div className="no-results alert alert-info mt-3" role="alert">
+              No results found.
+            </div>}
           </div>
         </div>
       </div>

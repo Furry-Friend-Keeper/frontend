@@ -1,65 +1,100 @@
-import { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+
 import Navbar from '../layouts/Navbar';
 
+
 function Login() {
-    const navigate = useNavigate();
-    const clickToRoot = () => navigate('/');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+  };
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-  
-    const handleUsernameChange = (event) => {
-      setUsername(event.target.value);
-    };
-  
-    const handlePasswordChange = (event) => {
-      setPassword(event.target.value);
-    };
-  
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      // Add your login logic here
-      console.log('Username:', username);
-      console.log('Password:', password);
-    };
-  
-    return (
+  return (
       <>
-      <Navbar/>
-      <div className="container pt-5">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="username"
-              value={username}
-              onChange={handleUsernameChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <button type="submit" className="btn fw-semibold btn-primary" onClick={clickToRoot}>
-            Submit
-          </button>
-        </form>
-      </div>
-      </>
-    );
-}
+      <Navbar />
+      <Container component="main" maxWidth="xs">
+      <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
 
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="#" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        </Paper>
+      </Container>
+      </>
+  );
+}
 export default Login
