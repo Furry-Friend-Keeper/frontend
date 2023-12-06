@@ -1,4 +1,3 @@
-import Navbar from "../layouts/Navbar";
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -8,7 +7,6 @@ import Avatar from '@mui/material/Avatar';
 const Signup = () => {
     return (
         <>
-            <Navbar />
             <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
                 <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 },  }}>
                     <div className="d-flex justify-content-center align-items-center">

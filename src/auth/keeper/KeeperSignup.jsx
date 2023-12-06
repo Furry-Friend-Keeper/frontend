@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 
-import Navbar from '../../layouts/Navbar';
 import Information from './Information';
 import KeeperDetail from './KeeperDetail';
 import Map from './Map';
@@ -42,7 +41,6 @@ export default function KeeperSignUp() {
     return (
       <React.Fragment>
         {/* <CssBaseline /> */}
-        <Navbar/>
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
           <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <div className="d-flex justify-content-center align-items-center">

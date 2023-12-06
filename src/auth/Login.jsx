@@ -13,9 +13,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 
-import Navbar from '../layouts/Navbar';
-
-
 function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -28,7 +25,6 @@ function Login() {
 
   return (
       <>
-      <Navbar />
       <Container component="main" maxWidth="xs">
       <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
 

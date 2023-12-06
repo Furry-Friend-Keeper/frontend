@@ -1,14 +1,15 @@
-import Navbar from './layouts/Navbar.jsx';
 import Footer from './layouts/Footer.jsx';
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Slider from "react-slick";
 import { GoogleMap, LoadScript, StandaloneSearchBox, MarkerF } from '@react-google-maps/api';
-
+import Rating from '@mui/material/Rating';
+import $ from 'jquery'
 
 function KeeperDetail() {
 
   const [slider1, setSlider1] = useState(null);
   const [slider2, setSlider2] = useState(null);
+  const slider = useRef(null);
 
   const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
   const [ libraries ] = useState(['places']);
@@ -17,8 +18,24 @@ function KeeperDetail() {
     slidesToShow : 1,
     slidesToScroll : 1,
     arrows : true,
+    infinite : false,
     nextArrow : <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>,
-    prevArrow : <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+    prevArrow : <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>,
+    afterChange : function (slick, nextSlide) {
+    
+      if(nextSlide === 0) {
+          $('.slick-next').addClass('disabled');
+      }
+      else {
+          $('.slick-next').removeClass('disabled');
+      }
+      if(nextSlide === slick.slideCount - 1) {
+          $('.slick-prev').addClass('disabled');
+      }
+      else {
+          $('.slick-prev').removeClass('disabled');
+      } 
+    }
   }
 
   const slider_nav = {
@@ -28,6 +45,7 @@ function KeeperDetail() {
     centerMode : true,
     swipeToSlide : false,
     arrows : false,
+    infinite : false,
     // vertical : true,
     // verticalSwiping : true,
 
@@ -51,9 +69,9 @@ function KeeperDetail() {
     ]
   }
 
+
   return (
     <>
-        <Navbar />
         <div className="container pt-lg-4">
           <div className="carousel col-md-11">
             <div className="slider-for">
@@ -159,11 +177,8 @@ function KeeperDetail() {
                   <div className="des">
                     <div className="rating">
                       <span className="fs-3 rating-score me-2">5.0</span>
-                      <i className="bi bi-star-fill"></i>
-                      <i className="bi bi-star-fill"></i>
-                      <i className="bi bi-star-fill"></i>
-                      <i className="bi bi-star-fill"></i>
-                      <i className="bi bi-star-fill"></i>
+                      <Rating name="half-rating-read" defaultValue={5} readOnly />
+
                       {/* <span className="">10 review</span> */}
                     </div>
                     <div className="review-des mt-3">
