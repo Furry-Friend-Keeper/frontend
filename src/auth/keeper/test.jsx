@@ -5,7 +5,6 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Navbar from '../../layouts/Navbar';
 import Information from './Information';
 import KeeperDetail from './KeeperDetail';
 import Map from './Map';
@@ -71,7 +70,6 @@ export default function HorizontalLinearStepper() {
 
   return (
     <>
-    <Navbar/>
     <div className="container pt-3">
       <div className="card pt-3 pb-3">
     <Box sx={{ width: '100%' }}>

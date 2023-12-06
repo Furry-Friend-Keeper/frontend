@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { Outlet } from 'react-router-dom'
 function Navbar() {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -66,6 +66,7 @@ function Navbar() {
         </div>
       </div>
     </nav>
+    <Outlet />
     </>
   )
 }
