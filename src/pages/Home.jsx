@@ -9,20 +9,19 @@ import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../compo
 import TitlePage from '../components/TitlePage';
 import PaginationButton from '../components/PaginationButton';
 
+import axios from 'axios';
+
 function Home() {
   const [apiData, setApiData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
-        const response = await fetch(apiUrl);
-        if (response.ok) {
-          const data = await response.json();
-          setApiData(data);
-          console.log("test")
-        } else {
-          console.error('Failed to fetch data');
-        }
+        await axios.get(apiUrl).then(response => {
+          const data = response.data;
+          setApiData(data)
+        });
+        
       } catch (error) {
         console.error('Error fetching data:', error);
       }

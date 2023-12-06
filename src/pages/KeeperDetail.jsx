@@ -1,26 +1,25 @@
-import Footer from './layouts/Footer.jsx';
+import Footer from '../layouts/Footer.jsx';
 import { useState, useRef, useEffect } from "react";
 import Slider from "react-slick";
 import { GoogleMap, LoadScript, StandaloneSearchBox, MarkerF } from '@react-google-maps/api';
 import Rating from '@mui/material/Rating';
 import $ from 'jquery'
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 
 function KeeperDetail() {
 
-  const [apiData, setApiData] = useState(null);
+  const [apiData, setApiData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = process.env.VITE_KEEPERS_ALL;
-        const response = await axios.get(apiUrl);
-        if (response.ok) {
-          const data = await response.json();
-          setApiData(data);
-        } else {
-          console.error('Failed to fetch data');
-        }
+        const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
+        await axios.get(apiUrl).then(response => {
+          const data = response.data;
+          setApiData(data)
+          console.log(data);
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -28,6 +27,8 @@ function KeeperDetail() {
 
     fetchData();
   }, []);
+
+  const { id } = useParams();
 
   const [slider1, setSlider1] = useState(null);
   const [slider2, setSlider2] = useState(null);
@@ -125,19 +126,19 @@ function KeeperDetail() {
           </div>
         </div>
         <div className="container pb-lg-5">
-        {apiData && (
           <div className="row mx-auto col-11">
             <div className="col-lg-8">
               <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
+              
                 <div className="title d-flex justify-content-between align-items-center">
-                {apiData.map((item) => (
-                  <h2 className="mb-lg-4 mt-lg-3" key={item.id}>{item.name}</h2>
-                  ))}
+                
+                  <h2 className="mb-lg-4 mt-lg-3">{apiData.name}</h2>
                   <span className="fs-3"><i className="bi bi-star"></i></span>
+                  
                 </div>
                 <div className="des">
                   <h4>Description</h4>
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque cumque eligendi beatae optio ex quod assumenda minus ab perspiciatis, sit, doloribus tenetur, repellendus tempora soluta. Officiis soluta unde similique esse?</p>
+                  <p>{apiData.detail}</p>
                 </div>
               </div>
               <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -148,7 +149,7 @@ function KeeperDetail() {
                   <table className="w-100">
                       <tr>
                         <td>Name</td>
-                        <td className="text-end">Mr.Dogy</td>
+                        <td className="text-end">{apiData.contact}</td>
                       </tr>
                       <tr>
                         <td>Surname</td>
@@ -156,7 +157,7 @@ function KeeperDetail() {
                       </tr>
                       <tr>
                         <td>Phone</td>
-                        <td className="text-end">099-999999</td>
+                        <td className="text-end">{apiData.phone}</td>
                       </tr>
 
                     </table>
@@ -217,7 +218,6 @@ function KeeperDetail() {
                 </div>
             </div>
           </div>
-          )}
         </div>
         <Footer />
     </>
