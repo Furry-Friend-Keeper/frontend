@@ -1,8 +1,24 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom'
-function Navbar() {
+import React,{ useState } from 'react';
+import { Outlet, Link } from 'react-router-dom';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 
+function Navbar() {
+  const settings = ['Profile', 'Logout'];
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
     <>
@@ -58,10 +74,40 @@ function Navbar() {
               </a>
             </li>
             {/* <li className="nav-item">
-              <a className="nav-link" href="#">
-                <i className="bi bi-person fs-3"></i>
+              <a className="nav-link" href="/owner">
+                <AccountCircleIcon fontSize='large' />
               </a>
             </li> */}
+            <li  className="nav-item ">
+
+              <Tooltip title="Open settings" className="ms-3">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center" ><Link to={setting === "Profile" ? "owner" : "logout"}>{setting}</Link></Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </li>
           </ul>
         </div>
       </div>

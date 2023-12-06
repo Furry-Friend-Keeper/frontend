@@ -1,4 +1,4 @@
-import Footer from './layouts/Footer.jsx';
+import Footer from '../layouts/Footer.jsx';
 import { useState, useRef } from "react";
 import Slider from "react-slick";
 import { GoogleMap, LoadScript, StandaloneSearchBox, MarkerF } from '@react-google-maps/api';
