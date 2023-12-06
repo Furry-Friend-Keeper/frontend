@@ -5,9 +5,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from '@mui/icons-material/Clear';
 import Rating from '@mui/material/Rating';
 
-import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from './components/SearchButton';
-import TitlePage from './components/TitlePage';
-import PaginationButton from './components/PaginationButton';
+import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../components/SearchButton';
+import TitlePage from '../components/TitlePage';
+import PaginationButton from '../components/PaginationButton';
 
 function Home() {
   const [apiData, setApiData] = useState([]);
