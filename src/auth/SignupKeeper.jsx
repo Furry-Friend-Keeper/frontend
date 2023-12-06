@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import Userfront from "@userfront/core";
 
 function SignupKeeper() {
+  
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
       name: '',

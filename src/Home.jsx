@@ -10,49 +10,26 @@ import TitlePage from './components/TitlePage';
 import PaginationButton from './components/PaginationButton';
 
 function Home() {
-  const [contents, setContents] = useState([
-    {
-      id : 1,
-      image : "/assets/cat.jpg",
-      title : "Item 1",
-      distance : "2 km",
-      rating : "4.5",
-      favorite : false,
-    },
-    {
-      id : 2,
-      image : "/assets/cover.jpeg",
-      title : "Item 2",
-      distance : "1.5 km",
-      rating : "4.2",
-      favorite : false
-    },
-    {
-      id : 3,
-      image : "/assets/cat.jpg",
-      title : "Item 3",
-      distance : "3 km",
-      rating : "4.8",
-      favorite : false
-    },
-    {
-      id : 4,
-      image : "/assets/dogs.jpg",
-      title : "Item 4",
-      distance : "0.5 km",
-      rating : "3.9",
-      favorite : false
-    },
-    {
-      id : 5,
-      image : "/assets/cat.jpg",
-      title : "Item 5",
-      distance : "2.8 km",
-      rating : "4.6",
-      favorite : false
-    }
+  const [apiData, setApiData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+          const data = await response.json();
+          setApiData(data);
+          console.log("test")
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-  ])
+    fetchData();
+  }, []);
 
   const slider_main = {
     slidesToShow : 4,
@@ -94,7 +71,7 @@ function Home() {
   const slider = useRef(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const [search, setSearch] = useState(contents)
+  const [search, setSearch] = useState(apiData)
   const [searchInput, setSearchInput] = useState('')
 
   const handleSearchInput = (event) => {
@@ -105,13 +82,14 @@ function Home() {
     setSearchInput('');
   }
 
-  useEffect(() => {
-    const filteredContent = contents.filter((item) =>
-    item.title.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setSearch(filteredContent);
-  }
-  ,[searchInput, contents])
+  // useEffect(() => {
+  //   const filteredApiData = apiData.filter((item) =>{
+  //   console.log(item)
+  //   return item.title?.toLowerCase().includes(searchInput?.toLowerCase())
+  // });
+  //   setSearch(filteredApiData);
+  // }
+  // ,[searchInput, apiData])
 
   // const handleSearch = (event) => {
   //   event.preventDefault()
@@ -122,9 +100,9 @@ function Home() {
   // }
 
   const handleFavorite = (index) => {
-    const updateContents = [...contents]
+    const updateContents = [...apiData]
     updateContents[index].favorite = !updateContents[index].favorite
-    setContents(updateContents);
+    setApiData(updateContents);
   } 
 
   const handlePrevSlide = () => {
@@ -148,7 +126,15 @@ function Home() {
   
   return (
     <>
-
+    {/* <div>
+      {apiData && (
+        <ul>
+          {apiData.map((item) => (
+            <li key={item.id}>{item.name}</li>
+          ))}
+        </ul>
+      )}
+    </div>  */}
     {/* title */}
     <TitlePage />
     {/* Content */}
@@ -183,14 +169,16 @@ function Home() {
         </div>
         <div className="container p-2">
           <div className="keeper-list row">
-            {search.length > 0 && <Slider ref={slider} className="slider" {...slider_main}>
-              {search.map((item, index) => (
+            {apiData.length > 0 && <Slider ref={slider} className="slider" {...slider_main}>
+              {apiData.map((item, index) => {
+                console.log(item)
+                return (
                 <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 d-flex justify-content-center align-items-stretch px-2">
                   <div className="keeper card bg-shadow text-center border-0">
                     <img src={item.image} alt={item.title} />
                     <div className="card-body ">
                       <div className="d-flex justify-content-center">
-                        <h5><a href="/keepers">{item.title}</a></h5>
+                        <h5><a href={`/keepers/${item.petkeeperId}`}>{item.name}</a></h5>
                         <div className="ms-2">
                           <span className="favorite" onClick={() => handleFavorite(index)} >
                             { item.favorite ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
@@ -199,15 +187,15 @@ function Home() {
                       </div>
                       <span>distance: {item.distance} </span>
                       <div>
-                        <Rating name="half-rating-read" defaultValue={item.rating} precision={0.1} readOnly />
+                        <Rating name="half-rating-read" defaultValue={item.reviewStars} precision={0.1} readOnly />
                       </div>
                     </div>
                   </div>
                   {/* </div> */}
                 </div>
-              ))}
+)})}
             </Slider>}
-            {search.length === 0 && 
+            {apiData.length === 0 && 
             <div className="no-results alert alert-info mt-3" role="alert">
               No results found.
             </div>}

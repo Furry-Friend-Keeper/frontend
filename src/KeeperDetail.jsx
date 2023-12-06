@@ -1,11 +1,33 @@
 import Footer from './layouts/Footer.jsx';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Slider from "react-slick";
 import { GoogleMap, LoadScript, StandaloneSearchBox, MarkerF } from '@react-google-maps/api';
 import Rating from '@mui/material/Rating';
 import $ from 'jquery'
+import axios from 'axios';
+
 
 function KeeperDetail() {
+
+  const [apiData, setApiData] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const apiUrl = process.env.VITE_KEEPERS_ALL;
+        const response = await axios.get(apiUrl);
+        if (response.ok) {
+          const data = await response.json();
+          setApiData(data);
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [slider1, setSlider1] = useState(null);
   const [slider2, setSlider2] = useState(null);
@@ -68,6 +90,7 @@ function KeeperDetail() {
       },
     ]
   }
+  
 
 
   return (
@@ -102,11 +125,14 @@ function KeeperDetail() {
           </div>
         </div>
         <div className="container pb-lg-5">
+        {apiData && (
           <div className="row mx-auto col-11">
             <div className="col-lg-8">
               <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                 <div className="title d-flex justify-content-between align-items-center">
-                  <h2 className="mb-lg-4 mt-lg-3">Dog Hub Frienly Pet</h2>
+                {apiData.map((item) => (
+                  <h2 className="mb-lg-4 mt-lg-3" key={item.id}>{item.name}</h2>
+                  ))}
                   <span className="fs-3"><i className="bi bi-star"></i></span>
                 </div>
                 <div className="des">
@@ -125,7 +151,7 @@ function KeeperDetail() {
                         <td className="text-end">Mr.Dogy</td>
                       </tr>
                       <tr>
-                        <td>SurName</td>
+                        <td>Surname</td>
                         <td className="text-end">Catforever</td>
                       </tr>
                       <tr>
@@ -191,6 +217,7 @@ function KeeperDetail() {
                 </div>
             </div>
           </div>
+          )}
         </div>
         <Footer />
     </>

@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       { path : "/signup", element : <SignUp />  },
       { path : "/signup/owner", element : <OwnerSignup /> },
       { path : "/signup/keeper", element : <KeeperSignup /> },
-      { path : "/keepers", element : <KeeperDetail /> }
+      { path : "/keepers/:id", element : <KeeperDetail /> }
     ]
   }
   ], 
