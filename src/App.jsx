@@ -11,6 +11,7 @@ import SignUp from './auth/SignUpPage.jsx';
 import KeeperDetail from './pages/KeeperDetail.jsx';
 import Navbar from './layouts/Navbar.jsx';
 import OwnerDetail from './pages/OwnerDetail.jsx';
+import Footer from './layouts/Footer.jsx';
 
 // const router = createBrowserRouter([
 //   {
@@ -34,15 +35,17 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signup/owner" element={<OwnerSignup />} />
-          <Route path="/signup/keeper" element={<KeeperSignup />} />
-          <Route path="/keepers/:id" element={<KeeperDetail />} />
-          <Route path="/owner" element={<OwnerDetail />} />
+          <Route index path="/at3" element={<Home />} />
+          <Route path="/at3/login" element={<Login />} />
+          <Route path="/at3/signup" element={<SignUp />} />
+          <Route path="/at3/signup/owner" element={<OwnerSignup />} />
+          <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
+          <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
+          <Route path="/at3/owner" element={<OwnerDetail />} />
           {/* Add more routes as needed */}
+      
         </Routes>
+        <Footer/>
       </Router>
     // </Provider>
   )
