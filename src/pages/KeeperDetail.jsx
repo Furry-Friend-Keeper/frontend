@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 
 function KeeperDetail() {
 
-  const [apiData, setApiData] = useState([]);
+  const [apiData, setApiData] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -203,8 +203,8 @@ function KeeperDetail() {
                   </div>
                   <div className="des">
                     <div className="rating">
-                      <span className="fs-3 rating-score me-2">5.0</span>
-                      <Rating name="half-rating-read" defaultValue={5} readOnly />
+                      <span className="fs-3 rating-score me-2">{apiData.reviewStars}</span>
+                     <Rating name="half-rating-read" value={apiData.reviewStars || 0} readOnly />
 
                       {/* <span className="">10 review</span> */}
                     </div>

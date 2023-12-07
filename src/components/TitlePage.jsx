@@ -5,7 +5,7 @@ function TitlePage() {
     <div className="container-fluid g-0">
     <div className="pages-main bg-white">
       <div className="keeper-title">
-        <div className="col-md-6 col-sm-12 keeper-text">
+        <div className="col-md-6 col-sm-12 keeper-text mx-3">
           <h3>Furry Friend Keeper</h3>
           <h3>เว็ปไซต์สำหรับรับ-ฝากดูแลสัตว์เลี้ยง</h3>
           <p>ในปัจจุบันมีผู้คนนิยมเลี้ยงสัตว์เลี้ยงมากขึ้น ไม่ว่าจะเป็น หมา แมว หนู ไปจนถึง สัตว ์Exotic (สัตว์แปลก) ต่างๆกันมากขึ้น ซึ่งคนที่มีสัตว์เลี้ยงก็ไม่สามารถดูแลได้ตลอดเวลา 

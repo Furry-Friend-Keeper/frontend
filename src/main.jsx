@@ -5,35 +5,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import './styles/style.css'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './pages/Home.jsx'
-import Login from './auth/Login.jsx';
-import OwnerSignup from './auth/owner/OwnerSignup.jsx';
-import KeeperSignup from './auth/keeper/KeeperSignup.jsx';
-import SignUp from './auth/SignUpPage.jsx';
-import KeeperDetail from './pages/KeeperDetail.jsx';
-import Navbar from './layouts/Navbar.jsx';
-import OwnerDetail from './pages/OwnerDetail.jsx';
-
-const router = createBrowserRouter([
-  {
-    path : "/",
-    element : <Navbar/>,
-    children: [
-      { path : "/", element : <Home />},
-      { path : "/login", element : <Login />  },
-      { path : "/signup", element : <SignUp />  },
-      { path : "/signup/owner", element : <OwnerSignup /> },
-      { path : "/signup/keeper", element : <KeeperSignup /> },
-      { path : "/keepers/:id", element : <KeeperDetail /> },
-      { path : "/owner", element : <OwnerDetail /> },
-    ]
-  }
-  ], 
-)
+import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <App />
 )
