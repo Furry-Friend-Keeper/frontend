@@ -6,6 +6,7 @@ import Rating from '@mui/material/Rating';
 import $ from 'jquery'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
 
 
 function KeeperDetail() {
@@ -152,8 +153,8 @@ function KeeperDetail() {
                         <td className="text-end">{apiData.contact}</td>
                       </tr>
                       <tr>
-                        <td>Surname</td>
-                        <td className="text-end">Catforever</td>
+                        <td>Email</td>
+                        <td className="text-end">{apiData.email}</td>
                       </tr>
                       <tr>
                         <td>Phone</td>
@@ -179,19 +180,19 @@ function KeeperDetail() {
                       <table className="w-100">
                         <tr>
                           <td>Address 1</td>
-                          <td className="text-end">123 Main St</td>
+                          <td className="text-end">{apiData?.address?.address}</td>
                         </tr>
                         <tr>
                           <td>District</td>
-                          <td className="text-end">Central District</td>
+                          <td className="text-end">{apiData?.address?.district}</td>
                         </tr>
                         <tr>
                           <td>Province</td>
-                          <td className="text-end">xample Province</td>
+                          <td className="text-end">{apiData?.address?.province}</td>
                         </tr>
                         <tr>
                           <td>PostalCode</td>
-                          <td className="text-end">12345</td>
+                          <td className="text-end">{apiData?.address?.postalCode}</td>
                         </tr>
                       </table>
                     </div>
@@ -203,9 +204,8 @@ function KeeperDetail() {
                   </div>
                   <div className="des">
                     <div className="rating">
-                      <span className="fs-3 rating-score me-2">5.0</span>
-                      <Rating name="half-rating-read" defaultValue={5} readOnly />
-
+                      <span className="fs-3 rating-score me-2">{apiData.reviewStars}</span>
+                      <Rating name="half-rating-read" value={apiData.reviewStars || 0} precision={0.5} readOnly/>
                       {/* <span className="">10 review</span> */}
                     </div>
                     <div className="review-des mt-3">
