@@ -17,16 +17,16 @@ import OwnerDetail from './pages/OwnerDetail.jsx';
 
 const router = createBrowserRouter([
   {
-    path : "/",
+    path : "/at3",
     element : <Navbar/>,
     children: [
-      { path : "/", element : <Home />},
-      { path : "/login", element : <Login />  },
-      { path : "/signup", element : <SignUp />  },
-      { path : "/signup/owner", element : <OwnerSignup /> },
-      { path : "/signup/keeper", element : <KeeperSignup /> },
-      { path : "/keepers/:id", element : <KeeperDetail /> },
-      { path : "/owner", element : <OwnerDetail /> },
+      { path : "/at3", element : <Home />},
+      { path : "/at3/login", element : <Login />  },
+      { path : "/at3/signup", element : <SignUp />  },
+      { path : "/at3/signup/owner", element : <OwnerSignup /> },
+      { path : "/at3/signup/keeper", element : <KeeperSignup /> },
+      { path : "/at3/keepers/:id", element : <KeeperDetail /> },
+      { path : "/at3/owner", element : <OwnerDetail /> },
     ]
   }
   ], 
