@@ -28,7 +28,7 @@ function Navbar() {
     <>
    <nav className="navbar navbar-expand-lg bg-white">
       <div className="container">
-        <Link className="navbar-brand navbar-head fw-bold text-uppercase" to="/">
+        <Link className="navbar-brand navbar-head fw-bold text-uppercase" to="/at3">
           Furry Friend Keeper
         </Link>
         <div className="dropdown">
@@ -43,11 +43,11 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            <li><Link className="dropdown-item" to="/">Home</Link></li>
+            <li><Link className="dropdown-item" to="/at3">Home</Link></li>
             <li><Link className="dropdown-item" to="#">About</Link></li>
             <li><Link className="dropdown-item" to="#">Contact</Link></li>
-            <li><Link className="dropdown-item" to="/login">Login</Link></li>
-            <li><Link className="dropdown-item" to="/signup">Sign up</Link></li>
+            <li><Link className="dropdown-item" to="/at3/login">Login</Link></li>
+            <li><Link className="dropdown-item" to="/at3/signup">Sign up</Link></li>
           </ul>
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
@@ -69,14 +69,14 @@ function Navbar() {
             </li>
             {!isLogin &&
             <li className="nav-item">
-              <Link className="nav-link" to="/login">
+              <Link className="nav-link" to="/at3/login">
                 Login
               </Link>
             </li>
             }
             {!isLogin &&
             <li className="nav-item">
-              <Link className="btn fw-semibold btn-primary" to="/signup">
+              <Link className="btn fw-semibold btn-primary" to="/at3/signup">
                 Sign up
               </Link>
             </li>
@@ -115,10 +115,10 @@ function Navbar() {
                     </MenuItem>
                   ))} */}
                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" ><Link to="owner" >Profile</Link></Typography>
+                      <Typography textAlign="center" ><Link to="/at3/owner" >Profile</Link></Typography>
                     </MenuItem>
                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><Link to="/" >Logout</Link></Typography>
+                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><Link to="/at3" >Logout</Link></Typography>
                     </MenuItem>
                 </Menu>
               </li>

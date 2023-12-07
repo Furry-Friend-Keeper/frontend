@@ -219,7 +219,6 @@ function KeeperDetail() {
             </div>
           </div>
         </div>
-        <Footer />
     </>
   )
 }

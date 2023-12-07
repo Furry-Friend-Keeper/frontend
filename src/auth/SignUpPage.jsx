@@ -3,6 +3,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
     return (
@@ -18,20 +19,20 @@ const Signup = () => {
                     Sign up
                     </Typography>
                     <div className="col d-flex justify-content-center font mb-4">
-                        <a
+                        <Link
                             className="btn fw-semibold btn-primary"
-                            href="/signup/owner"
+                            to="/at3/signup/owner"
                         >
                             Owner Sign up
-                        </a>
+                        </Link>
                     </div>
                     <div className="col d-flex justify-content-center mb-4">
-                        <a
+                        <Link
                             className="btn fw-semibold btn-primary"
-                            href="/signup/keeper"
+                            to="/at3/signup/keeper"
                         >
                             Keeper Sign up
-                        </a>
+                        </Link>
                     </div>
                 </Paper>
             </Container>
