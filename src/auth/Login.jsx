@@ -12,8 +12,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
+import { useSelector, useDispatch } from 'react-redux';
+import { authActions } from '../store/AuthReducer';
 
 function Login() {
+  const dispatch = useDispatch()
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -71,6 +74,7 @@ function Login() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={() => dispatch(authActions.login())}
             >
               Sign In
             </Button>

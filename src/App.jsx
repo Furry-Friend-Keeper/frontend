@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
-// import store from './store/Store.jsx'; // Assuming you've created your Redux store
+import store from './store/Store.jsx'; // Assuming you've created your Redux store
 
 import Home from './pages/Home.jsx'
 import Login from './auth/Login.jsx';
@@ -11,7 +11,7 @@ import SignUp from './auth/SignUpPage.jsx';
 import KeeperDetail from './pages/KeeperDetail.jsx';
 import Navbar from './layouts/Navbar.jsx';
 import OwnerDetail from './pages/OwnerDetail.jsx';
-
+import Footer from './layouts/Footer.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",
@@ -30,11 +30,11 @@ import OwnerDetail from './pages/OwnerDetail.jsx';
 // )
 function App() {
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <Router>
         <Navbar />
         <Routes>
-          <Route index element={<Home />} />
+          <Route path='/' element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup/owner" element={<OwnerSignup />} />
@@ -43,8 +43,9 @@ function App() {
           <Route path="/owner" element={<OwnerDetail />} />
           {/* Add more routes as needed */}
         </Routes>
+        <Footer />
       </Router>
-    // </Provider>
+    </Provider>
   )
 }
 
