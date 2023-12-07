@@ -306,6 +306,7 @@ a:hover {
 
 .slick-track {
   margin-left: 0 !important;
+  cursor: pointer;
 }
 
 .slider-for {
