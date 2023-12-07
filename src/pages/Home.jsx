@@ -110,7 +110,7 @@ function Home() {
         {/* <PaginationButton handleNextSlide={handleNextSlide} handlePrevSlide={handlePrevSlide} validateNextSlide={validateNextSlide} validatePrevSlide={validatePrevSlide} /> */}
 
         </div>
-        <div className="container p-2">
+        <div className="container p-2 mb-5">
           {search.length > 0 && 
           <div className="keeper-list row">
               {/* <Slider ref={slider} className="slider" {...slider_main}> */}
