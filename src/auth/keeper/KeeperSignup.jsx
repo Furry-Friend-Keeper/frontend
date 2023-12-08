@@ -13,6 +13,7 @@ import Avatar from '@mui/material/Avatar';
 import Information from './Information';
 import KeeperDetail from './KeeperDetail';
 import Map from './Map';
+
   
   const steps = ['Information', 'Keeper Detail', 'Map'];
   
@@ -41,7 +42,7 @@ export default function KeeperSignUp() {
     return (
       <React.Fragment>
         {/* <CssBaseline /> */}
-        <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+        <Container component="main" maxWidth="mb" sx={{ mb: 4 }}>
           <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <div className="d-flex justify-content-center align-items-center">
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main',}}>

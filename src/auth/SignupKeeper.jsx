@@ -1,17 +1,19 @@
-import { useState } from 'react';
-import Userfront from "@userfront/core";
+// import { useState } from 'react';
+import { useForm } from "react-hook-form";
 
 function SignupKeeper() {
   
-    const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({
-      name: '',
-      email: '',
-      password: '',
-    });
+    // const [step, setStep] = useState(1);
+    // const [formData, setFormData] = useState({
+    //   name: '',
+    //   email: '',
+    //   password: '',
+    // });
   
-    const { name, email, password } = formData;
-  
+    // const { name, email, password } = formData;
+    // const { register, handleSubmit, errors } = useForm();
+    
+
     const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -24,29 +26,30 @@ function SignupKeeper() {
       setStep(step - 1);
     };
   
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      // Handle form submission here
-      console.log('Form submitted:', formData);
-    };
-  
+    // const handleSubmit = (e) => {
+    //   e.preventDefault();
+    //   // Handle form submission here
+    //   console.log('Form submitted:', formData);
+    // };
+    
     switch (step) {
       case 1:
         return (
+          // <form id="applicationForm" onSubmit={handleSubmit(doSubmit)}>
           <div className="container">
             <div className="row">
               <div className="col-md-6 offset-md-3">
                 <h3>Step 1</h3>
                 <div className="mb-3">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">Keeper Name</label>
                   <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={handleChange}
+                    name="storeName"
+                    // ref={register({required: true, maxLength: 200})}
                   />
+                  {/* <div style={{ color: "red" }}>
+                    {errors.storeName?.type === "required" && "input is required"}
+                    {errors.storeName?.type === "maxLength" && "input over maxLen"}
+                  </div> */}
                 </div>
                 <button className="btn btn-primary" onClick={nextStep}>
                   Next
@@ -54,6 +57,7 @@ function SignupKeeper() {
               </div>
             </div>
           </div>
+          // </form>
         );
   
       case 2:
@@ -116,6 +120,6 @@ function SignupKeeper() {
         return null;
     }
   }
-
+  
 
 export default SignupKeeper

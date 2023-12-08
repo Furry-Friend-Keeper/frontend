@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const Signup = () => {
     return (
         <>
-            <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+            <Container component="main" maxWidth="mb" sx={{ mb: 4 }}>
                 <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 },  }}>
                     <div className="d-flex justify-content-center align-items-center">
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main',}}>
