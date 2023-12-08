@@ -53,7 +53,7 @@ function Navbar() {
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
             <li className="nav-item">
-              <Link className="nav-link" aria-current="page" to="/">
+              <Link className="nav-link" aria-current="page" to="/at3">
                 Home
               </Link>
             </li>

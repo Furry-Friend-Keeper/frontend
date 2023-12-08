@@ -7,11 +7,11 @@ import Typography from '@mui/joy/Typography';
 import CheckIcon from "@mui/icons-material/Check";
 import PetsIcon from '@mui/icons-material/Pets';
 
-function PetCategory() {
+function PetCategory({ selected, setSelected}) {
     const names = [
-        "cat",
-        "dog",
-        "chicken",
+        "Whiskers",
+        "Max",
+        "Fluffy",
         "rabbit",
         "parrot",
         "hamster",
@@ -32,7 +32,8 @@ function PetCategory() {
       const open = Boolean(anchorEl);
       const id = open ? 'simple-popover' : undefined;
     
-      const [selected, setSelected] = useState([]);
+      // const [selected, setSelected] = useState([]);
+
   return (
     <>
     <Button aria-describedby={id} variant="contained" onClick={handleClick} startIcon={<PetsIcon />} className="w-100" >

@@ -6,8 +6,8 @@ import Rating from '@mui/material/Rating';
 import $ from 'jquery'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-
 
 function KeeperDetail() {
 
@@ -130,7 +130,11 @@ function KeeperDetail() {
           <div className="row mx-auto col-11">
             <div className="col-lg-8">
               <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-              
+              <Stack direction="row" spacing={1}>
+                {apiData.categories && apiData.categories.map((category, index) => (
+                  <Chip key={index} label={category} />
+                ))}
+              </Stack>
                 <div className="title d-flex justify-content-between align-items-center">
                 
                   <h2 className="mb-lg-4 mt-lg-3">{apiData.name}</h2>

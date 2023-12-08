@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Link } from 'react-router-dom'
 function TitlePage() {
   return (
     <div className="container-fluid g-0">
@@ -12,8 +12,8 @@ function TitlePage() {
             จึงต้องการคนที่คอยดูแลสัตว์เลี้ยงของพวกเขาในระหว่างที่พวกเขาไม่สามารถดูแลเองได้ ซึ่ง Furry Friend Keeper จะเป็น Web Application ที่เปิดโอกาสให้เจ้าของสัตว์ 
             เลี้ยงเข้ามาค้นหาผู้ที่สามารถดูแลสัตว์เลี้ยงของพวกเขา</p>
             <div>
-              <a href="/login" className="btn btn-primary me-2">เริ่มต้นใช้งาน</a>
-              <a href="/signup" className="btn btn-secondary">สมัครใช้งาน</a>
+              <Link to="/at3/login" className="btn btn-primary me-2">เริ่มต้นใช้งาน</Link>
+              <Link to="/at3/signup" className="btn btn-secondary">สมัครใช้งาน</Link>
             </div> 
         </div>
       </div>

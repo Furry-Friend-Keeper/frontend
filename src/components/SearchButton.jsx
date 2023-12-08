@@ -8,6 +8,20 @@ export const Search = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.common.white,
     '&:hover': {
       backgroundColor: theme.palette.common.white,
+      borderColor: theme.palette.primary, 
+      borderWidth: '1px',
+      borderStyle: 'solid'
+    },
+    '&:active': {
+      borderColor: theme.palette.info.main, 
+      borderWidth: '1px',
+      borderStyle: 'solid'
+    },
+    '&:focus-within': {
+      outline: 'none',
+      borderColor: theme.palette.info.main, 
+      borderWidth: '1px',
+      borderStyle: 'solid'
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,

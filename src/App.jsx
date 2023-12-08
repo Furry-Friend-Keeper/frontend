@@ -33,17 +33,19 @@ function App() {
     <Provider store={store}>
       <Router>
         <Navbar />
-        <Routes>
-          <Route index path="/at3" element={<Home />} />
-          <Route path="/at3/login" element={<Login />} />
-          <Route path="/at3/signup" element={<SignUp />} />
-          <Route path="/at3/signup/owner" element={<OwnerSignup />} />
-          <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
-          <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
-          <Route path="/at3/owner" element={<OwnerDetail />} />
-          {/* Add more routes as needed */}
+          <div className="main-container">
+          <Routes>
+            <Route index path="/at3" element={<Home />} />
+            <Route path="/at3/login" element={<Login />} />
+            <Route path="/at3/signup" element={<SignUp />} />
+            <Route path="/at3/signup/owner" element={<OwnerSignup />} />
+            <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
+            <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
+            <Route path="/at3/owner" element={<OwnerDetail />} />
+            {/* Add more routes as needed */}
       
-        </Routes>
+          </Routes>
+          </div>    
         <Footer />
       </Router>
     </Provider>

@@ -41,13 +41,32 @@ function Home() {
   const handleClearSearch = () => {
     setSearchInput('');
   }
+  const [selected, setSelected] = useState([]);
  
-    useEffect(() => {
-      const filteredApiData = apiData.filter((item) =>{
-        return item.name?.toLowerCase().includes(searchInput?.toLowerCase())
-      });
-      setSearch(filteredApiData);
-    },[searchInput, apiData])
+  useEffect(() => {
+    let ischecked = []
+    const filteredBySearch = apiData.filter((item) =>
+      item.name?.toLowerCase().includes(searchInput?.toLowerCase())
+    );
+  
+    const filteredByCategory = filteredBySearch.filter((item) => {
+      if (selected.length > 0) {
+        if (item.categories !== null) {
+          for(const category of item.categories) {
+            if (selected.includes(category)){
+            ischecked.push(category)
+            }
+          }
+          return item.categories.some((category) => selected.includes(category));
+        }
+      } else {
+          return item
+        }
+    });
+  
+    setSearch(filteredByCategory);
+  }, [searchInput, selected, apiData]);
+
 
   // const handleSearch = (event) => {
   //   event.preventDefault()
@@ -63,24 +82,14 @@ function Home() {
     setApiData(updateContents);
   } 
 
-  
   return (
     <>
-    {/* <div>
-      {apiData && (
-        <ul>
-          {apiData.map((item) => (
-            <li key={item.id}>{item.name}</li>
-          ))}
-        </ul>
-      )}
-    </div>  */}
     {/* title */}
     <TitlePage />
     {/* Content */}
       <div className="container-sm pt-3">
           <div className="col-sm-12 col-md-9 col-lg-9 col-xl-8">
-        <div className="row">
+        <div className="row ">
           {/* <form className="px-3 d-flex" role="search" onSubmit={handleSearch}> */}
             <div className="search col-sm-12 col-md-6 col-lg-6 mt-3">
               <Search>
@@ -101,7 +110,7 @@ function Home() {
               </Search>
             </div>
             <div className="col-sm-12 col-md-6 col-lg-6 col-xl-3 my-auto mt-3">
-                  <PetCategory />
+                  <PetCategory selected={selected} setSelected={setSelected} />
             
             </div>
             {/* <button className="btn fw-semibold btn-primary" type="reset">Reset</button> */}
@@ -110,7 +119,7 @@ function Home() {
         {/* <PaginationButton handleNextSlide={handleNextSlide} handlePrevSlide={handlePrevSlide} validateNextSlide={validateNextSlide} validatePrevSlide={validatePrevSlide} /> */}
 
         </div>
-        <div className="container p-2 mb-5">
+        <div className="container p-2 mb-5 mt-3">
           {search.length > 0 && 
           <div className="keeper-list row">
               {/* <Slider ref={slider} className="slider" {...slider_main}> */}
