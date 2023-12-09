@@ -70,7 +70,7 @@ function Navbar() {
             {!isLogin &&
             <li className="nav-item">
               <Link className="nav-link" to="/at3/login">
-                Login
+                Sign in
               </Link>
             </li>
             }

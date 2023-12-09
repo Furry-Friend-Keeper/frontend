@@ -11,6 +11,7 @@ import SignUp from './auth/SignUpPage.jsx';
 import KeeperDetail from './pages/KeeperDetail.jsx';
 import Navbar from './layouts/Navbar.jsx';
 import OwnerDetail from './pages/OwnerDetail.jsx';
+import KeeperEdit from './auth/keeper/EditKeeperDetail.jsx';
 import Footer from './layouts/Footer.jsx';
 // const router = createBrowserRouter([
 //   {
@@ -28,6 +29,7 @@ import Footer from './layouts/Footer.jsx';
 //   }
 //   ], 
 // )
+
 function App() {
   return (
     <Provider store={store}>
@@ -42,6 +44,7 @@ function App() {
             <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
             <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
             <Route path="/at3/owner" element={<OwnerDetail />} />
+            <Route path="/at3/keeper-edit" element={<KeeperEdit />} />
             {/* Add more routes as needed */}
       
           </Routes>
