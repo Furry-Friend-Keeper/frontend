@@ -5,8 +5,8 @@ import store from './store/Store.jsx'; // Assuming you've created your Redux sto
 
 import Home from './pages/Home.jsx'
 import Login from './auth/Login.jsx';
-import OwnerSignup from './auth/owner/OwnerSignup.jsx';
-import KeeperSignup from './auth/keeper/KeeperSignup.jsx';
+import OwnerSignup from './auth/owner/PageOwnerSignup.jsx';
+import KeeperSignup from './auth/keeper/PageKeeperSignup.jsx';
 import SignUp from './auth/SignUpPage.jsx';
 import KeeperDetail from './pages/KeeperDetail.jsx';
 import Navbar from './layouts/Navbar.jsx';

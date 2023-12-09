@@ -1,94 +1,300 @@
-import * as React from 'react';
+// import * as React from "react";
+import React, { useRef, useState } from "react";
+import { useFormControlContext } from "@mui/base/FormControl";
+import { Input, inputClasses } from "@mui/base/Input";
+import { styled } from "@mui/system";
+// import clsx from "clsx";
+import { useForm } from "react-hook-form";
+import Textarea from '@mui/joy/Textarea';
+import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
+import InputAddress from 'react-thailand-address-autocomplete'
 
-import Information from './Information';
-import KeeperDetail from './KeeperDetail';
-import Map from './Map';
+export default function BasicFormControl() {
+    const [district, setDistrict] = useState("");
+    const [province, setProvince] = useState("");
+    const [zipcode, setZipcode] = useState("");
+    const [fullAddress, setFullAddress] = useState({});
 
-  
-  const steps = ['Information', 'Keeper Detail', 'Map'];
-  
-  function getStepContent(step) {
-    switch (step) {
-        case 0:
-          return <Information/>;
-        case 1:
-          return <KeeperDetail />;
-        default:
-          return <Map />;
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm();
+
+    const onSubmit = (data) => {
+        const address = {
+            address: data.address,
+            district: district,
+            province: province,
+            postalCode: zipcode,
+            map: null
+        }
+        data.address = address
+        console.log(data)
+    };
+    // console.log(watch());
+
+    const password = useRef({});
+    password.current = watch("password", "");
+
+    function onSelect(fulladdress) {
+        const {  district, province, zipcode } = fulladdress;
+        setDistrict(district);
+        setProvince(province);
+        setZipcode(zipcode);
+        setFullAddress([ district, province, zipcode]);
       }
-  }
 
-export default function KeeperSignUp() {
-    const [activeStep, setActiveStep] = React.useState(0);
-
-    const handleNext = () => {
-      setActiveStep(activeStep + 1);
-    };
-  
-    const handleBack = () => {
-      setActiveStep(activeStep - 1);
-    };
-  
     return (
-      <React.Fragment>
-        {/* <CssBaseline /> */}
-        <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
-          <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-          <div className="d-flex justify-content-center align-items-center">
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main',}}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="col-md-6">
+                        <Label>Keeper Name<Tooltip title="Name of store"><span> (?)</span></Tooltip></Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Write your Keeper Name here"
+                            {...register("keeperName", { required: "Keeper Name is required", maxLength: {
+                                value: 200,
+                                message: "Name must not more than 200 characters"
+                            }})}
+                        />
+                        {errors.keeperName && <p className="error-message">{errors.keeperName.message}</p>}
                     </div>
-            <Typography component="h1" variant="h5" align="center">
-              Sign up
-            </Typography>
-            {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper> */}
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                All steps completed - you&apos;re finished
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {/* {getStepContent(activeStep)} */}
-                <Information />
+                    <div className="col-md-6">
+                        <Label>Email</Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Example@mail.com"
+                            {...register("email", { required: "Email is required", maxLength: 100, pattern: {
+                                value: /\S+@\S+\.\S+/,
+                                message: "Entered value does not match email format",
+                            } })}
+                        />
+                        {errors.email && <p className="error-message">{errors.email.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Password</Label>
+                        <StyledInput className="pb-3"
+                            type="password"
+                            placeholder="Write your Password here"
+                            {...register("password", { required: "Password is required", minLength: {
+                                value: 8,
+                                message: "Password must have at least 8 characters"
+                            },maxLength: {
+                                value: 20,
+                                message: "Password must not more than 20 characters"
+                            } })}
+                        />
+                        {errors.password && <p className="error-message">{errors.password.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Confirm Password</Label>
+                        <StyledInput className="pb-3"
+                            type="password"
+                            placeholder="Please confirm your password"
+                            {...register("confirmPassword", { required: true, validate: value =>
+                                value === password.current || "The passwords do not match" 
+                            })}
+                        />
+                        {errors.confirmPassword && <p className="error-message">{errors.confirmPassword.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Phone</Label>
+                        <StyledInput className="pb-3"
+                            type="tel"
+                            placeholder="Write your Phone here"
+                            {...register("phone", { required: "Phone is required", maxLength: {
+                                value: 10,
+                                message: "Phone number must not more than 10 characters"
+                            } })}
+                        />
+                        {errors.phone && <p className="error-message">{errors.phone.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Contact</Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Write your Contact here"
+                            {...register("contact", { required: true, maxLength: {
+                                value: 200,
+                                message: "Contact must not more than 200 characters"
+                            }})}
+                        />
+                        {errors.contact && <p className="error-message">{errors.contact.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Detail</Label>
+                        <div className="pb-3">
+                            <Textarea minRows={2} className="pb-3"
+                                placeholder="Write your Detail here"
+                                {...register("detail", { maxLength: 1000 })}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <Label>Address</Label>
+                            <StyledInput className="pb-3"
+                                placeholder="Write your Address here"
+                                {...register("address", { required: true, maxLength: {
+                                    value: 200,
+                                    message: "Name must not more than 200 characters"
+                                }})}
+                            />
+                            {errors.address && <p className="error-message">{errors.address.message}</p>}
+                        </div>
+                        <div className="col-md-6">
+                            <Label>District</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="1"
+                                placeholder="Write your District"
+                                address="district"
+                                value={district}
+                                onChange={(e) => setDistrict(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <Label>Province</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="2"
+                                placeholder="Write your Province"
+                                address="province"
+                                value={province}
+                                onChange={(e) => setProvince(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <Label>Postal Code</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="3"
+                                placeholder="Write your Zipcode"
+                                address="zipcode"
+                                value={zipcode}
+                                onChange={(e) => setZipcode(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                    </div>
 
-                {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-  
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </Box> */}
-              </React.Fragment>
-            )}
-          </Paper>
-        </Container>
-      </React.Fragment>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, ml: 1 }}
+                        >
+                            Submit
+                        </Button>
+                    </Box>
+            {/* <div className="grid justify-content-end">
+                <button type="submit" className="btn fw-semibold btn-primary">
+                    Submit
+                </button>
+            </div> */}
+            </div>
+            </div>
+        </form>
     );
+}
+
+const StyledInput = styled(Input)(
+    ({ theme }) => `
+
+  .${inputClasses.input} {
+    width: 320px;
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
+    background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+    border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+    box-shadow: 0px 2px 2px ${
+        theme.palette.mode === "dark" ? grey[900] : grey[50]
+    };
+
+    &:hover {
+      border-color: ${blue[400]};
+    }
+
+    &:focus {
+      outline: 0;
+      border-color: ${blue[400]};
+      box-shadow: 0 0 0 3px ${
+          theme.palette.mode === "dark" ? blue[600] : blue[200]
+      };
+    }
   }
+`
+);
+
+const Label = styled(({ children, className }) => {
+    return (
+        <label className="mb-2">
+            {children}
+        </label>
+    );
+})`
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+
+    &.invalid {
+        color: red;
+    }
+`;
+
+// const HelperText = styled((props) => {
+//     const formControlContext = useFormControlContext();
+//     const [dirty, setDirty] = React.useState(false);
+
+//     React.useEffect(() => {
+//         if (formControlContext?.filled) {
+//             setDirty(true);
+//         }
+//     }, [formControlContext]);
+
+//     if (formControlContext === undefined) {
+//         return null;
+//     }
+
+//     const { required, filled } = formControlContext;
+//     const showRequiredError = dirty && required && !filled;
+
+//     return showRequiredError ? <p {...props}>This field is required.</p> : null;
+// })`
+//     font-family: "IBM Plex Sans", sans-serif;
+//     font-size: 0.875rem;
+// `;
+
+const blue = {
+    100: "#DAECFF",
+    200: "#b6daff",
+    400: "#3399FF",
+    500: "#007FFF",
+    600: "#0072E5",
+    900: "#003A75",
+};
+
+const grey = {
+    50: "#F3F6F9",
+    100: "#E5EAF2",
+    200: "#DAE2ED",
+    300: "#C7D0DD",
+    400: "#B0B8C4",
+    500: "#9DA8B7",
+    600: "#6B7A90",
+    700: "#434D5B",
+    800: "#303740",
+    900: "#1C2025",
+};
