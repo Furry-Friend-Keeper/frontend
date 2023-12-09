@@ -14,9 +14,23 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
+import {
+    TextField,
+    Button,
+    Grid,
+    Typography,
+    InputAdornment,
+    IconButton,
+} from "@mui/material";
+import { useForm } from "react-hook-form";
+import Box from "@mui/material/Box";
+import { Textarea } from "@mui/joy";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
+    const [isEditName, setIsEditName] = useState(false);
+    const [isEditContact, setIsEditContact] = useState(false);
+    // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -24,6 +38,11 @@ function KeeperDetail() {
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
+                    setValue("name", data.name);
+                    setValue("detail", data.detail);
+                    setValue("contact", data.contact);
+                    setValue("email", data.email);
+                    setValue("phone", data.phone);
                     console.log(data);
                 });
             } catch (error) {
@@ -34,30 +53,40 @@ function KeeperDetail() {
         fetchData();
     }, []);
 
-    const [apiEdit, setApiEdit] = useState({});
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 1;
-                await axios.post(apiUrl).then((response) => {
-                    const data = response.data;
-                    setApiEdit(data);
-                    console.log(data);
-                });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
+    const {
+        register,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { errors },
+    } = useForm();
 
-        fetchData();
-    }, []);
+    const EditKeeper = async (data) => {
+        await axios
+            .patch(import.meta.env.VITE_KEEPERS_ID + 1, {
+                name: data.name,
+                detail: data.detail,
+                contact: data.contact,
+                phone: data.phone,
+            })
+            .then((res) => {
+                const response = res.data;
+                setApiData([...apiData, response]);
+                console.log(response);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
-    const postRequest = () => {
-        // const [name, setName] = useState();
-        // const [contact, setContact] = useState();
-        // const [detail, setDetail] = useState();
+    const onSubmit = (data) => {
+        EditKeeper(data);
+    };
 
-    }
+    const handleCancel = () => {
+        // Implement your cancel logic here
+        console.log("Cancel button clicked");
+    };
 
     const { id } = useParams();
 
@@ -184,62 +213,233 @@ function KeeperDetail() {
                                     )}
                             </Stack>
                             <div className="row">
-                              <div className="col-sm-4">
-                                <Card sx={{ maxWidth: 345, borderRadius: '20px' }}>
-                                    <CardMedia className="profile"
-                                        component="img"
-                                        alt="profile"
-                                        height="140"
-                                        image="/assets/cover.jpeg"
-                                    />
-                                </Card>
+                                <div className="col-sm-4">
+                                    <Card
+                                        sx={{
+                                            maxWidth: 345,
+                                            borderRadius: "20px",
+                                        }}
+                                    >
+                                        <CardMedia
+                                            className="profile"
+                                            component="img"
+                                            alt="profile"
+                                            height="140"
+                                            image="/assets/cover.jpeg"
+                                        />
+                                    </Card>
                                 </div>
                                 <div className="col">
-                                <div className="title d-flex justify-content-between align-items-center">
-                                    <h2 className="mb-lg-4 mt-lg-3">
-                                        {apiData.name}
-                                    </h2>
-                                    <span className="fs-3">
-                                        <i className="bi bi-star"></i>
-                                    </span>
-                                </div>
-                                
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        <div className="title d-flex justify-content-between align-items-center">
+                                            {!isEditName ? (
+                                                <h2 className="mb-lg-4 mt-lg-3">
+                                                    {apiData.name}
+                                                </h2>
+                                            ) : (
+                                                <TextField
+                                                    label="Edit Keeper Name"
+                                                    margin="normal"
+                                                    // fullWidth
+                                                    required
+                                                    {...register("name", {
+                                                        required:
+                                                            "Name is required",
+                                                        maxLength: {
+                                                            value: 200,
+                                                            message:
+                                                                "Name must not more than 200 characters",
+                                                        },
+                                                    })}
+                                                />
+                                            )}
+                                            {errors.name && (
+                                                <p className="error-message">
+                                                    {errors.name.message}
+                                                </p>
+                                            )}
 
-                                <div className="des">
-                                    <h5>Description</h5>
-                                    <p>{apiData.detail}</p>
-                                
-                                </div>
+                                            <span className="fs-3">
+                                                <i
+                                                    className="bi bi-pencil-square fs-3 ju"
+                                                    onClick={() =>
+                                                        setIsEditName(
+                                                            !isEditName
+                                                        )
+                                                    }
+                                                ></i>
+                                            </span>
+                                        </div>
+
+                                        <div className="des">
+                                            <h5>Description</h5>
+                                            {!isEditName ? (
+                                                <p>{apiData.detail}</p>
+                                            ) : (
+                                                <Textarea
+                                                    minRows={3}
+                                                    placeholder="Type in here…"
+                                                    margin="normal"
+                                                    fullWidth
+                                                    required
+                                                    {...register("detail")}
+                                                />
+                                            )}
+                                        </div>
+                                        {isEditName && (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="contained"
+                                                    style={{
+                                                        backgroundColor: "red",
+                                                        color: "white",
+                                                    }}
+                                                    onClick={() =>
+                                                        setIsEditName(false)
+                                                    }
+                                                    sx={{ mt: 3, ml: 1 }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    type="submit"
+                                                    variant="contained"
+                                                    sx={{ mt: 3, ml: 1 }}
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Box>
+                                        )}
+                                    </form>
                                 </div>
                             </div>
-                            
                         </div>
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <div className="title">
+                            <div className="title d-flex justify-content-between align-items-center">
                                 <h2>Contact</h2>
+                                <span className="fs-3">
+                                    <i
+                                        className="bi bi-pencil-square fs-3 ju"
+                                        onClick={() =>
+                                            setIsEditContact(!isEditContact)
+                                        }
+                                    ></i>
+                                </span>
                             </div>
+
                             <div className="table">
                                 <table className="w-100">
                                     <tr>
                                         <td>Name</td>
-                                        <td className="text-end">
-                                            {apiData.contact}
-                                        </td>
+                                        {!isEditContact ? (
+                                            <td className="text-end">
+                                                {apiData.contact}
+                                            </td>
+                                        ) : (
+                                            <td className="text-end">
+                                                <TextField
+                                                    label="Edit Name"
+                                                    margin="normal"
+                                                    // fullWidth
+                                                    required
+                                                    {...register("contact", {
+                                                        maxLength: {
+                                                            value: 200,
+                                                            message:
+                                                                "Contact must not more than 200 characters",
+                                                        },
+                                                    })}
+                                                />
+                                            </td>
+                                        )}
                                     </tr>
                                     <tr>
                                         <td>Email</td>
+
                                         <td className="text-end">
                                             {apiData.email}
                                         </td>
+
+                                        {/* <td className="text-end">
+                                                <TextField
+                                                    label="Edit Email"
+                                                    margin="normal"
+                                                    
+                                                    // fullWidth
+                                                    required
+                                                    {...register("email", {
+                                                        required:
+                                                            "Email is required",
+                                                        maxLength: 100,
+                                                        pattern: {
+                                                            value: /\S+@\S+\.\S+/,
+                                                            message:
+                                                                "Entered value does not match email format",
+                                                        },
+                                                    })}
+                                                />
+                                            </td> */}
                                     </tr>
                                     <tr>
                                         <td>Phone</td>
-                                        <td className="text-end">
-                                            {apiData.phone}
-                                        </td>
+                                        {!isEditContact ? (
+                                            <td className="text-end">
+                                                {apiData.phone}
+                                            </td>
+                                        ) : (
+                                            <td className="text-end">
+                                                <TextField
+                                                    label="Edit Phone"
+                                                    margin="normal"
+                                                    // fullWidth
+                                                    required
+                                                    {...register("phone", {
+                                                        required:
+                                                            "Phone is required",
+                                                        maxLength: {
+                                                            value: 10,
+                                                            message:
+                                                                "Phone number must not more than 10 characters",
+                                                        },
+                                                    })}
+                                                />
+                                            </td>
+                                        )}
                                     </tr>
                                 </table>
                             </div>
+                            {isEditContact && (
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
+                                    <Button
+                                        variant="contained"
+                                        style={{
+                                            backgroundColor: "red",
+                                            color: "white",
+                                        }}
+                                        onClick={() => setIsEditContact(false)}
+                                        sx={{ mt: 3, ml: 1 }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ mt: 3, ml: 1 }}
+                                    >
+                                        Submit
+                                    </Button>
+                                </Box>
+                            )}
                         </div>
                     </div>
                     <div className="col-lg col-12">
