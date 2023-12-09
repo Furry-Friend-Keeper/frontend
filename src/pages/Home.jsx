@@ -6,6 +6,7 @@ import Rating from '@mui/material/Rating';
 
 import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../components/SearchButton';
 import TitlePage from '../components/TitlePage';
+import BannerPage from '../components/BannerPage';
 import PaginationButton from '../components/PaginationButton';
 import PetCategory from '../components/PetCategory';
 import axios from 'axios';
@@ -85,7 +86,8 @@ function Home() {
   return (
     <>
     {/* title */}
-    <TitlePage />
+    {/* <TitlePage /> */}
+    <BannerPage />
     {/* Content */}
       <div className="container-sm pt-3">
           <div className="col-sm-12 col-md-9 col-lg-9 col-xl-8">

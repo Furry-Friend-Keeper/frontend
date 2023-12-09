@@ -78,6 +78,56 @@ a {
   }
 }
 
+.page-banner {
+  position: relative;
+  overflow: hidden ;
+  height: 50vh;
+  background: linear-gradient(180deg, rgba(174, 216, 254, 1) 0%, rgba(155, 201, 252, 1) 52%, rgba(147, 192, 246, 1) 100%);
+  border-radius: 2rem;
+  margin-top: 20px;
+  /* background-image: url('../../public/assets/banner.png'), linear-gradient(180deg, rgba(174, 216, 254, 1) 0%, rgba(155, 201, 252, 1) 52%, rgba(147, 192, 246, 1) 100%); */
+  /* background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center; */
+
+
+  & .image-banner img{
+    position: absolute;
+    right: 0;
+    height: 50vh;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  & .title {
+    position: relative;
+    z-index: 3;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  & h1 {
+    font-size: 80px;
+  }
+  & h3 {
+    font-weight: 200;
+  }
+}
+
+@media(min-width: 1200px) {
+  .image-banner img{
+    position: absolute;
+    right: -8rem !important;
+    height: 50vh;
+    /* width: 100%; */
+    width: auto !important;
+    object-fit: cover;
+  }
+}
+
 .favorite {
   cursor: pointer;
   position: absolute;
@@ -328,7 +378,7 @@ a:hover {
 
   & img {
     line-height: 100px;
-    padding: 3%;
+    /* padding: 3%; */
     position: relative;
     height: 50px;
     object-fit: contain;
@@ -351,7 +401,7 @@ a:hover {
     & img {
       width: 100% !important;
       line-height: 100px;
-      padding: 3%;
+      /* padding: 3%; */
       position: relative;
       /* height: 100px !important; */
       object-fit: contain;
@@ -384,7 +434,7 @@ a:hover {
 
     & img {
       line-height: 100px;
-      padding: 3%;
+      /* padding: 3%; */
       position: relative;
       height: 80px;
       object-fit: contain;
@@ -405,7 +455,7 @@ a:hover {
   .slider-nav {
     & img {
       line-height: 100px;
-      padding: 3%;
+      /* padding: 3%; */
       position: relative;
       height: 50px;
       object-fit: contain;

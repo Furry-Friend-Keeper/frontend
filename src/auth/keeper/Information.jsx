@@ -25,6 +25,7 @@ export default function BasicFormControl() {
     } = useForm();
 
     const onSubmit = (data) => {
+        console.log(data)
         const address = {
             address: data.address,
             district: district,
@@ -49,19 +50,19 @@ export default function BasicFormControl() {
       }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="container mt-4">
                 <div className="row">
                     <div className="col-md-6">
                         <Label>Keeper Name<Tooltip title="Name of store"><span> (?)</span></Tooltip></Label>
                         <StyledInput className="pb-3"
                             placeholder="Write your Keeper Name here"
-                            {...register("keeperName", { required: true, maxLength: {
+                            {...register("keeperName", { required: "Keeper name is required", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}
                         />
-                        {errors.keeperName && <p className="error-message">{errors.keeperName.message}</p>}
+                        {errors.keeperName && <p className="error-message">{errors.keeperName?.message}</p>}
                     </div>
                     <div className="col-md-6">
                         <Label>Email</Label>

@@ -84,18 +84,29 @@ function KeeperDetail() {
         asNavFor: slider1,
         focusOnSelect: true,
         slidesToShow: 5,
-        centerMode: true,
+        slidesToScroll: 5,
         swipeToSlide: false,
         arrows: false,
+        focusOnSelect: false,
         infinite: false,
         // vertical : true,
         // verticalSwiping : true,
 
         responsive: [
             {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 4,
+                    vertical: false,
+                    verticalSwiping: false,
+                },
+            },
+            {
                 breakpoint: 992,
                 settings: {
                     slidesToShow: 3,
+                    slidesToScroll: 3,
                     vertical: false,
                     verticalSwiping: false,
                 },
@@ -104,6 +115,7 @@ function KeeperDetail() {
                 breakpoint: 768,
                 settings: {
                     slidesToShow: 3,
+                    slidesToScroll: 3,
                     vertical: false,
                     verticalSwiping: false,
                 },
