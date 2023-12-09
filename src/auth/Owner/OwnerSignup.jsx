@@ -7,6 +7,11 @@ import { styled } from "@mui/system";
 import { useForm } from "react-hook-form";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 export default function BasicFormControl() {
     const {
@@ -16,17 +21,65 @@ export default function BasicFormControl() {
         formState: { errors },
     } = useForm();
 
+    const [open, setOpen] = useState(false);
+    const [alertStatus, setAlertStatus] = useState("");
+    const navigate = useNavigate();
+
+    const SignUpForm = async (data) => {
+        const result = {
+            "firstname": data.firstName,
+            "lastname": data.lastName,
+            "phone": data.phone,
+            "petname": data.petName,
+            "email":data.email,
+            "password": data.password,
+            "role": 2
+          } 
+        await axios.post(import.meta.env.VITE_OWNER_SIGNUP, result).then((res) => {
+            setOpen(true)
+            setAlertStatus('success')
+            setTimeout(() =>{
+                navigate('/at3/login')
+            },3000)
+        }).catch((err) => {
+            setOpen(true)
+            setAlertStatus('error')
+            console.log(err.message)
+        })
+    }
+
     const onSubmit = (data) => {
         console.log(data)
+        SignUpForm(data)
     };
-    // console.log(watch());
 
     const password = useRef({});
     password.current = watch("password", "");
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} >
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
+                <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
+                    {alertStatus === 'success' ?
+                    <div>
+                        <AlertTitle>Success</AlertTitle>
+                        Singup Successful!!!
+                    </div>
+                    :
+                    <div>
+                        <AlertTitle>Failed</AlertTitle>
+                        Signup Failed!! Email must be unique.
+                    </div>
+                    }
+                </Alert>
+            </Snackbar>
             <div className="container mt-4">
                 <div className="row">
                     <div className="col-md-6">
