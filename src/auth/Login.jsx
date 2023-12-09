@@ -44,9 +44,9 @@ function Login() {
         console.log(response)
         dispatch(authActions.login({ accessToken: response.accessToken }));
         if(response.role === 'Owner') {
-          navigate('/at3/')
+          navigate('/at3')
         } else {
-          navigate('/at3/keeper-edit')
+          navigate('/at3/keeper-edit/')
         }
       })
       .catch((err) => {

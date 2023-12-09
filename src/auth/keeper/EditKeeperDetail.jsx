@@ -20,7 +20,7 @@ function KeeperDetail() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
+                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 1;
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
@@ -33,6 +33,31 @@ function KeeperDetail() {
 
         fetchData();
     }, []);
+
+    const [apiEdit, setApiEdit] = useState({});
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 1;
+                await axios.post(apiUrl).then((response) => {
+                    const data = response.data;
+                    setApiEdit(data);
+                    console.log(data);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const postRequest = () => {
+        // const [name, setName] = useState();
+        // const [contact, setContact] = useState();
+        // const [detail, setDetail] = useState();
+
+    }
 
     const { id } = useParams();
 
