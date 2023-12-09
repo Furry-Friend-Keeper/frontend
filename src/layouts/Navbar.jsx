@@ -13,8 +13,7 @@ function Navbar() {
   const settings = ['Profile', 'Logout'];
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const isLogin = useSelector(state => state.auth.isLogin)
-  console.log(isLogin)
+  const isLogin = useSelector(state => state.auth.accessToken)
   const dispatch = useDispatch()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -90,7 +89,7 @@ function Navbar() {
               <li  className="nav-item ">
                 <Tooltip title="Open settings" className="ms-3">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src="" />
                 </IconButton>
               </Tooltip>
                 <Menu
@@ -114,11 +113,11 @@ function Navbar() {
                       <Typography textAlign="center" ><Link to={setting === "Profile" ? "owner" : "logout"}>{setting}</Link></Typography>
                     </MenuItem>
                   ))} */}
-                   <MenuItem onClick={handleCloseUserMenu}>
+                   {/* <MenuItem onClick={handleCloseUserMenu}>
                       <Typography textAlign="center" ><Link to="/at3/owner" >Profile</Link></Typography>
-                    </MenuItem>
+                    </MenuItem> */}
                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><Link to="/at3" >Logout</Link></Typography>
+                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a href="/at3" >Logout</a></Typography>
                     </MenuItem>
                 </Menu>
               </li>
