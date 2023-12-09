@@ -483,13 +483,31 @@ footer {
 .error-message {
   color: red !important;
 }
-/* .dot {
-  height: 25px;
-  width: 25px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-} */
-/* .profile {
-  border-radius: 50%;
-} */
+
+.autocomplete {
+  & input {
+
+    width: 320px !important;
+    height: auto !important;
+    font-family: IBM Plex Sans,sans-serif;
+    font-size: 0.875rem !important;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 8px !important;
+    color: #1C2025;
+    background: #fff;
+    border: 1px solid #DAE2ED !important;
+    box-shadow: 0px 2px 2px #F3F6F9;
+  }
+
+  & input:hover{
+    border-color: #3399FF;
+  }
+
+  & input:focus {
+    outline: 0;
+    border-color: #3399FF;
+    box-shadow: 0 0 0 3px #b6daff;
+  }
+}

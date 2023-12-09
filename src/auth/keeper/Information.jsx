@@ -1,14 +1,22 @@
 // import * as React from "react";
-import React, { useRef } from "react";
-// import { useFormControlContext } from "@mui/base/FormControl";
+import React, { useRef, useState } from "react";
+import { useFormControlContext } from "@mui/base/FormControl";
 import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
 // import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import Textarea from '@mui/joy/Textarea';
 import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import InputAddress from 'react-thailand-address-autocomplete'
 
 export default function BasicFormControl() {
+    const [district, setDistrict] = useState("");
+    const [province, setProvince] = useState("");
+    const [zipcode, setZipcode] = useState("");
+    const [fullAddress, setFullAddress] = useState({});
+
     const {
         register,
         handleSubmit,
@@ -16,88 +24,181 @@ export default function BasicFormControl() {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = (data) => {console.log(data)};
-    console.log(watch("password"));
+    const onSubmit = (data) => {
+        const address = {
+            address: data.address,
+            district: district,
+            province: province,
+            postalCode: zipcode,
+            map: null
+        }
+        data.address = address
+        console.log(data)
+    };
+    // console.log(watch());
 
     const password = useRef({});
     password.current = watch("password", "");
 
+    function onSelect(fulladdress) {
+        const {  district, province, zipcode } = fulladdress;
+        setDistrict(district);
+        setProvince(province);
+        setZipcode(zipcode);
+        setFullAddress([ district, province, zipcode]);
+      }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="container">
-            <div className="row">
-                <div className="col">
-            <label>Keeper Name<Tooltip title="Name of store"><span> (?)</span></Tooltip></label>
-            <StyledInput className="pb-3"
-                placeholder="Write your Keeper Name here"
-                {...register("keeperName", { required: true, maxLength: {
-                    value: 200,
-                    message: "Name must not more than 200 characters"
-                  }})}
-            />
-            {errors.keeperName && <p className="error-message">{errors.keeperName.message}</p>}
-            </div>
-            <div className="col">
-            <label>Contact</label>
-            <StyledInput className="pb-3"
-                placeholder="Write your Contact here"
-                {...register("contact", { required: true, maxLength: {
-                    value: 200,
-                    message: "Contact must not more than 200 characters"
-                  }})}
-            />
-            {errors.contact && <p className="error-message">{errors.contact.message}</p>}
-            </div>
-            </div>
-            <label>Email</label>
-            <StyledInput className="pb-3"
-                placeholder="Example@mail.com"
-                {...register("email", { required: true, maxLength: 100, pattern: {
-                    value: /\S+@\S+\.\S+/,
-                    message: "Entered value does not match email format",
-                  } })}
-            />
-            {errors.email && <p className="error-message">{errors.email.message}</p>}
-            <label>Password</label>
-            <StyledInput className="pb-3"
-                type="password"
-                placeholder="Write your Password here"
-                {...register("password", { required: true, minLength: {
-                    value: 8,
-                    message: "Password must have at least 8 characters"
-                  },maxLength: {
-                    value: 20,
-                    message: "Password must not more than 20 characters"
-                  } })}
-            />
-            {errors.password && <p className="error-message">{errors.password.message}</p>}
-            <label>Confirm Password</label>
-            <StyledInput className="pb-3"
-                type="password"
-                placeholder="Please confirm your password"
-                {...register("confirmPassword", { required: true, validate: value =>
-                    value === password.current || "The passwords do not match" 
-                 })}
-            />
-            {errors.confirmPassword && <p className="error-message">{errors.confirmPassword.message}</p>}
-            <label>Phone</label>
-            <StyledInput className="pb-3"
-                type="number"
-                placeholder="Write your Phone here"
-                {...register("phone", { required: true, maxLength: 10 })}
-            />
-            {errors.phone && <p className="error-message">This field is required</p>}
-            <label>Detail</label>
-            <div className="pb-3">
-                <Textarea minRows={2} className="pb-3"
-                    placeholder="Write your Detail here"
-                    {...register("detail", { maxLength: 1000 })}
-                />
-            </div>
-            <div className="grid justify-content-end">
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="col-md-6">
+                        <Label>Keeper Name<Tooltip title="Name of store"><span> (?)</span></Tooltip></Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Write your Keeper Name here"
+                            {...register("keeperName", { required: true, maxLength: {
+                                value: 200,
+                                message: "Name must not more than 200 characters"
+                            }})}
+                        />
+                        {errors.keeperName && <p className="error-message">{errors.keeperName.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Email</Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Example@mail.com"
+                            {...register("email", { required: true, maxLength: 100, pattern: {
+                                value: /\S+@\S+\.\S+/,
+                                message: "Entered value does not match email format",
+                            } })}
+                        />
+                        {errors.email && <p className="error-message">{errors.email.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Password</Label>
+                        <StyledInput className="pb-3"
+                            type="password"
+                            placeholder="Write your Password here"
+                            {...register("password", { required: true, minLength: {
+                                value: 8,
+                                message: "Password must have at least 8 characters"
+                            },maxLength: {
+                                value: 20,
+                                message: "Password must not more than 20 characters"
+                            } })}
+                        />
+                        {errors.password && <p className="error-message">{errors.password.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Confirm Password</Label>
+                        <StyledInput className="pb-3"
+                            type="password"
+                            placeholder="Please confirm your password"
+                            {...register("confirmPassword", { required: true, validate: value =>
+                                value === password.current || "The passwords do not match" 
+                            })}
+                        />
+                        {errors.confirmPassword && <p className="error-message">{errors.confirmPassword.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Phone</Label>
+                        <StyledInput className="pb-3"
+                            type="tel"
+                            placeholder="Write your Phone here"
+                            {...register("phone", { required: true, maxLength: {
+                                value: 10,
+                                message: "Phone number must not more than 10 characters"
+                            } })}
+                        />
+                        {errors.phone && <p className="error-message">{errors.phone.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Contact</Label>
+                        <StyledInput className="pb-3"
+                            placeholder="Write your Contact here"
+                            {...register("contact", { required: true, maxLength: {
+                                value: 200,
+                                message: "Contact must not more than 200 characters"
+                            }})}
+                        />
+                        {errors.contact && <p className="error-message">{errors.contact.message}</p>}
+                    </div>
+                    <div className="col-md-6">
+                        <Label>Detail</Label>
+                        <div className="pb-3">
+                            <Textarea minRows={2} className="pb-3"
+                                placeholder="Write your Detail here"
+                                {...register("detail", { maxLength: 1000 })}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <Label>Address</Label>
+                            <StyledInput className="pb-3"
+                                placeholder="Write your Address here"
+                                {...register("address", { required: true, maxLength: {
+                                    value: 200,
+                                    message: "Name must not more than 200 characters"
+                                }})}
+                            />
+                            {errors.address && <p className="error-message">{errors.address.message}</p>}
+                        </div>
+                        <div className="col-md-6">
+                            <Label>District</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="1"
+                                placeholder="Write your District"
+                                address="district"
+                                value={district}
+                                onChange={(e) => setDistrict(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <Label>Province</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="2"
+                                placeholder="Write your Province"
+                                address="province"
+                                value={province}
+                                onChange={(e) => setProvince(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <Label>Postal Code</Label>
+                            <div className="autocomplete">
+                            <InputAddress
+                                id="3"
+                                placeholder="Write your Zipcode"
+                                address="zipcode"
+                                value={zipcode}
+                                onChange={(e) => setZipcode(e.target.value)}
+                                onSelect={onSelect}
+                            />
+                            </div>
+                        </div>
+                    </div>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, ml: 1 }}
+                        >
+                            Submit
+                        </Button>
+                    </Box>
+            {/* <div className="grid justify-content-end">
                 <button type="submit" className="btn fw-semibold btn-primary">
                     Submit
                 </button>
+            </div> */}
             </div>
             </div>
         </form>
@@ -137,43 +238,21 @@ const StyledInput = styled(Input)(
 `
 );
 
-// const label = styled(({ children, className }) => {
-//     const formControlContext = useFormControlContext();
-//     const [dirty, setDirty] = React.useState(false);
+const Label = styled(({ children, className }) => {
+    return (
+        <label className="mb-2">
+            {children}
+        </label>
+    );
+})`
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
 
-//     React.useEffect(() => {
-//         if (formControlContext?.filled) {
-//             setDirty(true);
-//         }
-//     }, [formControlContext]);
-
-//     if (formControlContext === undefined) {
-//         return <p>{children}</p>;
-//     }
-
-//     const { error, required, filled } = formControlContext;
-//     const showRequiredError = dirty && required && !filled;
-
-//     return (
-//         <p
-//             className={clsx(
-//                 className,
-//                 error || showRequiredError ? "invalid" : ""
-//             )}
-//         >
-//             {children}
-//             {required ? " *" : ""}
-//         </p>
-//     );
-// })`
-//     font-family: "IBM Plex Sans", sans-serif;
-//     font-size: 0.875rem;
-//     margin-bottom: 4px;
-
-//     &.invalid {
-//         color: red;
-//     }
-// `;
+    &.invalid {
+        color: red;
+    }
+`;
 
 // const HelperText = styled((props) => {
 //     const formControlContext = useFormControlContext();

@@ -42,7 +42,7 @@ export default function KeeperSignUp() {
     return (
       <React.Fragment>
         {/* <CssBaseline /> */}
-        <Container component="main" maxWidth="mb" sx={{ mb: 4 }}>
+        <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
           <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <div className="d-flex justify-content-center align-items-center">
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main',}}>
@@ -52,13 +52,13 @@ export default function KeeperSignUp() {
             <Typography component="h1" variant="h5" align="center">
               Sign up
             </Typography>
-            <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+            {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
-            </Stepper>
+            </Stepper> */}
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
@@ -67,8 +67,10 @@ export default function KeeperSignUp() {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {/* {getStepContent(activeStep)} */}
+                <Information />
+
+                {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
                       Back
@@ -82,7 +84,7 @@ export default function KeeperSignUp() {
                   >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
-                </Box>
+                </Box> */}
               </React.Fragment>
             )}
           </Paper>
