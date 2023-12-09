@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../store/AuthReducer";
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { FormControlLabel, Checkbox, Link, Box, TextField, Button, Grid, Typography, InputAdornment, IconButton, Container, Paper } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 function Login() {
   const {
@@ -28,10 +17,11 @@ function Login() {
     register,
     formState: { errors },
   } = useForm();
-  const navigate = useNavigate()
-  const [loginError, setLoginError] = useState(false);
 
+  const navigate = useNavigate()
   const dispatch = useDispatch();
+  const [loginError, setLoginError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const LoginForm = async (data) => {
     await axios
@@ -56,8 +46,11 @@ function Login() {
   };
 
   const onSubmit = (data) => {
-    
     LoginForm(data);
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -109,10 +102,9 @@ function Login() {
                     ) : null,
                 }}
               />
-              {/* {errors.email && <p className="error-message">{errors.email.message}</p>} */}
               <TextField
                 label="Password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 fullWidth
                 {...register("password", {
@@ -128,17 +120,15 @@ function Login() {
                   (loginError && "Incorrect email or password")
                 }
                 InputProps={{
-                  endAdornment:
-                    errors.password || loginError ? (
-                      <InputAdornment position="end">
-                        <IconButton edge="end">
-                          <ErrorOutline color="error" />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
                 }}
               />
-              {/* {errors.email && <p className="error-message">{errors.password.message}</p>} */}
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
@@ -148,7 +138,6 @@ function Login() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                // onClick={() => dispatch(authActions.login())}
               >
                 Login
               </Button>
