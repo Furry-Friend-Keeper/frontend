@@ -3,6 +3,8 @@ import {Link} from 'react-router-dom'
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from '@mui/icons-material/Clear';
 import Rating from '@mui/material/Rating';
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 
 import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../components/SearchButton';
 import TitlePage from '../components/TitlePage';
@@ -66,6 +68,7 @@ function Home() {
     });
   
     setSearch(filteredByCategory);
+    console.log(filteredByCategory)
   }, [searchInput, selected, apiData]);
 
 
@@ -139,9 +142,21 @@ function Home() {
                             </span>
                           </div>
                         </div>
-                        <span>distance: {item.distance} </span>
+                        {/* <span>distance: {item.distance} </span> */}
                         <div>
                           <Rating name="half-rating-read" defaultValue={item.reviewStars} precision={0.1} readOnly />
+                        <Stack direction="row" spacing={1} className="justify-content-center">
+                                {item.categories &&
+                                    item.categories.map(
+                                        (category, index) => (
+                                            <Chip
+                                                key={index}
+                                                label={category}
+                                                size='small'
+                                            />
+                                        )
+                                    )}
+                            </Stack>
                         </div>
                       </div>
                     </div>

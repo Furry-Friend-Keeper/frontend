@@ -6,16 +6,23 @@ import { styled } from "@mui/system";
 // import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import Textarea from '@mui/joy/Textarea';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';    
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import InputAddress from 'react-thailand-address-autocomplete'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function BasicFormControl() {
     const [district, setDistrict] = useState("");
     const [province, setProvince] = useState("");
     const [zipcode, setZipcode] = useState("");
-    const [fullAddress, setFullAddress] = useState({});
+    const [open, setOpen] = useState(false);
+    const [alertStatus, setAlertStatus] = useState("");
+    const navigate = useNavigate();
 
     const {
         register,
@@ -24,18 +31,44 @@ export default function BasicFormControl() {
         formState: { errors },
     } = useForm();
 
+    const SignUpForm = async (data) => {
+        const result = {
+            "name": data.keeperName,
+            "detail": data.detail,
+            "contact": data.contact,
+            "phone":data.phone,
+            "categoryId": [1,3],
+            "email": data.email,
+            "password": data.password,
+            "role": 3, 
+            "address": data.address
+          } 
+        await axios.post(import.meta.env.VITE_KEEPER_SIGNUP, result).then((res) => {
+            setOpen(true)
+            setAlertStatus('success')
+            setTimeout(() =>{
+                navigate('/at3/login')
+            },3000)
+        }).catch((err) => {
+            setOpen(true)
+            setAlertStatus('error')
+            console.log(err.message)
+        })
+    }
+
     const onSubmit = (data) => {
         const address = {
             address: data.address,
             district: district,
             province: province,
             postalCode: zipcode,
-            map: null
+            map: "https://maps.example.com/12345"
         }
         data.address = address
         console.log(data)
+
+        SignUpForm(data)
     };
-    // console.log(watch());
 
     const password = useRef({});
     password.current = watch("password", "");
@@ -45,11 +78,32 @@ export default function BasicFormControl() {
         setDistrict(district);
         setProvince(province);
         setZipcode(zipcode);
-        setFullAddress([ district, province, zipcode]);
       }
+
+      const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
+           <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
+                <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
+                    {alertStatus === 'success' ?
+                    <div>
+                        <AlertTitle>Success</AlertTitle>
+                        Singup Successful!!!
+                    </div>
+                    :
+                    <div>
+                        <AlertTitle>Failed</AlertTitle>
+                        Signup Failed!! Email must be unique.
+                    </div>
+                    }
+                </Alert>
+            </Snackbar>
             <div className="container mt-4">
                 <div className="row">
                     <div className="col-md-6">
