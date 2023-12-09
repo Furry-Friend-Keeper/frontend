@@ -43,7 +43,7 @@ function KeeperDetail() {
                     setValue("contact", data.contact);
                     setValue("email", data.email);
                     setValue("phone", data.phone);
-                    console.log(data);
+                    // console.log(data);
                 });
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -62,16 +62,17 @@ function KeeperDetail() {
     } = useForm();
 
     const EditKeeper = async (data) => {
+        const result = {
+            name: data.name,
+            detail: data.detail,
+            contact: data.contact,
+            phone: data.phone,
+        }
         await axios
-            .patch(import.meta.env.VITE_KEEPERS_ID + 1, {
-                name: data.name,
-                detail: data.detail,
-                contact: data.contact,
-                phone: data.phone,
-            })
+            .patch(import.meta.env.VITE_KEEPERS_ID + 1, result)
             .then((res) => {
                 const response = res.data;
-                setApiData([...apiData, response]);
+                setApiData({...apiData, ...result});
                 console.log(response);
             })
             .catch((err) => {
@@ -280,7 +281,6 @@ function KeeperDetail() {
                                                     minRows={3}
                                                     placeholder="Type in here…"
                                                     margin="normal"
-                                                    fullWidth
                                                     required
                                                     {...register("detail")}
                                                 />
