@@ -36,6 +36,7 @@ function KeeperDetail() {
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
     const [isEditAddress, setIsEditAddress] = useState(false);
+    const [isImg, setImg] = useState();
     const maxGallery = 8;
     // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
@@ -105,8 +106,26 @@ function KeeperDetail() {
             });
     };
 
+    
+    const EditProfileImg = async () => {
+        const formData = new FormData();
+        formData.append("file", isImg)
+        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
+            headers: { 'content-type': 'multipart/form-data' }
+        }).then((res) => {
+            setOpen(true)
+            setAlertStatus('success')
+        }).catch((err) => {
+            console.log(err)
+            setOpen(true)
+            setMessageLog(err.message)
+            setAlertStatus('error')
+        })
+    };
+
     const onSubmit = (data) => {
         EditKeeper(data);
+        EditProfileImg();
     };
 
     const [previewImage, setPreviewImage] = useState(null);
@@ -114,6 +133,7 @@ function KeeperDetail() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
+            setImg(file)
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result);
@@ -202,7 +222,7 @@ function KeeperDetail() {
                     {alertStatus === 'success' ?
                     <div>
                         <AlertTitle>Success</AlertTitle>
-                        Singup Successful!!!
+                        Successful!!!
                     </div>
                     :
                     <div>
@@ -323,6 +343,7 @@ function KeeperDetail() {
                                         </Card>
                                         :
                                         <div>
+                                            
                                         <Card
                                             sx={{
                                                 maxWidth: 345,
@@ -343,7 +364,7 @@ function KeeperDetail() {
                                                     component="img"
                                                     alt="profile"
                                                     height="140"
-                                                    image="/assets/cover.jpeg"
+                                                    src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img}
                                                 />
                                             )}
                                         </Card>
@@ -435,6 +456,7 @@ function KeeperDetail() {
                                                     onClick={() =>
                                                         setIsEditName(false)
                                                     }
+                                                    
                                                     sx={{ mt: 3, ml: 1 }}
                                                 >
                                                     Cancel
