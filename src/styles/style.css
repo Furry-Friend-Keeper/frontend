@@ -65,10 +65,12 @@ a {
   position: relative;
   
   & .keeper-title{
-    background-image: linear-gradient(90deg, rgba(255, 204, 230, 1) 0%, rgba(255, 204, 230, 1) 100%);
+    background: linear-gradient(180deg, rgba(174, 216, 254, 1) 0%, rgba(155, 201, 252, 1) 52%, rgba(147, 192, 246, 1) 100%);
+    /* background-image: linear-gradient(90deg, rgba(255, 204, 230, 1) 0%, rgba(255, 204, 230, 1) 100%); */
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 30px;
     & .keeper-text {
       padding: 50px 0;
       text-align: center;
@@ -157,7 +159,12 @@ a {
   display: inline-block;
 }
 
-.btn-primary {
+/* .btn-primary {
+  background-color: #3399FF !important;
+  border: #3399FF !important
+} */
+
+/* .btn-primary {
   background-color: #ffbaba !important;
   color: black;
   border: #ffbaba !important
@@ -179,7 +186,7 @@ a:hover {
   color: #f79999;
   background-color: transparent;
   text-decoration: underline;
-}
+} */
 /* a:active {
   background-color: #ffbaba;
 } */
@@ -203,7 +210,13 @@ a:hover {
     object-fit:  cover;
     width: 100%!important;
     height: 200px!important;
-    
+  }
+
+  & .notImage {
+    height: 200px!important;
+    margin: 0 auto;
+    width: 50px;
+    opacity: 0.5;
   }
 }
 
@@ -444,6 +457,9 @@ a:hover {
 }
 
 @media (max-width: 767px) {
+  .navbar-head {
+    letter-spacing: 0 !important;
+  }
   .slider-for {
     & img {
       width: 100%;
@@ -560,4 +576,34 @@ footer {
     border-color: #3399FF;
     box-shadow: 0 0 0 3px #b6daff;
   }
+}
+
+.MuiSelect-root {
+  width: 320px;
+  font-family: IBM Plex Sans, sans-serif !important; 
+  color: #757778 !important;
+  background-color: white !important;
+}
+.MuiSelect-root:hover {
+  border-color: #3399FF !important;
+  background-color: white !important;
+}
+
+.about-title {
+  text-align: center;
+
+   & .about-detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & svg {
+      font-size: 200px;
+      color: #f79999;
+    }
+   }
+}
+
+.upload-image {
+  border: 1.7px dashed !important;
 }

@@ -12,6 +12,7 @@ import KeeperDetail from './pages/KeeperDetail.jsx';
 import Navbar from './layouts/Navbar.jsx';
 import OwnerDetail from './pages/OwnerDetail.jsx';
 import KeeperEdit from './auth/keeper/EditKeeperDetail.jsx';
+import About from './pages/About.jsx';
 // import Account from './auth/owner/Account.jsx';
 import Footer from './layouts/Footer.jsx';
 // const router = createBrowserRouter([
@@ -46,6 +47,7 @@ function App() {
             <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
             <Route path="/at3/owner" element={<OwnerDetail />} />
             <Route path="/at3/keeper-edit" element={<KeeperEdit />} />
+            <Route path="/at3/about-us" element={<About />} />
             {/* Add more routes as needed */}
       
           </Routes>

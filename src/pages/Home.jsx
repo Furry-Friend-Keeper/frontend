@@ -5,6 +5,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Rating from '@mui/material/Rating';
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../components/SearchButton';
 import TitlePage from '../components/TitlePage';
@@ -68,7 +69,7 @@ function Home() {
     });
   
     setSearch(filteredByCategory);
-    console.log(filteredByCategory)
+    // console.log(filteredByCategory)
   }, [searchInput, selected, apiData]);
 
 
@@ -132,8 +133,8 @@ function Home() {
                   return (
                   <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 px-2 ">
                     <div className="keeper card bg-shadow text-center border-0">
-                      <img src={item.image} alt={item.title} />
-                      <div className="card-body ">
+                      {item.image ? <img src={item.image} alt={item.title} /> : <ImageNotSupportedIcon className="notImage" />}
+                      <div className="card-body border-top border-2 ">
                         <div className="d-flex justify-content-center">
                           <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
                           <div className="ms-2">

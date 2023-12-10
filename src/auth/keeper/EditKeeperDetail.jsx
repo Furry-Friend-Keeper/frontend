@@ -14,17 +14,11 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import {
-    TextField,
-    Button,
-    Grid,
-    Typography,
-    InputAdornment,
-    IconButton,
-} from "@mui/material";
+import { TextField, Button, styled } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
+import ImageIcon from '@mui/icons-material/Image';
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -84,9 +78,17 @@ function KeeperDetail() {
         EditKeeper(data);
     };
 
-    const handleCancel = () => {
-        // Implement your cancel logic here
-        console.log("Cancel button clicked");
+    const [previewImage, setPreviewImage] = useState(null);
+
+    const handleFileChange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     };
 
     const { id } = useParams();
@@ -202,33 +204,57 @@ function KeeperDetail() {
                 <div className="row mx-auto col-11">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <Stack direction="row" spacing={1} className="pb-4">
-                                {apiData.categories &&
-                                    apiData.categories.map(
-                                        (category, index) => (
-                                            <Chip
-                                                key={index}
-                                                label={category}
-                                            />
-                                        )
-                                    )}
-                            </Stack>
+                            <div className="row">
+                                <div className="col-md-8">
+                                    <Stack direction="row" spacing={1} className="pb-4">
+                                        {apiData.categories &&
+                                            apiData.categories.map(
+                                                (category, index) => (
+                                                    <Chip
+                                                        key={index}
+                                                        label={category}
+                                                    />
+                                                )
+                                            )}
+                                    </Stack>
+                                </div>
+                                <div className="col-md-4 d-flex justify-content-end">
+                                    <span className="fs-3">
+                                        <i className="bi bi-pencil-square fs-3 ju" onClick={() => setIsEditName(!isEditName)}></i>
+                                    </span>
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-sm-4">
                                     <Card
                                         sx={{
                                             maxWidth: 345,
-                                            borderRadius: "20px",
+                                            borderRadius: "15px",
                                         }}
                                     >
-                                        <CardMedia
-                                            className="profile"
-                                            component="img"
-                                            alt="profile"
-                                            height="140"
-                                            image="/assets/cover.jpeg"
-                                        />
+                                       {previewImage ? (
+                                            <CardMedia
+                                                className="profile"
+                                                component="img"
+                                                alt="profile"
+                                                height="auto"
+                                                src={previewImage}
+                                            />
+                                            ) : (
+                                            <CardMedia
+                                                className="profile"
+                                                component="img"
+                                                alt="profile"
+                                                height="140"
+                                                image="/assets/cover.jpeg"
+                                                c
+                                            />
+                                            )}
                                     </Card>
+                                    <Button className="w-100 mt-2 upload-image" component="label" variant="outlined" startIcon={<ImageIcon />}>
+                                        Select Image
+                                    <VisuallyHiddenInput onChange={handleFileChange} type="file" />
+                                    </Button>
                                 </div>
                                 <div className="col">
                                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -241,7 +267,7 @@ function KeeperDetail() {
                                                 <TextField
                                                     label="Edit Keeper Name"
                                                     margin="normal"
-                                                    // fullWidth
+                                                    fullWidth
                                                     required
                                                     {...register("name", {
                                                         required:
@@ -260,7 +286,7 @@ function KeeperDetail() {
                                                 </p>
                                             )}
 
-                                            <span className="fs-3">
+                                            {/* <span className="fs-3">
                                                 <i
                                                     className="bi bi-pencil-square fs-3 ju"
                                                     onClick={() =>
@@ -269,7 +295,7 @@ function KeeperDetail() {
                                                         )
                                                     }
                                                 ></i>
-                                            </span>
+                                            </span> */}
                                         </div>
 
                                         <div className="des">
@@ -527,5 +553,17 @@ function KeeperDetail() {
         </>
     );
 }
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
 export default KeeperDetail;

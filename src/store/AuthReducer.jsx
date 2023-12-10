@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
     accessToken : localStorage.getItem('accessToken') || null,
+    role : ""
 }
 
 const authSlice = createSlice({
@@ -10,6 +11,7 @@ const authSlice = createSlice({
     reducers : {
         login(state, action) {
             state.accessToken = action.payload.accessToken;
+            state.role = action.payload.role;
             // Store token in localStorage
             localStorage.setItem('accessToken', action.payload.accessToken);
         },

@@ -8,12 +8,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useSelector, useDispatch } from 'react-redux'
 import { authActions } from '../store/AuthReducer';
+import { Button } from '@mui/material';
 
 function Navbar() {
   const settings = ['Profile', 'Logout'];
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const isLogin = useSelector(state => state.auth.accessToken)
+  const getRole = useSelector(state => state.auth.role)
   const dispatch = useDispatch()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -30,6 +32,7 @@ function Navbar() {
         <Link className="navbar-brand navbar-head fw-bold text-uppercase" to="/at3">
           Furry Friend Keeper
         </Link>
+        
         <div className="dropdown">
           <button
             id="dropdownMenuButton"
@@ -43,11 +46,39 @@ function Navbar() {
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
             <li><Link className="dropdown-item" to="/at3">Home</Link></li>
-            <li><Link className="dropdown-item" to="#">About</Link></li>
-            <li><Link className="dropdown-item" to="#">Contact</Link></li>
-            <li><Link className="dropdown-item" to="/at3/login">Login</Link></li>
-            <li><Link className="dropdown-item" to="/at3/signup">Sign up</Link></li>
+            <li><Link className="dropdown-item" to="/at3/about-us">About</Link></li>
+            {/* <li><Link className="dropdown-item" to="#">Contact</Link></li> */}
+            {!isLogin && <li><Link className="dropdown-item" to="/at3/login">Login</Link></li>}
+            {!isLogin && <li><Link className="dropdown-item" to="/at3/signup">Sign up</Link></li>}
+
           </ul>
+          {isLogin && 
+          <Tooltip title="Open settings" className="ms-3 navbar-toggler">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="" />
+              </IconButton>
+            </Tooltip>
+            }
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
+                  </MenuItem>
+              </Menu>
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
@@ -57,15 +88,15 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="#">
+              <Link className="nav-link" to="/at3/about-us">
                 About
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link" to="#">
                 Contact
               </Link>
-            </li>
+            </li> */}
             {!isLogin &&
             <li className="nav-item">
               <Link className="nav-link" to="/at3/login">
@@ -108,16 +139,11 @@ function Navbar() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {/* {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" ><Link to={setting === "Profile" ? "owner" : "logout"}>{setting}</Link></Typography>
-                    </MenuItem>
-                  ))} */}
-                   {/* <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" ><Link to="/at3/owner" >Profile</Link></Typography>
-                    </MenuItem> */}
+                   {getRole && <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center" ><Link className="text-black" to="/at3/keeper-edit">My Shop</Link></Typography>
+                    </MenuItem>}
                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a href="/at3" >Logout</a></Typography>
+                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
                     </MenuItem>
                 </Menu>
               </li>

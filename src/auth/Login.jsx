@@ -32,7 +32,7 @@ function Login() {
       .then((res) => {
         const response = res.data;
         console.log(response)
-        dispatch(authActions.login({ accessToken: response.accessToken }));
+        dispatch(authActions.login({ accessToken: response.accessToken, role: response.role}));
         if(response.role === 'Owner') {
           navigate('/at3')
         } else {

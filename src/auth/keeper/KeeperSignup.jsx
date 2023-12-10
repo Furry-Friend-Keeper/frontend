@@ -1,5 +1,5 @@
 // import * as React from "react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useFormControlContext } from "@mui/base/FormControl";
 import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+import {  Chip } from '@mui/joy';
 import InputAddress from 'react-thailand-address-autocomplete'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +25,7 @@ export default function BasicFormControl() {
     const [zipcode, setZipcode] = useState("");
     const [open, setOpen] = useState(false);
     const [alertStatus, setAlertStatus] = useState("");
+    const [petCategories, setPetCategories] = useState([]);
     const navigate = useNavigate();
 
     const {
@@ -30,6 +34,20 @@ export default function BasicFormControl() {
         watch,
         formState: { errors },
     } = useForm();
+
+    useEffect(() => {
+        PetKeeperCategories()
+    },[])
+
+    const PetKeeperCategories = async() => {
+        await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
+            const response = res.data;
+            setPetCategories(response)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
 
     const SignUpForm = async (data) => {
         const result = {
@@ -57,6 +75,7 @@ export default function BasicFormControl() {
     }
 
     const onSubmit = (data) => {
+        // console.log('Selected petCategories:', JSON.parse(data.petCategories));
         const address = {
             address: data.address,
             district: district,
@@ -65,10 +84,13 @@ export default function BasicFormControl() {
             map: "https://maps.example.com/12345"
         }
         data.address = address
+        data.petCategories = JSON.parse(data.petCategories)
         console.log(data)
-
+        
+        
         SignUpForm(data)
     };
+    watch('petCategories')
 
     const password = useRef({});
     password.current = watch("password", "");
@@ -109,7 +131,7 @@ export default function BasicFormControl() {
                     <div className="col-md-6">
                         <Label>Keeper Name<Tooltip title="Name of store"><span> (?)</span></Tooltip></Label>
                         <StyledInput className="pb-3"
-                            placeholder="Write your Keeper Name here"
+                            placeholder="Pet Farm"
                             {...register("keeperName", { required: "Keeper Name is required", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
@@ -132,7 +154,7 @@ export default function BasicFormControl() {
                         <Label>Password</Label>
                         <StyledInput className="pb-3"
                             type="password"
-                            placeholder="Write your Password here"
+                            placeholder="12345678"
                             {...register("password", { required: "Password is required", minLength: {
                                 value: 8,
                                 message: "Password must have at least 8 characters"
@@ -147,8 +169,8 @@ export default function BasicFormControl() {
                         <Label>Confirm Password</Label>
                         <StyledInput className="pb-3"
                             type="password"
-                            placeholder="Please confirm your password"
-                            {...register("confirmPassword", { required: true, validate: value =>
+                            placeholder="12345678"
+                            {...register("confirmPassword", { required: "Confirm Password is required", validate: value =>
                                 value === password.current || "The passwords do not match" 
                             })}
                         />
@@ -158,7 +180,7 @@ export default function BasicFormControl() {
                         <Label>Phone</Label>
                         <StyledInput className="pb-3"
                             type="tel"
-                            placeholder="Write your Phone here"
+                            placeholder="089XXXXXXX"
                             {...register("phone", { required: "Phone is required", maxLength: {
                                 value: 10,
                                 message: "Phone number must not more than 10 characters"
@@ -169,8 +191,8 @@ export default function BasicFormControl() {
                     <div className="col-md-6">
                         <Label>Contact</Label>
                         <StyledInput className="pb-3"
-                            placeholder="Write your Contact here"
-                            {...register("contact", { required: true, maxLength: {
+                            placeholder="Write your contact here"
+                            {...register("contact", { required: "Contact is required", maxLength: {
                                 value: 200,
                                 message: "Contact must not more than 200 characters"
                             }})}
@@ -186,12 +208,46 @@ export default function BasicFormControl() {
                             />
                         </div>
                     </div>
+                    <div className="col-md-6">
+                        <Label>Pet Category</Label>
+                        <div className="pb-3">
+                        <Select
+                            multiple
+                            placeholder="select pet category"
+                            {...register('petCategories')}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', gap: '0.25rem' }}>
+                                {selected.map((selectedOption, index) => (
+                                    <Chip key={index} variant="soft" color="primary"  >
+                                    {selectedOption.label}
+                                    </Chip>
+                                ))}
+                                </Box>
+                            )}
+                            sx={{
+                                minWidth: '320px',
+                            }}
+                            slotProps={{
+                                listbox: {
+                                sx: {
+                                    width: '100%',
+                                    // backgroundColor: 'red',
+                                },
+                                },
+                            }}
+                            >
+                            {petCategories.map((category, index) => (
+                                <Option key={index} value={category.name}>{category.name}</Option>
+                            ))}
+                            </Select>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col-md-6">
                             <Label>Address</Label>
                             <StyledInput className="pb-3"
-                                placeholder="Write your Address here"
-                                {...register("address", { required: true, maxLength: {
+                                placeholder="123/45 หมู่บ้านซอยตัน"
+                                {...register("address", { required: "Address is required", maxLength: {
                                     value: 200,
                                     message: "Name must not more than 200 characters"
                                 }})}
@@ -203,7 +259,7 @@ export default function BasicFormControl() {
                             <div className="autocomplete">
                             <InputAddress
                                 id="1"
-                                placeholder="Write your District"
+                                placeholder="กรุณาเลือกอำเภอ"
                                 address="district"
                                 value={district}
                                 onChange={(e) => setDistrict(e.target.value)}
@@ -216,7 +272,7 @@ export default function BasicFormControl() {
                             <div className="autocomplete">
                             <InputAddress
                                 id="2"
-                                placeholder="Write your Province"
+                                placeholder="กรุณาเลือกจังหวัด"
                                 address="province"
                                 value={province}
                                 onChange={(e) => setProvince(e.target.value)}
@@ -229,7 +285,7 @@ export default function BasicFormControl() {
                             <div className="autocomplete">
                             <InputAddress
                                 id="3"
-                                placeholder="Write your Zipcode"
+                                placeholder="กรุณาเลือกรหัสไปรษณีย์"
                                 address="zipcode"
                                 value={zipcode}
                                 onChange={(e) => setZipcode(e.target.value)}

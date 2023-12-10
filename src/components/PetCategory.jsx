@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Popover } from '@mui/material';
 import Box from '@mui/joy/Box';
 import Checkbox from '@mui/joy/Checkbox';
@@ -6,19 +6,24 @@ import Chip from '@mui/joy/Chip';
 import Typography from '@mui/joy/Typography';
 import CheckIcon from "@mui/icons-material/Check";
 import PetsIcon from '@mui/icons-material/Pets';
+import axios from 'axios';
 
 function PetCategory({ selected, setSelected}) {
-    const names = [
-        "Whiskers",
-        "Max",
-        "Fluffy",
-        "rabbit",
-        "parrot",
-        "hamster",
-        "fish",
-        "turtle",
-        "horse"
-      ];
+      const [petCategories, setPetCategories] = useState([]);
+
+      useEffect(() => {
+        PetKeeperCategories()
+    },[])
+
+    const PetKeeperCategories = async() => {
+        await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
+            const response = res.data;
+            setPetCategories(response)
+        }).catch((err) => {
+            console.log(err)
+        })
+    }
+
       const [anchorEl, setAnchorEl] = useState(null);
 
       const handleClick = (event) => {
@@ -64,11 +69,11 @@ function PetCategory({ selected, setSelected}) {
                   aria-labelledby="fav-movie"
                   sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}
                 >
-                  {names.map((name) => {
-                    const checked = selected.includes(name);
+                  {petCategories.map((category, index) => {
+                    const checked = selected.includes(category.name);
                     return (
                       <Chip
-                        key={name}
+                        key={index}
                         size='lg'
                         variant="plain"
                         color={checked ? 'primary' : 'neutral'}
@@ -82,13 +87,13 @@ function PetCategory({ selected, setSelected}) {
                           color={checked ? 'primary' : 'neutral'}
                           disableIcon
                           overlay
-                          label={name}
+                          label={category.name}
                           checked={checked}
                           onChange={(event) => {
                             setSelected((names) =>
                               !event.target.checked
-                                ? names.filter((n) => n !== name)
-                                : [...names, name],
+                                ? names.filter((n) => n !== category.name)
+                                : [...names, category.name],
                             );
                           }}
                         />

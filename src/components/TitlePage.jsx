@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 function TitlePage() {
   return (
     <div className="container-fluid g-0">
@@ -11,10 +12,10 @@ function TitlePage() {
           <p>ในปัจจุบันมีผู้คนนิยมเลี้ยงสัตว์เลี้ยงมากขึ้น ไม่ว่าจะเป็น หมา แมว หนู ไปจนถึง สัตว ์Exotic (สัตว์แปลก) ต่างๆกันมากขึ้น ซึ่งคนที่มีสัตว์เลี้ยงก็ไม่สามารถดูแลได้ตลอดเวลา 
             จึงต้องการคนที่คอยดูแลสัตว์เลี้ยงของพวกเขาในระหว่างที่พวกเขาไม่สามารถดูแลเองได้ ซึ่ง Furry Friend Keeper จะเป็น Web Application ที่เปิดโอกาสให้เจ้าของสัตว์ 
             เลี้ยงเข้ามาค้นหาผู้ที่สามารถดูแลสัตว์เลี้ยงของพวกเขา</p>
-            <div>
+            {/* <div>
               <Link to="/at3/login" className="btn btn-primary me-2">เริ่มต้นใช้งาน</Link>
               <Link to="/at3/signup" className="btn btn-secondary">สมัครใช้งาน</Link>
-            </div> 
+            </div>  */}
         </div>
       </div>
     </div>
