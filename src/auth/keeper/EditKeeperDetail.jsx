@@ -18,17 +18,19 @@ import { TextField, Button, styled } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
-import ImageIcon from '@mui/icons-material/Image';
+import ImageIcon from "@mui/icons-material/Image";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
+    // const [apiData, setApiData] = useState({});
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
+    const [isEditAddress, setIsEditAddress] = useState(false);
     // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 1;
+                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 3;
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
@@ -37,6 +39,28 @@ function KeeperDetail() {
                     setValue("contact", data.contact);
                     setValue("email", data.email);
                     setValue("phone", data.phone);
+                    setValue("address", data.address.address);
+                    setValue("district", data.address.district);
+                    setValue("province", data.address.province);
+                    setValue("postalCode", data.address.postalCode);
+                    // console.log(data);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const apiImg = import.meta.env.VITE_KEEPER_PROFILE + 3;
+                await axios.get(apiImg).then((response) => {
+                    const data = response.data;
+                    setApiData(data);
+                    // setValue("img", data.name);
                     // console.log(data);
                 });
             } catch (error) {
@@ -61,13 +85,22 @@ function KeeperDetail() {
             detail: data.detail,
             contact: data.contact,
             phone: data.phone,
-        }
+            address: {
+                address: data.address,
+                district: data.district,
+                province: data.province,
+                postalCode: data.postalCode
+            }
+        };
+        console.log(result);
         await axios
-            .patch(import.meta.env.VITE_KEEPERS_ID + 1, result)
+            .patch(import.meta.env.VITE_KEEPERS_ID + 3, result)
             .then((res) => {
                 const response = res.data;
-                setApiData({...apiData, ...result});
-                console.log(response);
+                setApiData({ ...apiData, ...result });
+                console.log(data);
+                console.log(apiData);
+                console.log(result);
             })
             .catch((err) => {
                 console.log(err);
@@ -81,14 +114,14 @@ function KeeperDetail() {
     const [previewImage, setPreviewImage] = useState(null);
 
     const handleFileChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreviewImage(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const { id } = useParams();
@@ -206,7 +239,11 @@ function KeeperDetail() {
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="row">
                                 <div className="col-md-8">
-                                    <Stack direction="row" spacing={1} className="pb-4">
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        className="pb-4"
+                                    >
                                         {apiData.categories &&
                                             apiData.categories.map(
                                                 (category, index) => (
@@ -220,27 +257,23 @@ function KeeperDetail() {
                                 </div>
                                 <div className="col-md-4 d-flex justify-content-end">
                                     <span className="fs-3">
-                                        <i className="bi bi-pencil-square fs-3 ju" onClick={() => setIsEditName(!isEditName)}></i>
+                                        <i
+                                            className="bi bi-pencil-square fs-3 ju"
+                                            onClick={() =>
+                                                setIsEditName(!isEditName)
+                                            }
+                                        ></i>
                                     </span>
                                 </div>
                             </div>
-                            <div className="row">
-                                <div className="col-sm-4">
-                                    <Card
-                                        sx={{
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="row">
+                                    <div className="col-sm-4">
+                                        {!isEditName ? 
+                                        <Card sx={{
                                             maxWidth: 345,
                                             borderRadius: "15px",
-                                        }}
-                                    >
-                                       {previewImage ? (
-                                            <CardMedia
-                                                className="profile"
-                                                component="img"
-                                                alt="profile"
-                                                height="auto"
-                                                src={previewImage}
-                                            />
-                                            ) : (
+                                        }}>
                                             <CardMedia
                                                 className="profile"
                                                 component="img"
@@ -249,15 +282,52 @@ function KeeperDetail() {
                                                 image="/assets/cover.jpeg"
                                                 c
                                             />
+                                        </Card>
+                                        :
+                                        <div>
+                                        <Card
+                                            sx={{
+                                                maxWidth: 345,
+                                                borderRadius: "15px",
+                                            }}
+                                        >
+                                            {previewImage ? (
+                                                <CardMedia
+                                                    className="profile"
+                                                    component="img"
+                                                    alt="profile"
+                                                    height="auto"
+                                                    src={previewImage}
+                                                />
+                                            ) : (
+                                                <CardMedia
+                                                    className="profile"
+                                                    component="img"
+                                                    alt="profile"
+                                                    height="140"
+                                                    image="/assets/cover.jpeg"
+                                                    c
+                                                />
                                             )}
-                                    </Card>
-                                    <Button className="w-100 mt-2 upload-image" component="label" variant="outlined" startIcon={<ImageIcon />}>
-                                        Select Image
-                                    <VisuallyHiddenInput onChange={handleFileChange} type="file" />
-                                    </Button>
-                                </div>
-                                <div className="col">
-                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        </Card>
+                                        
+
+                                        <Button
+                                            className="w-100 mt-2 upload-image"
+                                            component="label"
+                                            variant="outlined"
+                                            startIcon={<ImageIcon />}
+                                        >
+                                            Select Image
+                                            <VisuallyHiddenInput
+                                                onChange={handleFileChange}
+                                                type="file"
+                                            />
+                                        </Button>
+                                        </div>
+                                        }
+                                    </div>
+                                    <div className="col">
                                         <div className="title d-flex justify-content-between align-items-center">
                                             {!isEditName ? (
                                                 <h2 className="mb-lg-4 mt-lg-3">
@@ -341,11 +411,12 @@ function KeeperDetail() {
                                                 </Button>
                                             </Box>
                                         )}
-                                    </form>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
+                        <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="title d-flex justify-content-between align-items-center">
                                 <h2>Contact</h2>
                                 <span className="fs-3">
@@ -381,6 +452,11 @@ function KeeperDetail() {
                                                         },
                                                     })}
                                                 />
+                                                {errors.contact && (
+                                                <p className="error-message">
+                                                    {errors.contact.message}
+                                                </p>
+                                            )}
                                             </td>
                                         )}
                                     </tr>
@@ -390,7 +466,6 @@ function KeeperDetail() {
                                         <td className="text-end">
                                             {apiData.email}
                                         </td>
-
                                         {/* <td className="text-end">
                                                 <TextField
                                                     label="Edit Email"
@@ -434,6 +509,11 @@ function KeeperDetail() {
                                                         },
                                                     })}
                                                 />
+                                                {errors.phone && (
+                                                <p className="error-message">
+                                                    {errors.phone.message}
+                                                </p>
+                                            )}
                                             </td>
                                         )}
                                     </tr>
@@ -466,7 +546,9 @@ function KeeperDetail() {
                                     </Button>
                                 </Box>
                             )}
+                            </form>
                         </div>
+                        
                     </div>
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
@@ -484,35 +566,129 @@ function KeeperDetail() {
                                     }}
                                 ></GoogleMap>
                             </LoadScript>
-                            <div className="keeper-address p-md-2 bg-white">
+                            <div className="p-md-2 bg-white">
+                            <div className="title d-flex justify-content-end align-items-center">
+                                <span className="fs-3">
+                                    <i
+                                        className="bi bi-pencil-square fs-3 ju"
+                                        onClick={() =>
+                                            setIsEditAddress(!isEditAddress)
+                                        }
+                                    ></i>
+                                </span>
+                            </div>
+                            <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="table">
                                     <table className="w-100">
                                         <tr>
-                                            <td>Address 1</td>
+                                            <td>Address</td>
+                                            {!isEditAddress ? (
                                             <td className="text-end">
                                                 {apiData?.address?.address}
                                             </td>
+                                             ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Address"
+                                                    margin="normal"
+                                                    required
+                                                    {...register("address", {
+                                                        maxLength: {
+                                                            value: 200,
+                                                            message:
+                                                                "Address must not more than 200 characters",
+                                                        },
+                                                    })}
+                                                />
+                                                {errors.address && (
+                                                <p className="error-message">
+                                                    {errors.address.message}
+                                                </p>
+                                            )}
+                                            </td>
+                                            )}
                                         </tr>
                                         <tr>
                                             <td>District</td>
+                                            {!isEditAddress ? (
                                             <td className="text-end">
                                                 {apiData?.address?.district}
                                             </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit "
+                                                    margin="normal"
+                                                    {...register("district")}
+                                                />
+                                            </td>
+                                            )}
                                         </tr>
                                         <tr>
                                             <td>Province</td>
+                                            {!isEditAddress ? (
                                             <td className="text-end">
                                                 {apiData?.address?.province}
                                             </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Province"
+                                                    margin="normal"
+                                                    {...register("province")}
+                                                />
+                                            </td>
+                                            )}
                                         </tr>
                                         <tr>
                                             <td>PostalCode</td>
+                                            {!isEditAddress ? (
                                             <td className="text-end">
-                                                {apiData?.address?.postalCode}
+                                                {apiData.address?.postalCode}
                                             </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Postal Code"
+                                                    margin="normal"
+                                                    {...register("postalCode")}
+                                                />
+                                            </td>
+                                            )}
                                         </tr>
                                     </table>
+                                    
                                 </div>
+                                {isEditAddress && (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="contained"
+                                                    style={{
+                                                        backgroundColor: "red",
+                                                        color: "white",
+                                                    }}
+                                                    onClick={() =>
+                                                        setIsEditAddress(false)
+                                                    }
+                                                    sx={{ mt: 3, ml: 1 }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    type="submit"
+                                                    variant="contained"
+                                                    sx={{ mt: 3, ml: 1 }}
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Box>
+                                        )}
+                                </form>
                             </div>
                         </div>
                         <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
@@ -532,7 +708,7 @@ function KeeperDetail() {
                                     />
                                     {/* <span className="">10 review</span> */}
                                 </div>
-                                <div className="review-des mt-3">
+                                {/* <div className="review-des mt-3">
                                     <textarea
                                         className="form-control"
                                         cols="30"
@@ -544,7 +720,7 @@ function KeeperDetail() {
                                     <button className="btn btn-success w-100">
                                         Save
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -554,16 +730,16 @@ function KeeperDetail() {
     );
 }
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
     height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
+    overflow: "hidden",
+    position: "absolute",
     bottom: 0,
     left: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap",
     width: 1,
-  });
+});
 
 export default KeeperDetail;
