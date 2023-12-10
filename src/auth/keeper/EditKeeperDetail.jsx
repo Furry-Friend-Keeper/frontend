@@ -35,6 +35,7 @@ function KeeperDetail() {
     const [galleryDelete, setGalleryDelete] = useState([]);
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
+    const [isEditAddress, setIsEditAddress] = useState(false);
     const maxGallery = 8;
     // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
@@ -49,6 +50,10 @@ function KeeperDetail() {
                     setValue("contact", data.contact);
                     setValue("email", data.email);
                     setValue("phone", data.phone);
+                    setValue("address", data.address.address);
+                    setValue("district", data.address.district);
+                    setValue("province", data.address.province);
+                    setValue("postalCode", data.address.postalCode);
 
                     const transformedGallery = data.gallery.map(item => {
                         const splitItem = item.split(',');
@@ -85,15 +90,15 @@ function KeeperDetail() {
                 postalCode: data.postalCode
             }
         };
-        console.log(result);
+        
         await axios
             .patch(import.meta.env.VITE_KEEPERS_ID + keeperId, result)
             .then((res) => {
                 const response = res.data;
                 setApiData({ ...apiData, ...result });
-                console.log(data);
-                console.log(apiData);
-                console.log(result);
+                setIsEditName(false);
+                setIsEditContact(false);
+                setIsEditAddress(false);
             })
             .catch((err) => {
                 console.log(err);
@@ -216,7 +221,7 @@ function KeeperDetail() {
                             {galleryData.map((gallery, index) => (
                                 <div key={index} className="position-relative">
                                     <img
-                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" +gallery}
+                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + gallery}
                                         alt={`Preview ${index}`}
                                         style={{ maxWidth: '100%', maxHeight: 'auto' }}
                                     />
@@ -313,7 +318,7 @@ function KeeperDetail() {
                                                 component="img"
                                                 alt="profile"
                                                 height="140"
-                                                image="/assets/cover.jpeg"
+                                                src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img}
                                             />
                                         </Card>
                                         :
@@ -339,7 +344,6 @@ function KeeperDetail() {
                                                     alt="profile"
                                                     height="140"
                                                     image="/assets/cover.jpeg"
-                                                    c
                                                 />
                                             )}
                                         </Card>
@@ -439,6 +443,7 @@ function KeeperDetail() {
                                                     type="submit"
                                                     variant="contained"
                                                     sx={{ mt: 3, ml: 1 }}
+                                                    
                                                 >
                                                     Submit
                                                 </Button>
