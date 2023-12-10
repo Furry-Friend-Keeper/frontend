@@ -24,7 +24,7 @@ function About() {
                 <div>
                   <PersonPinIcon />
                   <h3>Tong</h3>
-                  <p>FullStack Devloper & DevOps</p>
+                  <p>Assistant</p>
                 </div>
             </div>
           </div>
