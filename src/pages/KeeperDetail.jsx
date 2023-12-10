@@ -87,7 +87,7 @@ function KeeperDetail() {
         slidesToScroll: 5,
         swipeToSlide: false,
         arrows: false,
-        focusOnSelect: false,
+        // focusOnSelect: false,
         infinite: false,
         // vertical : true,
         // verticalSwiping : true,

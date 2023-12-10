@@ -10,13 +10,13 @@ import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 
-import Information from './Information';
+// import Information from './Information';
 import OwnerSignup from './OwnerSignup';
 // import KeeperDetail from './KeeperDetail';
 // import Map from './Map';
 
   
-  const steps = ['Information', 'Keeper Detail', 'Map'];
+  // const steps = ['Information', 'Keeper Detail', 'Map'];
   
   // function getStepContent(step) {
   //   switch (step) {
@@ -60,13 +60,8 @@ export default function KeeperSignUp() {
                 </Step>
               ))}
             </Stepper> */}
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                All steps completed - you&apos;re finished
-                </Typography>
-              </React.Fragment>
-            ) : (
+            {/* {activeStep === steps.length ? ( */}
+            {/* ) : ( */}
               <React.Fragment>
                 {/* {getStepContent(activeStep)} */}
                 <OwnerSignup />
@@ -87,7 +82,7 @@ export default function KeeperSignUp() {
                   </Button>
                 </Box> */}
               </React.Fragment>
-            )}
+            {/* )} */}
           </Paper>
         </Container>
       </React.Fragment>

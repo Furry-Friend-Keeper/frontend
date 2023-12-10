@@ -135,7 +135,7 @@ function Home() {
                       <img src={item.image} alt={item.title} />
                       <div className="card-body ">
                         <div className="d-flex justify-content-center">
-                          <h5><Link to={`/at3/keepers/${item.petkeeperId}`} className="text-black" >{item.name}</Link></h5>
+                          <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
                           <div className="ms-2">
                             <span className="favorite" onClick={() => handleFavorite(index)} >
                               { item.favorite ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
