@@ -195,7 +195,7 @@ function KeeperDetail() {
             formData.append('file', '')
         }
         // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
-        await axios.patch(import.meta.env.VITE_KEEPERS_ID+keeperId+"/gallery", formData, {
+        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
             headers: { 'content-type': 'multipart/form-data' }
         }).then((res) => {
             setOpen(true)
