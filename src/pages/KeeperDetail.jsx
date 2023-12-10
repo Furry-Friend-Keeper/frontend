@@ -17,6 +17,8 @@ import CardMedia from "@mui/material/CardMedia";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
+    const [galleryData, setGalleryData] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -24,7 +26,14 @@ function KeeperDetail() {
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
-                    console.log(data);
+                    const transformedGallery = data.gallery.map(item => {
+                        const splitItem = item.split(',');
+                        return splitItem.length === 2 ? splitItem[1] : item;
+                    });
+                    
+                    console.log(transformedGallery)
+                      setGalleryData(transformedGallery);
+
                 });
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -128,30 +137,37 @@ function KeeperDetail() {
             <div className="container pt-lg-4">
                 <div className="carousel col-md-11">
                     <div className="slider-for">
-                        <Slider
+                        {galleryData.length > 0 && <Slider
                             className="slider"
                             ref={(slider) => setSlider1(slider)}
                             {...slider_main}
                         >
-                            <img src="/assets/cover.jpeg" alt="" />
+                            {/* <img src="/assets/cover.jpeg" alt="" /> */}
+                            {galleryData.map((gallery, index) => (
+                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/" + gallery} alt="" />
+                            ))}
+                            {/* <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cat.jpg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                        </Slider>
+                            <img src="/assets/cover.jpeg" alt="" /> */}
+                        </Slider>}
                     </div>
                     <div className="slider-nav">
-                        <Slider
+                        {galleryData.length > 0 && <Slider
                             className="slider"
                             ref={(slider) => setSlider2(slider)}
                             {...slider_nav}
                         >
-                            <img src="/assets/cover.jpeg" alt="" />
+                            {galleryData.map((gallery, index) => (
+                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/" + gallery} alt="" />
+                            ))}
+                            {/* <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cat.jpg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                        </Slider>
+                            <img src="/assets/cover.jpeg" alt="" /> */}
+                        </Slider>}
                     </div>
                 </div>
             </div>

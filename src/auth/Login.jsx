@@ -32,11 +32,11 @@ function Login() {
       .then((res) => {
         const response = res.data;
         console.log(response)
-        dispatch(authActions.login({ accessToken: response.accessToken, role: response.role}));
+        dispatch(authActions.login({ accessToken: response.accessToken, role: response.role, id: response.id }));
         if(response.role === 'Owner') {
           navigate('/at3')
         } else {
-          navigate('/at3/keeper-edit/')
+          navigate('/at3/keeper-edit/' + response.id)
         }
       })
       .catch((err) => {

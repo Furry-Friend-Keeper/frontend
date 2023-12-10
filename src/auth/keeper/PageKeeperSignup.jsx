@@ -10,17 +10,17 @@ import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 
-import Information from './KeeperSignup';
+import KeeperSignup from './KeeperSignup';
 import KeeperDetail from './UploadImage';
 import Map from './Map';
 
   
-  const steps = ['Information', 'Keeper Detail', 'Map'];
+  const steps = ['KeeperSignup', 'Keeper Detail', 'Map'];
   
   function getStepContent(step) {
     switch (step) {
         case 0:
-          return <Information/>;
+          return <KeeperSignup/>;
         case 1:
           return <KeeperDetail />;
         default:
@@ -68,7 +68,7 @@ export default function KeeperSignUp() {
             ) : (
               <React.Fragment>
                 {/* {getStepContent(activeStep)} */}
-                <Information />
+                <KeeperSignup />
 
                 {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   {activeStep !== 0 && (

@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
     accessToken : localStorage.getItem('accessToken') || null,
-    role : ""
+    role : "",
+    id : ""
 }
 
 const authSlice = createSlice({
@@ -12,6 +13,7 @@ const authSlice = createSlice({
         login(state, action) {
             state.accessToken = action.payload.accessToken;
             state.role = action.payload.role;
+            state.id = action.payload.id;
             // Store token in localStorage
             localStorage.setItem('accessToken', action.payload.accessToken);
         },

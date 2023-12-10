@@ -14,21 +14,33 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-import { TextField, Button, styled } from "@mui/material";
+import { TextField, Button, styled, IconButton  } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
 import ImageIcon from '@mui/icons-material/Image';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import CloseIcon from '@mui/icons-material/Close';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
+    const [alertStatus, setAlertStatus] = useState("");
+    const [messageLog, setMessageLog] = useState('')
+    const [open, setOpen] = useState(false);
+    const [galleryData, setGalleryData] = useState([]);
+    const [galleryDelete, setGalleryDelete] = useState([]);
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
+    const maxGallery = 8;
     // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + 1;
+                const apiUrl = import.meta.env.VITE_KEEPERS_ID + keeperId;
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
@@ -37,7 +49,13 @@ function KeeperDetail() {
                     setValue("contact", data.contact);
                     setValue("email", data.email);
                     setValue("phone", data.phone);
-                    // console.log(data);
+
+                    const transformedGallery = data.gallery.map(item => {
+                        const splitItem = item.split(',');
+                        return splitItem.length === 2 ? splitItem[1] : item;
+                      });
+                      
+                      setGalleryData(transformedGallery);
                 });
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -50,7 +68,6 @@ function KeeperDetail() {
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         formState: { errors },
     } = useForm();
@@ -63,7 +80,7 @@ function KeeperDetail() {
             phone: data.phone,
         }
         await axios
-            .patch(import.meta.env.VITE_KEEPERS_ID + 1, result)
+            .patch(import.meta.env.VITE_KEEPERS_ID + keeperId, result)
             .then((res) => {
                 const response = res.data;
                 setApiData({...apiData, ...result});
@@ -91,112 +108,153 @@ function KeeperDetail() {
       }
     };
 
-    const { id } = useParams();
-
-    const [slider1, setSlider1] = useState(null);
-    const [slider2, setSlider2] = useState(null);
-    const slider = useRef(null);
+    const { keeperId } = useParams();
 
     const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
     const [libraries] = useState(["places"]);
-    const slider_main = {
-        asNavFor: slider2,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        infinite: false,
-        nextArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-            </svg>
-        ),
-        prevArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
-            </svg>
-        ),
-        afterChange: function (slick, nextSlide) {
-            if (nextSlide === 0) {
-                $(".slick-next").addClass("disabled");
-            } else {
-                $(".slick-next").removeClass("disabled");
-            }
-            if (nextSlide === slick.slideCount - 1) {
-                $(".slick-prev").addClass("disabled");
-            } else {
-                $(".slick-prev").removeClass("disabled");
-            }
-        },
+
+    const [imagePreviews, setImagePreviews] = useState(Array(maxGallery).fill(''));
+    const [imageGallery, setImageGallery] = useState([]);
+
+    const handleGalleryChange = (event, index) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            const updatedPreviews = [...imagePreviews];
+            updatedPreviews[index] = e.target.result;
+            setImagePreviews(updatedPreviews);
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+            setImageGallery([...imageGallery,file])
+        }
     };
 
-    const slider_nav = {
-        asNavFor: slider1,
-        focusOnSelect: true,
-        slidesToShow: 5,
-        centerMode: true,
-        swipeToSlide: false,
-        arrows: false,
-        infinite: false,
-        // vertical : true,
-        // verticalSwiping : true,
+    const removeImagePreview = (index) => {
+        const updatedPreviews = [...imagePreviews];
+        updatedPreviews[index] = '';
+        setImagePreviews(updatedPreviews);
+    };
 
-        responsive: [
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-        ],
+    const removeImageGallery = (data) => {
+        console.log(galleryData)
+        setGalleryData(galleryData.filter(image => image !== data))
+        setGalleryDelete([...galleryDelete,data])
+    }
+
+    const GalleryImageKeeper = async () => {
+        const formData = new FormData();
+        console.log(galleryDelete)
+        console.log(imageGallery)
+        galleryDelete.forEach(image => {
+            formData.append('delete', image)
+        })
+        imageGallery.forEach((preview) => {
+            formData.append(`file`, preview);
+        });
+        if( galleryDelete.length === 0 ) {
+            formData.append('delete', '')
+        }
+        if (imageGallery.length === 0) {
+            formData.append('file', '')
+        }
+        // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
+        await axios.patch(import.meta.env.VITE_KEEPERS_ID+keeperId+"/gallery", formData, {
+            headers: { 'content-type': 'multipart/form-data' }
+        }).then((res) => {
+            setOpen(true)
+            setAlertStatus('success')
+        }).catch((err) => {
+            console.log(err)
+            setOpen(true)
+            setMessageLog(err.message)
+            setAlertStatus('error')
+        })
+   
+    }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     return (
         <>
+         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
+                <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
+                    {alertStatus === 'success' ?
+                    <div>
+                        <AlertTitle>Success</AlertTitle>
+                        Singup Successful!!!
+                    </div>
+                    :
+                    <div>
+                        <AlertTitle>Failed</AlertTitle>
+                        {/* Signup Failed!! Email must be unique. */}
+                        {messageLog}
+                    </div>
+                    }
+                </Alert>
+            </Snackbar>
             <div className="container pt-lg-4">
                 <div className="carousel col-md-11">
-                    <div className="slider-for">
-                        <Slider
-                            className="slider"
-                            ref={(slider) => setSlider1(slider)}
-                            {...slider_main}
-                        >
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cat.jpg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                        </Slider>
-                    </div>
-                    <div className="slider-nav">
-                        <Slider
-                            className="slider"
-                            ref={(slider) => setSlider2(slider)}
-                            {...slider_nav}
-                        >
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cat.jpg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                        </Slider>
+                    <div className="m-4">
+                        <div className="gallery-wrapper">
+                        <div className="gallery">
+                            {galleryData.map((gallery, index) => (
+                                <div key={index} className="position-relative">
+                                    <img
+                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" +gallery}
+                                        alt={`Preview ${index}`}
+                                        style={{ maxWidth: '100%', maxHeight: 'auto' }}
+                                    />
+                                    <IconButton
+                                        style={{ position: 'absolute', top: 0, right: 0 }}
+                                        onClick={() => removeImageGallery(gallery)}
+                                    >
+                                        <CloseIcon className="close-gallery" />
+                                    </IconButton>
+                                </div>
+                            ))}
+                            {Array.from(Array(maxGallery-galleryData.length),(_, index) => (
+                            <div key={index} className="gallery-list">
+                                <Button component="label">
+                                    {!imagePreviews[index] && (
+                                    <div>
+                                        <AddPhotoAlternateIcon className="add-gallery" />
+                                        <VisuallyHiddenInput type="file" onChange={(e) => handleGalleryChange(e, index)} />
+                                    </div>
+                                    )}
+                                    {/* <AddPhotoAlternateIcon /> */}
+                                </Button>
+
+                                {imagePreviews[index] && (
+                                        <div className="position-relative">
+                                            <img
+                                                src={imagePreviews[index]}
+                                                alt={`Preview ${index}`}
+                                                style={{ maxWidth: '100%', maxHeight: 'auto' }}
+                                            />
+                                             <IconButton
+                                                style={{ position: 'absolute', top: 0, right: 0 }}
+                                                onClick={() => removeImagePreview(index)}
+                                            >
+                                                <CloseIcon className="close-gallery" />
+                                            </IconButton>
+                                        </div>  ) }
+                            </div>
+                            ))}
+                        </div>
+                            {/* <h4 className="error-message text-center">Image  (0/9)</h4> */}
+                            <div className="text-center">
+                                <Button onClick={GalleryImageKeeper} className="rounded-5 py-3 px-4 fs-6" variant="contained" size="large" color="warning" startIcon={ <CollectionsIcon />}>
+                                    Upload Gallery
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,7 +305,6 @@ function KeeperDetail() {
                                                 alt="profile"
                                                 height="140"
                                                 image="/assets/cover.jpeg"
-                                                c
                                             />
                                             )}
                                     </Card>

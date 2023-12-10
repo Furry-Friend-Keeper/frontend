@@ -16,6 +16,7 @@ function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const isLogin = useSelector(state => state.auth.accessToken)
   const getRole = useSelector(state => state.auth.role)
+  const getId = useSelector(state => state.auth.id)
   const dispatch = useDispatch()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -139,8 +140,8 @@ function Navbar() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                   {getRole && <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" ><Link className="text-black" to="/at3/keeper-edit">My Shop</Link></Typography>
+                   {getRole === "PetKeeper" && <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center" ><Link className="text-black" to={"/at3/keeper-edit/"+getId}>My Shop</Link></Typography>
                     </MenuItem>}
                    <MenuItem onClick={handleCloseUserMenu}>
                       <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>

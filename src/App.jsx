@@ -46,7 +46,7 @@ function App() {
             <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
             <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
             <Route path="/at3/owner" element={<OwnerDetail />} />
-            <Route path="/at3/keeper-edit" element={<KeeperEdit />} />
+            <Route path="/at3/keeper-edit/:keeperId" element={<KeeperEdit />} />
             <Route path="/at3/about-us" element={<About />} />
             {/* Add more routes as needed */}
       
