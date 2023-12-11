@@ -84,7 +84,9 @@ export default function BasicFormControl() {
             map: "https://maps.example.com/12345"
         }
         data.address = address
-        data.petCategories = JSON.parse(data.petCategories)
+        if(data.petCategories !== ""){
+            data.petCategories = JSON.parse(data.petCategories)
+        }
         console.log(data)
         
         
@@ -237,7 +239,7 @@ export default function BasicFormControl() {
                             }}
                             >
                             {petCategories.map((category, index) => (
-                                <Option key={index} value={category.name}>{category.name}</Option>
+                                <Option key={index} value={category.id}>{category.name}</Option>
                             ))}
                             </Select>
                         </div>
