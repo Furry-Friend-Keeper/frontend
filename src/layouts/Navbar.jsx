@@ -21,6 +21,8 @@ function Navbar() {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+  
+  console.log(getRole);
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -141,7 +143,7 @@ function Navbar() {
                   onClose={handleCloseUserMenu}
                 >
                    {getRole === "PetKeeper" && <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center" ><Link className="text-black" to={"/at3/keeper-edit/"+getId}>My Shop</Link></Typography>
+                      <Typography textAlign="center" ><Link className="text-black" to={"/at3/keeper-edit/"+ getId}>My Shop</Link></Typography>
                     </MenuItem>}
                    <MenuItem onClick={handleCloseUserMenu}>
                       <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>

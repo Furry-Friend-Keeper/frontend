@@ -144,7 +144,7 @@ function KeeperDetail() {
                         >
                             {/* <img src="/assets/cover.jpeg" alt="" /> */}
                             {galleryData.map((gallery, index) => (
-                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/" + gallery} alt="" />
+                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/gallery/" + gallery}/>
                             ))}
                             {/* <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
@@ -160,7 +160,7 @@ function KeeperDetail() {
                             {...slider_nav}
                         >
                             {galleryData.map((gallery, index) => (
-                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/" + gallery} alt="" />
+                                <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/gallery/" + gallery} />
                             ))}
                             {/* <img src="/assets/cover.jpeg" alt="" />
                             <img src="/assets/cover.jpeg" alt="" />
@@ -193,7 +193,7 @@ function KeeperDetail() {
                                         component="img"
                                         alt="profile"
                                         height="140"
-                                        image="/assets/cover.jpeg"
+                                        img src={import.meta.env.VITE_KEEPER_IMAGE + apiData.id + "/" + apiData.img}
                                     />
                                 </Card>
                                 </div>

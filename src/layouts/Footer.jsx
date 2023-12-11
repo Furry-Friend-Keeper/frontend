@@ -6,8 +6,8 @@ function Footer() {
     <div className="container py-4">
         <div className="row text-center">
             <div className="col-lg-6">
-                <h5>Footer Content</h5>
-                <p>Place your footer content here.</p>
+                <h5>Furry Friend Keeper</h5>
+                <p>Website for animal lover</p>
             </div>
             <div className="col-lg-6">
                 <h5>Quick Links</h5>
@@ -21,7 +21,7 @@ function Footer() {
         </div>
     </div>
     <div className="text-center p-3">
-        &copy; 2023 Your Website
+        &copy; 2023 Furry Friend Keeper
     </div>
 </footer>
   )
