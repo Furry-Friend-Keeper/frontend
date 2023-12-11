@@ -55,7 +55,7 @@ export default function BasicFormControl() {
             "detail": data.detail,
             "contact": data.contact,
             "phone":data.phone,
-            "categoryId": [1,3],
+            "categoryId": data.petCategories,
             "email": data.email,
             "password": data.password,
             "role": 3, 

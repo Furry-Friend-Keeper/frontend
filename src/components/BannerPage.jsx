@@ -7,7 +7,7 @@ function BannerPage() {
       <div className="keeper-title">
         <div className="col-md-6 col-sm-12 keeper-text mx-3">
             <div className="image-banner">
-                <img src="/assets/banner.png" alt="" />
+                <img src="https://i.imgur.com/X6MfjpY.png" alt="" />
             </div>
             <div className="title">
                 <h1>FFK</h1>

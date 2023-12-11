@@ -146,11 +146,6 @@ function KeeperDetail() {
                             {galleryData.map((gallery, index) => (
                                 <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/gallery/" + gallery}/>
                             ))}
-                            {/* <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cat.jpg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" /> */}
                         </Slider>}
                     </div>
                     <div className="slider-nav">
@@ -162,11 +157,6 @@ function KeeperDetail() {
                             {galleryData.map((gallery, index) => (
                                 <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/gallery/" + gallery} />
                             ))}
-                            {/* <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cat.jpg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" />
-                            <img src="/assets/cover.jpeg" alt="" /> */}
                         </Slider>}
                     </div>
                 </div>
@@ -252,7 +242,6 @@ function KeeperDetail() {
                                 libraries={libraries}
                             >
                                 <GoogleMap
-                                    // onLoad={onLoad}
                                     center={{ lat: -33.8688, lng: 151.2195 }}
                                     zoom={13}
                                     mapContainerStyle={{
