@@ -40,35 +40,35 @@ function KeeperDetail() {
     const maxGallery = 8;
 
     // const [isEdit, setIsEdit] = useState(false);
+    const fetchData = async () => {
+        try {
+            const apiUrl = import.meta.env.VITE_KEEPERS_ID + keeperId;
+            await axios.get(apiUrl).then((response) => {
+                const data = response.data;
+                setApiData(data);
+                setValue("name", data.name);
+                setValue("detail", data.detail);
+                setValue("contact", data.contact);
+                setValue("email", data.email);
+                setValue("phone", data.phone);
+                setValue("address", data.address.address);
+                setValue("district", data.address.district);
+                setValue("province", data.address.province);
+                setValue("postalCode", data.address.postalCode);
+
+                const transformedGallery = data.gallery.map(item => {
+                    const splitItem = item.split(',');
+                    return splitItem.length === 2 ? splitItem[1] : item;
+                  });
+                  
+                  setGalleryData(transformedGallery);
+            });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + keeperId;
-                await axios.get(apiUrl).then((response) => {
-                    const data = response.data;
-                    setApiData(data);
-                    setValue("name", data.name);
-                    setValue("detail", data.detail);
-                    setValue("contact", data.contact);
-                    setValue("email", data.email);
-                    setValue("phone", data.phone);
-                    setValue("address", data.address.address);
-                    setValue("district", data.address.district);
-                    setValue("province", data.address.province);
-                    setValue("postalCode", data.address.postalCode);
-
-                    const transformedGallery = data.gallery.map(item => {
-                        const splitItem = item.split(',');
-                        return splitItem.length === 2 ? splitItem[1] : item;
-                      });
-                      
-                      setGalleryData(transformedGallery);
-                });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
         fetchData();
     }, []);
 
@@ -101,9 +101,14 @@ function KeeperDetail() {
                 setIsEditName(false);
                 setIsEditContact(false);
                 setIsEditAddress(false);
+                setOpen(true)
+                setAlertStatus('success')
             })
             .catch((err) => {
                 console.log(err);
+                setOpen(true)
+                setMessageLog(err.message)
+                setAlertStatus('error')
             });
     };
 
@@ -116,6 +121,7 @@ function KeeperDetail() {
         }).then((res) => {
             setOpen(true)
             setAlertStatus('success')
+            fetchData()
         }).catch((err) => {
             console.log(err)
             setOpen(true)
@@ -126,7 +132,9 @@ function KeeperDetail() {
 
     const onSubmit = (data) => {
         EditKeeper(data);
-        EditProfileImg();
+        if(isImg !== undefined) {
+            EditProfileImg();
+        }
     };
 
     const [previewImage, setPreviewImage] = useState(null);
