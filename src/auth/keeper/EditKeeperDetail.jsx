@@ -348,7 +348,7 @@ function KeeperDetail() {
                                                 component="img"
                                                 alt="profile"
                                                 height="140"
-                                                src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img}
+                                                src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
                                             />
                                         </Card>
                                         :
@@ -374,7 +374,7 @@ function KeeperDetail() {
                                                     component="img"
                                                     alt="profile"
                                                     height="140"
-                                                    src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img}
+                                                    src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
                                                 />
                                             )}
                                         </Card>
