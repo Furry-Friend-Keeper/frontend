@@ -36,7 +36,9 @@ function KeeperDetail() {
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
     const [isEditAddress, setIsEditAddress] = useState(false);
+    const [isImg, setImg] = useState();
     const maxGallery = 8;
+
     // const [isEdit, setIsEdit] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
@@ -105,8 +107,26 @@ function KeeperDetail() {
             });
     };
 
+    
+    const EditProfileImg = async () => {
+        const formData = new FormData();
+        formData.append("file", isImg)
+        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
+            headers: { 'content-type': 'multipart/form-data' }
+        }).then((res) => {
+            setOpen(true)
+            setAlertStatus('success')
+        }).catch((err) => {
+            console.log(err)
+            setOpen(true)
+            setMessageLog(err.message)
+            setAlertStatus('error')
+        })
+    };
+
     const onSubmit = (data) => {
         EditKeeper(data);
+        EditProfileImg();
     };
 
     const [previewImage, setPreviewImage] = useState(null);
@@ -114,6 +134,7 @@ function KeeperDetail() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
+            setImg(file)
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result);
@@ -127,7 +148,7 @@ function KeeperDetail() {
     const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
     const [libraries] = useState(["places"]);
 
-    const [imagePreviews, setImagePreviews] = useState(Array(maxGallery).fill(''));
+    const [galleryPreviews, setGalleryPreviews] = useState(Array(maxGallery).fill(''));
     const [imageGallery, setImageGallery] = useState([]);
 
     const handleGalleryChange = (event, index) => {
@@ -135,9 +156,9 @@ function KeeperDetail() {
         const reader = new FileReader();
         
         reader.onload = (e) => {
-            const updatedPreviews = [...imagePreviews];
+            const updatedPreviews = [...galleryPreviews];
             updatedPreviews[index] = e.target.result;
-            setImagePreviews(updatedPreviews);
+            setGalleryPreviews(updatedPreviews);
         };
 
         if (file) {
@@ -147,9 +168,9 @@ function KeeperDetail() {
     };
 
     const removeImagePreview = (index) => {
-        const updatedPreviews = [...imagePreviews];
+        const updatedPreviews = [...galleryPreviews];
         updatedPreviews[index] = '';
-        setImagePreviews(updatedPreviews);
+        setGalleryPreviews(updatedPreviews);
     };
 
     const removeImageGallery = (data) => {
@@ -172,10 +193,11 @@ function KeeperDetail() {
             formData.append('delete', '')
         }
         if (imageGallery.length === 0) {
-            formData.append('file', '')
+            const emptyFile = new Blob([], { type: 'application/octet-stream' });
+            formData.append('file', emptyFile)
         }
         // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
-        await axios.patch(import.meta.env.VITE_KEEPERS_ID+keeperId+"/gallery", formData, {
+        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
             headers: { 'content-type': 'multipart/form-data' }
         }).then((res) => {
             setOpen(true)
@@ -202,7 +224,7 @@ function KeeperDetail() {
                     {alertStatus === 'success' ?
                     <div>
                         <AlertTitle>Success</AlertTitle>
-                        Singup Successful!!!
+                        Successful!!!
                     </div>
                     :
                     <div>
@@ -221,7 +243,7 @@ function KeeperDetail() {
                             {galleryData.map((gallery, index) => (
                                 <div key={index} className="position-relative">
                                     <img
-                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + gallery}
+                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/gallery/" + gallery}
                                         alt={`Preview ${index}`}
                                         style={{ maxWidth: '100%', maxHeight: 'auto' }}
                                     />
@@ -236,7 +258,7 @@ function KeeperDetail() {
                             {Array.from(Array(maxGallery-galleryData.length),(_, index) => (
                             <div key={index} className="gallery-list">
                                 <Button component="label">
-                                    {!imagePreviews[index] && (
+                                    {!galleryPreviews[index] && (
                                     <div>
                                         <AddPhotoAlternateIcon className="add-gallery" />
                                         <VisuallyHiddenInput type="file" onChange={(e) => handleGalleryChange(e, index)} />
@@ -245,10 +267,10 @@ function KeeperDetail() {
                                     {/* <AddPhotoAlternateIcon /> */}
                                 </Button>
 
-                                {imagePreviews[index] && (
+                                {galleryPreviews[index] && (
                                         <div className="position-relative">
                                             <img
-                                                src={imagePreviews[index]}
+                                                src={galleryPreviews[index]}
                                                 alt={`Preview ${index}`}
                                                 style={{ maxWidth: '100%', maxHeight: 'auto' }}
                                             />
@@ -265,7 +287,7 @@ function KeeperDetail() {
                             {/* <h4 className="error-message text-center">Image  (0/9)</h4> */}
                             <div className="text-center">
                                 <Button onClick={GalleryImageKeeper} className="rounded-5 py-3 px-4 fs-6" variant="contained" size="large" color="warning" startIcon={ <CollectionsIcon />}>
-                                    Upload Gallery
+                                    Save Gallery
                                 </Button>
                             </div>
                         </div>
@@ -323,6 +345,7 @@ function KeeperDetail() {
                                         </Card>
                                         :
                                         <div>
+                                            
                                         <Card
                                             sx={{
                                                 maxWidth: 345,
@@ -343,7 +366,7 @@ function KeeperDetail() {
                                                     component="img"
                                                     alt="profile"
                                                     height="140"
-                                                    image="/assets/cover.jpeg"
+                                                    src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img}
                                                 />
                                             )}
                                         </Card>
@@ -435,6 +458,7 @@ function KeeperDetail() {
                                                     onClick={() =>
                                                         setIsEditName(false)
                                                     }
+                                                    
                                                     sx={{ mt: 3, ml: 1 }}
                                                 >
                                                     Cancel

@@ -133,7 +133,7 @@ function Home() {
                   return (
                   <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 px-2 ">
                     <div className="keeper card bg-shadow text-center border-0">
-                      {item.image ? <img src={item.image} alt={item.title} /> : <ImageNotSupportedIcon className="notImage" />}
+                      {item.img ? <img src={import.meta.env.VITE_KEEPER_IMAGE + item.id + "/" + item.img} alt={item.title} /> : <ImageNotSupportedIcon className="notImage" />}
                       <div className="card-body border-top border-2 ">
                         <div className="d-flex justify-content-center">
                           <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
