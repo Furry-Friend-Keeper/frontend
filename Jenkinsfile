@@ -17,8 +17,7 @@ pipeline {
     stage("deploy") {
         steps {
           echo 'deploy'
-          sh 'cd'
-          sh 'rm -r test'          
+          sh 'pwd'      
       }
     }
   }
