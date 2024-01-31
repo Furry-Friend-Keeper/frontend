@@ -16,7 +16,8 @@ pipeline {
     stage("deploy") {
         steps {
           echo 'deploy'
-          sh 'pwd'
+          sh 'cd'
+          sh 'sudo docker compose up -d --build'
       }
     }
   }
