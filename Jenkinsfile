@@ -6,6 +6,7 @@ pipeline {
     stage("build") {
         steps {
           echo 'buildasda'
+          sh './test.sh'
       }
     }
     stage("test") {
