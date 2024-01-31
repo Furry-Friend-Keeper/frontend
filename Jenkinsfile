@@ -10,7 +10,7 @@ pipeline {
     }
     stage("test") {
         steps {
-          echo 'testxczxcasda'
+          echo 'testxczxcasdasdfs'
       }
     }
     stage("deploy") {
