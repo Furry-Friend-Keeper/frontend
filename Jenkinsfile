@@ -17,7 +17,7 @@ pipeline {
         steps {
           echo 'deploy'
           sh 'cd'
-          sh 'sudo docker compose up -d --build'
+          sh 'sudo rm -r test'
       }
     }
   }
