@@ -6,6 +6,7 @@ pipeline {
     stage("build") {
         steps {
           echo 'buildasda'
+          sh 'java -version'
       }
     }
     stage("test") {
@@ -17,7 +18,7 @@ pipeline {
         steps {
           echo 'deploy'
           sh 'cd'
-          sh 'sudo rm -r test'
+          sh 'rm -r test'          
       }
     }
   }
