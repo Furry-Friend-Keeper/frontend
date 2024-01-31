@@ -16,7 +16,7 @@ pipeline {
     stage("deploy") {
         steps {
           echo 'deploy'
-          sh 'node --version'
+          sh 'pwd'
       }
     }
   }
