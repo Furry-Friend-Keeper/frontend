@@ -6,12 +6,12 @@ pipeline {
     stage("build") {
         steps {
           echo 'buildasda'
-          sh 'java -version'
       }
     }
     stage("test") {
         steps {
           echo 'test'
+          sh 'java -version'
       }
     }
     stage("deploy") {
