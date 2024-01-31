@@ -17,7 +17,10 @@ pipeline {
     stage("deploy") {
         steps {
           echo 'deploy'
-          sh 'pwd'      
+          sh 'pwd'
+          echo '-----------'
+          sh 'cd'
+          sh 'pwd'
       }
     }
   }
