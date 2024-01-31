@@ -5,7 +5,7 @@ pipeline {
 
     stage("build") {
         steps {
-          echo 'build'
+          echo 'buildasda'
       }
     }
     stage("test") {
