@@ -15,19 +15,7 @@ import OwnerSignup from './OwnerSignup';
 // import KeeperDetail from './KeeperDetail';
 // import Map from './Map';
 
-  
-  // const steps = ['Information', 'Keeper Detail', 'Map'];
-  
-  // function getStepContent(step) {
-  //   switch (step) {
-  //       case 0:
-  //         return <Information/>;
-  //       case 1:
-  //         return <KeeperDetail />;
-  //       default:
-  //         return <Map />;
-  //     }
-  // }
+
 
 export default function KeeperSignUp() {
     const [activeStep, setActiveStep] = React.useState(0);
@@ -50,37 +38,14 @@ export default function KeeperSignUp() {
                             <LockOutlinedIcon />
                         </Avatar>
                     </div>
-            <Typography component="h1" variant="h5" align="center">
-              Sign up
-            </Typography>
-            {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper> */}
-            {/* {activeStep === steps.length ? ( */}
-            {/* ) : ( */}
+            <div className="mx-2">
+              <Typography component="h1" variant="h5" align="left" fontWeight="bold">
+                Pet Owner Sign Up Form
+              </Typography>
+                <p>Please provide all required information to register your account with us</p>
+            </div>
               <React.Fragment>
-                {/* {getStepContent(activeStep)} */}
                 <OwnerSignup />
-
-                {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-  
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </Box> */}
               </React.Fragment>
             {/* )} */}
           </Paper>

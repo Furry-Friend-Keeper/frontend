@@ -51,6 +51,7 @@ function KeeperDetail() {
 
     const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
     const [libraries] = useState(["places"]);
+    
     const slider_main = {
         asNavFor: slider2,
         slidesToShow: 1,
@@ -96,10 +97,7 @@ function KeeperDetail() {
         slidesToScroll: 5,
         swipeToSlide: false,
         arrows: false,
-        // focusOnSelect: false,
         infinite: false,
-        // vertical : true,
-        // verticalSwiping : true,
 
         responsive: [
             {
@@ -137,19 +135,20 @@ function KeeperDetail() {
             <div className="container pt-lg-4">
                 <div className="carousel col-md-11">
                     <div className="slider-for">
-                        {galleryData.length > 0 && <Slider
+                        {galleryData.length > 0 && 
+                        <Slider
                             className="slider"
                             ref={(slider) => setSlider1(slider)}
                             {...slider_main}
                         >
-                            {/* <img src="/assets/cover.jpeg" alt="" /> */}
                             {galleryData.map((gallery, index) => (
                                 <img key={index} src={import.meta.env.VITE_KEEPER_IMAGE + id + "/gallery/" + gallery}/>
                             ))}
                         </Slider>}
                     </div>
                     <div className="slider-nav">
-                        {galleryData.length > 0 && <Slider
+                        {galleryData.length > 0 && 
+                        <Slider
                             className="slider"
                             ref={(slider) => setSlider2(slider)}
                             {...slider_nav}
@@ -192,9 +191,9 @@ function KeeperDetail() {
                                     <h2 className="mb-lg-4 mt-lg-3">
                                         {apiData.name}
                                     </h2>
-                                    <span className="fs-3">
+                                    {/* <span className="fs-3">
                                         <i className="bi bi-star"></i>
-                                    </span>
+                                    </span> */}
                                 </div>
                                 
 

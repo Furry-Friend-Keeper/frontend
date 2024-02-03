@@ -208,6 +208,9 @@ function KeeperDetail() {
         await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
             headers: { 'content-type': 'multipart/form-data' }
         }).then((res) => {
+            fetchData();
+            setImageGallery([])
+            setGalleryPreviews(Array(maxGallery).fill(''))
             setOpen(true)
             setAlertStatus('success')
         }).catch((err) => {

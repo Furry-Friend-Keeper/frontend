@@ -32,7 +32,8 @@ function Navbar() {
     <>
    <nav className="navbar navbar-expand-lg bg-white">
       <div className="container">
-        <Link className="navbar-brand navbar-head fw-bold text-uppercase" to="/at3">
+        <Link className="navbar-brand navbar-head" to="/at3">
+          {/* <img className="me-2" src="./assets/cat.png" alt="" width={35}/> */}
           Furry Friend Keeper
         </Link>
         
@@ -48,11 +49,11 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            <li><Link className="dropdown-item" to="/at3">Home</Link></li>
-            <li><Link className="dropdown-item" to="/at3/about-us">About</Link></li>
+            {/* <li><Link className="dropdown-item" to="/at3">Home</Link></li> */}
+            {/* <li><Link className="dropdown-item" to="/at3/about-us">About</Link></li> */}
             {/* <li><Link className="dropdown-item" to="#">Contact</Link></li> */}
-            {!isLogin && <li><Link className="dropdown-item" to="/at3/login">Login</Link></li>}
-            {!isLogin && <li><Link className="dropdown-item" to="/at3/signup">Sign up</Link></li>}
+            {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
+            {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
 
           </ul>
           {isLogin && 
@@ -85,7 +86,7 @@ function Navbar() {
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link" aria-current="page" to="/at3">
                 Home
               </Link>
@@ -94,7 +95,7 @@ function Navbar() {
               <Link className="nav-link" to="/at3/about-us">
                 About
               </Link>
-            </li>
+            </li> */}
             {/* <li className="nav-item">
               <Link className="nav-link" to="#">
                 Contact
@@ -109,7 +110,7 @@ function Navbar() {
             }
             {!isLogin &&
             <li className="nav-item">
-              <Link className="btn fw-semibold btn-primary" to="/at3/signup">
+              <Link className="btn btn-primary" to="/at3/signup">
                 Sign up
               </Link>
             </li>

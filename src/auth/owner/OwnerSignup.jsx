@@ -4,7 +4,7 @@ import { useFormControlContext } from "@mui/base/FormControl";
 import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
 // import clsx from "clsx";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import axios from "axios";
@@ -12,12 +12,15 @@ import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/bootstrap.css";
 
 export default function BasicFormControl() {
     const {
         register,
         handleSubmit,
         watch,
+        control,
         formState: { errors },
     } = useForm();
 
@@ -64,7 +67,7 @@ export default function BasicFormControl() {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} >
+        <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)} >
             <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
                 <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
                     {alertStatus === 'success' ?
@@ -82,57 +85,92 @@ export default function BasicFormControl() {
             </Snackbar>
             <div className="container mt-4">
                 <div className="row">
-                    <div className="col-md-6">
+                    <h5 className="mb-5">Please complete all information below:</h5>
+                    <div className="col-md-6 pb-4">
                         <Label>Firstname</Label>
-                        <StyledInput className="pb-3"
+                        <input className={`form-control ${errors.firstName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Firstname here"
-                            {...register("firstName", { required: "Firstname is required", maxLength: {
+                            {...register("firstName", { required: "Please enter your firstname.", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}
                         />
-                        {errors.firstName && <p className="error-message">{errors.firstName.message}</p>}
+                        {errors.firstName && <small className="invalid-feedback">{errors.firstName.message}</small>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 pb-4">
                         <Label>Lastname</Label>
-                        <StyledInput className="pb-3"
+                        <input className={`form-control ${errors.lastName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Lastname here"
                             {...register("lastName", { required: "Lastname is required", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}
                         />
-                        {errors.lastName && <p className="error-message">{errors.lastName.message}</p>}
+                        {errors.lastName && <small className="invalid-feedback">{errors.lastName.message}</small>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-12 pb-4">
                         <Label>Email</Label>
-                        <StyledInput className="pb-3"
+                        <input className={`form-control ${errors.email ? "is-invalid" : ""} py-2`}
                             placeholder="Example@mail.com"
-                            {...register("email", { required: "Email is required", maxLength: 100, pattern: {
+                            {...register("email", { required: "Please enter your email.", maxLength: 100, pattern: {
                                 value: /\S+@\S+\.\S+/,
                                 message: "Entered value does not match email format",
                             } })}
                         />
-                        {errors.email && <p className="error-message">{errors.email.message}</p>}
+                        {errors.email && <small className="invalid-feedback">{errors.email.message}</small>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-12 pb-4">
                         <Label>Phone</Label>
-                        <StyledInput className="pb-3"
-                            type="tel"
-                            placeholder="Write your Phone here"
-                            {...register("phone", { required: "Phone is required", maxLength: {
+                        {/* <PhoneInput
+                            inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                            inputStyle={{ width: "100%"}}
+                            specialLabel={""}
+                            country={"th"}
+                            countryCodeEditable={false}
+                            placeholder="Enter phone number"
+                            {...register("phone", {
+                                required: "Please enter your phone number.",
+                                maxLength: {
                                 value: 10,
-                                message: "Phone number must not more than 10 characters"
-                            } })}
-                        />
-                        {errors.phone && <p className="error-message">{errors.phone.message}</p>}
+                                message: "Phone number must not more than 10 characters",
+                                },
+                            })}
+                            /> */}
+                            <Controller
+                                control={control}
+                                name="phone"
+                                rules={{ required: "Please enter your phone number.",
+                                        maxLength: { value:11, message: "Phone number must not more than 10 characters"},
+                                        minLength : { value:11, message: "Phone number must not more than 10 characters"}
+
+                                    }}
+                                // className="form-control"
+                                render={({ field: { ref, ...field } }) => (
+                                    <PhoneInput
+                                    {...field}
+                                    inputProps={{
+                                        ref,
+                                        required: true,
+                                        autoFocus: true,
+                                        // className: "form-control py-2"
+                                    }}
+                                    masks={{th: '.. - ... - ....', }}
+                                    inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                                    inputStyle={{ width: "100%"}}
+                                    specialLabel={""}
+                                    country={"th"}
+                                    countryCodeEditable={false}
+                                    placeholder="Enter phone number"
+                                    />
+                                )}
+                                />
+                        {errors.phone && <small className="error-message">{errors.phone.message}</small>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-12 pb-4">
                         <Label>Password</Label>
-                        <StyledInput className="pb-3"
-                            type="password"
+                        <input className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Password here"
-                            {...register("password", { required: "Password is required", minLength: {
+                            {...register("password", { required: "Please enter your password.", minLength: {
                                 value: 8,
                                 message: "Password must have at least 8 characters"
                             },maxLength: {
@@ -140,35 +178,35 @@ export default function BasicFormControl() {
                                 message: "Password must not more than 20 characters"
                             } })}
                         />
-                        {errors.password && <p className="error-message">{errors.password.message}</p>}
+                        {errors.password && <small className="invalid-feedback">{errors.password.message}</small>}
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-12 pb-4">
                         <Label>Confirm Password</Label>
-                        <StyledInput className="pb-3"
-                            type="password"
+                        <input className={`form-control ${errors.confirmPassword ? "is-invalid" : ""} py-2`}
                             placeholder="Please confirm your password"
-                            {...register("confirmPassword", { required: true, validate: value =>
+                            {...register("confirmPassword", { required: "Please enter your confirm password.", validate: value =>
                                 value === password.current || "The passwords do not match" 
                             })}
                         />
-                        {errors.confirmPassword && <p className="error-message">{errors.confirmPassword.message}</p>}
+                        {errors.confirmPassword && <small className="invalid-feedback">{errors.confirmPassword.message}</small>}
                     </div>
                     
-                    <div className="col-md-6">
+                    <div className="col-md-12 pb-4">
                         <Label>Petname</Label>
-                        <StyledInput className="pb-3"
+                        <input className={`form-control ${errors.petName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Petname here"
                             {...register("petName", { maxLength: {
                                 value: 200,
                                 message: "Contact must not more than 200 characters"
                             }})}
                         />
-                        {errors.petName && <p className="error-message">{errors.petName.message}</p>}
+                        {errors.petName && <small className="invalid-feedback">{errors.petName.message}</small>}
                     </div>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
                             type="submit"
+                            size="large"
                             variant="contained"
                             sx={{ mt: 3, ml: 1 }}
                         >

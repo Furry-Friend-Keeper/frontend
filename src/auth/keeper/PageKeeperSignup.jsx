@@ -13,6 +13,7 @@ import Avatar from '@mui/material/Avatar';
 import KeeperSignup from './KeeperSignup';
 import KeeperDetail from './UploadImage';
 import Map from './Map';
+import { Bolt } from '@mui/icons-material';
 
   
   const steps = ['KeeperSignup', 'Keeper Detail', 'Map'];
@@ -49,44 +50,16 @@ export default function KeeperSignUp() {
                             <LockOutlinedIcon />
                         </Avatar>
                     </div>
-            <Typography component="h1" variant="h5" align="center">
-              Sign up
-            </Typography>
-            {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper> */}
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                All steps completed - you&apos;re finished
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {/* {getStepContent(activeStep)} */}
-                <KeeperSignup />
-
-                {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
-  
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
-                </Box> */}
-              </React.Fragment>
-            )}
+            <div className='mx-2'>
+              <Typography component="h1" variant="h5" align="left" fontWeight="bold">
+                Pet Keeper Sign Up Form
+              </Typography>
+              <p>Please provide all required information to register your account with us</p>
+            </div>
+            <br />
+            <React.Fragment>
+              <KeeperSignup />
+            </React.Fragment>
           </Paper>
         </Container>
       </React.Fragment>

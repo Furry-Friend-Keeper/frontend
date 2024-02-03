@@ -20,7 +20,7 @@ const Signup = () => {
                     </Typography>
                     <div className="col d-flex justify-content-center font mb-4">
                         <Link
-                            className="btn fw-semibold btn-primary"
+                            className="btn btn-primary"
                             to="/at3/signup/owner"
                         >
                             Owner Sign up
@@ -28,7 +28,7 @@ const Signup = () => {
                     </div>
                     <div className="col d-flex justify-content-center mb-4">
                         <Link
-                            className="btn fw-semibold btn-primary"
+                            className="btn btn-primary"
                             to="/at3/signup/keeper"
                         >
                             Keeper Sign up
