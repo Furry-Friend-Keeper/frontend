@@ -1,5 +1,4 @@
 frontend:
-        image: frontendimg
         container_name: frontend
         build:
             context: ./
