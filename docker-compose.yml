@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   frontend:
-        image: frontendimg
+        dockerfile: Dockerfile
         container_name: frontend
         build:
             context: ./
