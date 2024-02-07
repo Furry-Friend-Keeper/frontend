@@ -1,24 +1,21 @@
 pipeline {
-  agent any
-
-  stages {
-
-    stage("build") {
-        steps {
-          echo 'build'
-      }
+    agent any
+  
+    stages {
+        stage('Pull From Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Furry-Friend-Keeper/frontend.git'
+            }
+        }
+       stage('Docker Compose') {
+            steps {
+                sh 'sudo docker compose up --build -d'
+            }
+        }
+        stage('Success') {
+            steps {
+                echo 'Deploy Successfully'
+            }
+        }
     }
-    stage("test") {
-        steps {
-          echo 'test'
-          sh 'java -version'
-      }
-    }
-    stage("deploy") {
-        steps {
-          echo 'deploy'
-          sh 'pwd'
-      }
-    }
-  }
 }
