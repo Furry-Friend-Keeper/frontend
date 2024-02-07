@@ -1,0 +1,9 @@
+frontend:
+        image: frontendimg
+        container_name: frontend
+        build:
+            context: ./
+        ports:
+            - 3000:3000
+        networks:
+            - ffknetwork
