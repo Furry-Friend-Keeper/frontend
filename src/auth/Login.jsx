@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useSelector, useDispatch } from "react-redux";
-import { authActions } from "../store/AuthReducer";
+// import { useSelector, useDispatch } from "react-redux";
+// import { authActions } from "../store/AuthReducer";
 import { FormControlLabel, Checkbox, Link, Box, TextField, Button, Grid, Typography, InputAdornment, IconButton, Container, Paper } from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
@@ -11,42 +11,45 @@ import { useForm } from "react-hook-form";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import { useDispatch, useSelector } from 'react-redux'
+import { userLogin } from '../store/AuthAction'
+
 function Login() {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm();
+  const { handleSubmit, register, formState: { errors }, } = useForm();
+
+  const { loading, error } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
 
   const navigate = useNavigate()
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [loginError, setLoginError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const LoginForm = async (data) => {
-    await axios
-      .post(import.meta.env.VITE_USER_LOGIN, {
-        email: data.email,
-        password: data.password,
-      })
-      .then((res) => {
-        const response = res.data;
-        console.log(response)
-        dispatch(authActions.login({ accessToken: response.accessToken, role: response.role, id: response.id }));
-        if(response.role === 'Owner') {
-          navigate('/at3')
-        } else {
-          navigate('/at3/keeper-edit/' + response.id)
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoginError(true);
-      });
-  };
+  // const LoginForm = async (data) => {
+  //   await axios
+  //     .post(import.meta.env.VITE_USER_LOGIN, {
+  //       email: data.email,
+  //       password: data.password,
+  //     })
+  //     .then((res) => {
+  //       const response = res.data;
+  //       console.log(response)
+  //       dispatch(authActions.login({ accessToken: response.accessToken, role: response.role, id: response.id }));
+  //       if(response.role === 'Owner') {
+  //         navigate('/at3')
+  //       } else {
+  //         navigate('/at3/keeper-edit/' + response.id)
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setLoginError(true);
+  //     });
+  // };
 
   const onSubmit = (data) => {
-    LoginForm(data);
+    // LoginForm(data);
+    dispatch(userLogin(data))
   };
 
   const handleTogglePasswordVisibility = () => {

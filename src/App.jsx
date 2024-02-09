@@ -1,7 +1,5 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './store/Store.jsx'; // Assuming you've created your Redux store
 
 import Home from './pages/Home.jsx'
 import Login from './auth/Login.jsx';
@@ -34,10 +32,9 @@ import Footer from './layouts/Footer.jsx';
 
 function App() {
   return (
-    <Provider store={store}>
       <Router>
         <Navbar />
-          <div className="main-container">
+          <main className="main-container">
           <Routes>
             <Route index path="/at3" element={<Home />} />
             <Route path="/at3/login" element={<Login />} />
@@ -51,10 +48,9 @@ function App() {
             {/* Add more routes as needed */}
       
           </Routes>
-          </div>    
+          </main>    
         <Footer />
       </Router>
-    </Provider>
   )
 }
 

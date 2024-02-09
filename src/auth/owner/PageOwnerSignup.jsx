@@ -34,10 +34,8 @@ export default function KeeperSignUp() {
         <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
           <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <div className="d-flex justify-content-center align-items-center">
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main',}}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                    </div>
+              <img src="/assets/cat.png" alt="" width={50} />
+          </div>
             <div className="mx-2">
               <Typography component="h1" variant="h5" align="left" fontWeight="bold">
                 Pet Owner Sign Up Form

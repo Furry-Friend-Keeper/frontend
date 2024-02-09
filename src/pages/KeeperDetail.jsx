@@ -15,6 +15,8 @@ import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 
+import GallerySider from "../components/GallerySider";
+
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
     const [galleryData, setGalleryData] = useState([]);
@@ -47,9 +49,8 @@ function KeeperDetail() {
 
     const [slider1, setSlider1] = useState(null);
     const [slider2, setSlider2] = useState(null);
-    const slider = useRef(null);
 
-    const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
+    const API_KEY = "AIzaSyD30UeQ7BApKME7TWIWej0tieTS__6OTBQ";
     const [libraries] = useState(["places"]);
     
     const slider_main = {
@@ -132,7 +133,7 @@ function KeeperDetail() {
 
     return (
         <>
-            <div className="container pt-lg-4">
+            {/* <div className="container pt-lg-4">
                 <div className="carousel col-md-11">
                     <div className="slider-for">
                         {galleryData.length > 0 && 
@@ -159,7 +160,8 @@ function KeeperDetail() {
                         </Slider>}
                     </div>
                 </div>
-            </div>
+            </div> */}
+            <GallerySider />
             <div className="container pb-lg-5">
                 <div className="row mx-auto col-11">
                     <div className="col-lg-8">

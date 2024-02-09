@@ -5,6 +5,7 @@ function BannerPage() {
     <div className="container banner">
     <div className="page-banner">
       <div className="keeper-title">
+        <h1 className="banner-content">Furry Friend Keeper</h1>
         <div className="col-md-6 col-sm-12 keeper-text mx-3">
             {/* <div className="image-banner">
                 <img src="https://i.imgur.com/OT4Bijh.jpg" alt="" />

@@ -22,19 +22,27 @@ function Navbar() {
     setAnchorElUser(event.currentTarget);
   };
   
-  console.log(getRole);
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
   return (
     <>
-   <nav className="navbar navbar-expand-lg bg-white">
+   <nav className="navbar navbar-expand-lg">
       <div className="container">
         <Link className="navbar-brand navbar-head" to="/at3">
-          {/* <img className="me-2" src="./assets/cat.png" alt="" width={35}/> */}
-          Furry Friend Keeper
+          <div className='d-flex align-items-center'>
+            <img className="me-3 object-fit-contain" src="/assets/cat.png" alt="" width={50} />
+            <div className='logo-content'>
+              <p className='m-0'>Furry Friend</p>
+              <p className='m-0'>Keeper</p>
+            </ div>
+          </div>
+          {/* <div className='d-flex align-items-center'>
+            <img className="me-2 object-fit-contain" src="./assets/cat.png" alt="" width={50} />
+            <p className="m-0">Furry Friend Keeper</p>
+          </div> */}
+          {/* Furry Friend Keeper */}
         </Link>
         
         <div className="dropdown">

@@ -1,45 +1,52 @@
 // import * as React from "react";
 import React, { useRef, useState, useEffect } from "react";
-import { useFormControlContext } from "@mui/base/FormControl";
-import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
 // import clsx from "clsx";
-import { useForm } from "react-hook-form";
-import Tooltip from "@mui/material/Tooltip";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
-import { Chip } from "@mui/joy";
+import { Controller, useForm } from "react-hook-form";
+import {Tooltip,Box, Button, Snackbar, Alert, AlertTitle, IconButton } from "@mui/material";
+import { Select, Chip, Option } from "@mui/joy";
 import InputAddress from "react-thailand-address-autocomplete";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, redirect } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+import { useDispatch, useSelector } from 'react-redux'
+import { registerKeeper } from "../../store/AuthAction";
 
 export default function BasicFormControl() {
-  const [Subdistrict, setSubdistrict] = useState("");
+  const [subdistrict, setSubdistrict] = useState("");
   const [district, setDistrict] = useState("");
   const [province, setProvince] = useState("");
   const [zipcode, setZipcode] = useState("");
   const [open, setOpen] = useState(false);
   const [alertStatus, setAlertStatus] = useState("");
   const [petCategories, setPetCategories] = useState([]);
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, watch, control, formState: { errors } } = useForm();
+
+  const { loading, userInfo, error, success } = useSelector(
+    (state) => state.auth
+  )
+  const dispatch = useDispatch()
 
   useEffect(() => {
     PetKeeperCategories();
   }, []);
+
+  useEffect(() => {
+    // redirect user to login page if registration was successful
+    if (success) {
+      setTimeout(() => {
+        redirect("/at3/login");
+      }, 3000);
+      // navigate('/at3/login')
+    }
+  }, [success])
 
   const PetKeeperCategories = async () => {
     await axios
@@ -96,17 +103,30 @@ export default function BasicFormControl() {
       data.petCategories = JSON.parse(data.petCategories);
     }
     console.log(data);
+    const result = {
+      name: data.keeperName,
+      detail: data.detail,
+      contact: data.contact,
+      phone: "0627482960",
+      // phone: data.phone,
+      categoryId: data.petCategories,
+      email: data.email,
+      password: data.password,
+      role: 3,
+      address: data.address,
+    };
 
-    SignUpForm(data);
+    dispatch(registerKeeper(result))
+    // SignUpForm(data);
   };
   watch('phone')
 
   const password = useRef({});
-  // password.current = watch("password", "");
+  password.current = watch("password", "");
 
   function onSelect(fulladdress) {
-    const { Subdistrict ,district, province, zipcode } = fulladdress;
-    setSubdistrict(Subdistrict);
+    const { subdistrict ,district, province, zipcode } = fulladdress;
+    setSubdistrict(subdistrict);
     setDistrict(district);
     setProvince(province);
     setZipcode(zipcode);
@@ -122,7 +142,7 @@ export default function BasicFormControl() {
   return (
     <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)}>
       <Snackbar
-        open={open}
+        open={!!error}
         autoHideDuration={3000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -138,9 +158,9 @@ export default function BasicFormControl() {
               Singup Successful!!!
             </div>
           ) : (
-            <div>
-              <AlertTitle>Failed</AlertTitle>
-              Signup Failed!! Email must be unique.
+            <div  className="fs-6">
+              {/* <AlertTitle className="fs-5"><b>Failed</b></AlertTitle> */}
+              <b>Error: </b> Something went wrong. User signup failed.
             </div>
           )}
         </Alert>
@@ -192,43 +212,62 @@ export default function BasicFormControl() {
           </div>
           <div className="col-md-6 pb-4">
             <Label>Password</Label>
-            <input
-              className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
-              placeholder="12345678"
-              {...register("password", {
-                required: "Please enter your password.",
-                minLength: {
-                  value: 8,
-                  message: "Password must have at least 8 characters",
-                },
-                maxLength: {
-                  value: 20,
-                  message: "Password must not more than 20 characters",
-                },
-              })}
-            />
+            <div className="form-password">
+              <input
+                className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
+                placeholder="12345678"
+                type={showPassword1 ? "text" : "password"}
+                {...register("password", {
+                  required: "Please enter your password.",
+                  minLength: {
+                    value: 8,
+                    message: "Password must have at least 8 characters",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Password must not more than 20 characters",
+                  },
+                })}
+              />
             {errors.password && (
               <small className="invalid-feedback">{errors.password.message}</small>
             )}
+              <div className="toggle-password">
+                <IconButton onClick={() => { setShowPassword1(!showPassword1) }} edge="end">
+                  {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </div>
+            </div>
           </div>
           <div className="col-md-6 pb-4">
             <Label>Confirm Password</Label>
-            <input
-              className={`form-control ${
-                errors.confirmPassword ? "is-invalid" : ""
-              } py-2`}
-              placeholder="12345678"
-              {...register("confirmPassword", {
-                required: "Please enter your confirm password.",
-                validate: (value) =>
-                  value === password.current || "The passwords do not match",
-              })}
-            />
+            <div className="form-password">
+              <input
+                className={`form-control ${
+                  errors.confirmPassword ? "is-invalid" : ""
+                } py-2`}
+                placeholder="12345678"
+                type={showPassword2 ? "text" : "password"}
+                {...register("confirmPassword", {
+                  required: "Please enter your confirm password.",
+                  validate: (val) => {
+                    if (watch('password') != val) {
+                      return "Your passwords do no match";
+                    }
+                  }
+                })}
+              />
             {errors.confirmPassword && (
               <small className="invalid-feedback">
                 {errors.confirmPassword.message}
               </small>
             )}
+                <div className="toggle-password">
+                  <IconButton onClick={() => { setShowPassword2(!showPassword2) }} edge="end">
+                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </div>
+            </div>
           </div>
           <div className="col-md-6 pb-4">
             <Label>Pet Category</Label>
@@ -266,24 +305,35 @@ export default function BasicFormControl() {
           </div>
           <div className="col-md-6 pb-4">
             <Label>Phone</Label>
-            <PhoneInput
-            inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
-            inputStyle={{ width: "100%"}}
-              specialLabel={""}
-              country={"th"}
-              countryCodeEditable={false}
-              placeholder="Enter phone number"
-              {...register("phone", {
-                required: "Please enter your phone number.",
-                maxLength: {
-                  value: 10,
-                  message: "Phone number must not more than 10 characters",
-                },
-              })}
-            />
-            {errors.phone && (
-              <small className="">{errors.phone.message}</small>
-            )}
+            <Controller
+                control={control}
+                name="phone"
+                rules={{ required: "Please enter your phone number.",
+                        maxLength: { value:10, message: "Phone number must not more than 10 characters"},
+                        minLength : { value:10, message: "Phone number must not more than 10 characters"}
+
+                    }}
+                // className="form-control"
+                render={({ field: { ref, ...field } }) => (
+                    <PhoneInput
+                    {...field}
+                    inputProps={{
+                        ref,
+                        required: true,
+                        autoFocus: true,
+                        // className: "form-control py-2"
+                    }}
+                    masks={{th: '.. ... ....', }}
+                    inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                    inputStyle={{ width: "100%"}}
+                    specialLabel={""}
+                    country={"th"}
+                    countryCodeEditable={false}
+                    placeholder="Enter phone number"
+                    />
+                )}
+                />
+            {errors.phone && <small className="error-message">{errors.phone.message}</small>}
           </div>
           <div className="col-md-6 pb-4">
             <Label>Contact</Label>
@@ -345,7 +395,7 @@ export default function BasicFormControl() {
                     id="auto-1"
                     placeholder="กรุณาเลือกตำบล"
                     address="subdistrict"
-                    value={Subdistrict}
+                    value={subdistrict}
                     onChange={(e) => setSubdistrict(e.target.value)}
                     onSelect={onSelect}
                 />
