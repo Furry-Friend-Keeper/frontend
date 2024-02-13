@@ -2,8 +2,6 @@ import { useState } from 'react';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
@@ -35,7 +33,7 @@ const Signup = () => {
                             <div key={index} className={`select-role ${selectedRole === role ? 'active' : ''} col-xl-6 col-md-6 col-sm-12`} onClick={() => handleRoleSelection(role)}>
                                 <div className='card text-center'>
                                     <div className="card-body">
-                                    <h5 className='my-3'>{role} Sign up</h5>
+                                    <h5 className='my-3'>{role}</h5>
                                     </div>
                                 </div>
                             </div>

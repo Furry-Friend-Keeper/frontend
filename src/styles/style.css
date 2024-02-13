@@ -68,7 +68,7 @@ a {
   /* border-bottom: 1.5px solid rgba(125, 129, 132, 0.3); */
   position: sticky;
   top: 0;
-  z-index: 9;
+  z-index: 9999;
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,.3);
 
@@ -792,4 +792,13 @@ footer {
   & div {
     border-radius: 9999px;
   }
+}
+
+.leaflet-container {
+  height: 100vh !important;
+}
+
+#map {
+  height: 350px !important;
+  z-index: 9;
 }

@@ -1,151 +1,110 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import parse from 'autosuggest-highlight/parse';
-import { debounce } from '@mui/material/utils';
+import React, { useEffect, useState } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-geosearch/dist/geosearch.css';
+import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
-// This key was created specifically for the demo in mui.com.
-// You need to create a new one for your application.
-const GOOGLE_MAPS_API_KEY = 'AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME';
+// import "leaflet/dist/leaflet.css"
+// import 'leaflet-geosearch/dist/geosearch.css';
 
-function loadScript(src, position, id) {
-  if (!position) {
-    return;
-  }
+  function Map() {
 
-  const script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('id', id);
-  script.src = src;
-  position.appendChild(script);
-}
+    useEffect(() => {
+      const latlng = L.latLng(13.7563, 100.5018);
+      const map = L.map('map').setView(latlng, 13);
+  
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+      }).addTo(map);
+        // Remove the map when the component is unmounted
 
-const autocompleteService = { current: null };
+        const provider = new OpenStreetMapProvider();
+        const searchControl = new GeoSearchControl({
+          provider,
+          autoComplete: true, // Optional: enable or disable auto-complete suggestions
+          style: 'bar',
+          showPopup: true,
+          keepResult: true,      
+          marker: {
+            // optional: L.Marker    - default L.Icon.Default
+            icon: new L.Icon.Default(),
+            draggable: true,
+          },
+        });
+        
+        map.addControl(searchControl);
 
-export default function GoogleMaps() {
-  const [value, setValue] = React.useState(null);
-  const [inputValue, setInputValue] = React.useState('');
-  const [options, setOptions] = React.useState([]);
-  const loaded = React.useRef(false);
+        let currentMarker = null;
 
-  if (typeof window !== 'undefined' && !loaded.current) {
-    if (!document.querySelector('#google-maps')) {
-      loadScript(
-        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`,
-        document.querySelector('head'),
-        'google-maps',
+            // Get current location and add a marker
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const currentLocation = L.latLng(latitude, longitude);
+          
+          if (currentMarker) {
+            currentMarker.removeFrom(map); // Remove previous marker
+          }
+
+          // Add a marker at the current location
+          currentMarker = L.marker(currentLocation, { draggable: true }).addTo(map);
+          
+          // You can customize the marker icon if needed
+          // const customIcon = L.icon({ iconUrl: 'path/to/custom-icon.png', iconSize: [32, 32] });
+          // const marker = L.marker(currentLocation, { icon: customIcon }).addTo(map);
+
+          // Optionally, you can open a popup with additional information
+          currentMarker.bindPopup('You are here!').openPopup();
+
+          // Pan the map to the current location
+          map.panTo(currentLocation);
+
+          currentMarker.on('dragend', (event) => {
+            const newLocation = event.target.getLatLng();
+            currentMarker.bindPopup(`Latitude ${newLocation?.lat.toFixed(4)}, Longitude ${newLocation.lng.toFixed(4)}`).openPopup();
+          });
+        },
+        (error) => {
+          console.error('Error getting current location:', error.message);
+        }
       );
     }
-
-    loaded.current = true;
-  }
-
-  const fetch = React.useMemo(
-    () =>
-      debounce((request, callback) => {
-        autocompleteService.current.getPlacePredictions(request, callback);
-      }, 400),
-    [],
-  );
-
-  React.useEffect(() => {
-    let active = true;
-
-    if (!autocompleteService.current && window.google) {
-      autocompleteService.current =
-        new window.google.maps.places.AutocompleteService();
-    }
-    if (!autocompleteService.current) {
-      return undefined;
-    }
-
-    if (inputValue === '') {
-      setOptions(value ? [value] : []);
-      return undefined;
-    }
-
-    fetch({ input: inputValue }, (results) => {
-      if (active) {
-        let newOptions = [];
-
-        if (value) {
-          newOptions = [value];
-        }
-
-        if (results) {
-          newOptions = [...newOptions, ...results];
-        }
-
-        setOptions(newOptions);
+    map.on('geosearch/showlocation', () => {
+      if (currentMarker) {
+        currentMarker.removeFrom(map); // Remove previous marker
       }
     });
 
-    return () => {
-      active = false;
-    };
-  }, [value, inputValue, fetch]);
+    map.on('geosearch/marker/dragend', (event) => {
+      const { location } = event; // Assuming the event object contains the marker
+      const popupContent = `Latitude: ${location.lat.toFixed(4)}, Longitude: ${location.lng.toFixed(4)}`;
+      const popup = L.popup({ offset: L.point(0, -35) }).setLatLng(location) 
+      .setContent(popupContent)
+      .openOn(map);
+      popup.setContent(popupContent)
 
-  return (
-    <Autocomplete
-      id="google-map-demo"
-      sx={{ width: 300 }}
-      getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.description
-      }
-      filterOptions={(x) => x}
-      options={options}
-      autoComplete
-      includeInputInList
-      filterSelectedOptions
-      value={value}
-      noOptionsText="No locations"
-      onChange={(event, newValue) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
-      }}
-      onInputChange={(event, newInputValue) => {
-        setInputValue(newInputValue);
-      }}
-      renderInput={(params) => (
-        <TextField {...params} label="Add a location" fullWidth />
-      )}
-      renderOption={(props, option) => {
-        const matches =
-          option.structured_formatting.main_text_matched_substrings || [];
+      // fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}`)
+      // .then(response => response.json())
+      // .then(data => {
+      //     if (data.address) {
+      //         let label = data.address.road || data.address.city || data.address.country; // Customize as needed
+      //         console.log(data)
+      //         // marker.getPopup().setContent("<b>Location:</b> " + label);
+      //     } else {
+      //         // marker.getPopup().setContent("<b>Location:</b> Coordinates Only"); 
+      //     }
+      // })
+    });
 
-        const parts = parse(
-          option.structured_formatting.main_text,
-          matches.map((match) => [match.offset, match.offset + match.length]),
-        );
+    
+        return () => {
+          map.remove();
+        };
+    }, []);
+  
+    return <div id="map" />;
+  };
+  
 
-        return (
-          <li {...props}>
-            <Grid container alignItems="center">
-              <Grid item sx={{ display: 'flex', width: 44 }}>
-                <LocationOnIcon sx={{ color: 'text.secondary' }} />
-              </Grid>
-              <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
-                {parts.map((part, index) => (
-                  <Box
-                    key={index}
-                    component="span"
-                    sx={{ fontWeight: part.highlight ? 'bold' : 'regular' }}
-                  >
-                    {part.text}
-                  </Box>
-                ))}
-                <Typography variant="body2" color="text.secondary">
-                  {option.structured_formatting.secondary_text}
-                </Typography>
-              </Grid>
-            </Grid>
-          </li>
-        );
-      }}
-    />
-  );
-}
+export default Map;

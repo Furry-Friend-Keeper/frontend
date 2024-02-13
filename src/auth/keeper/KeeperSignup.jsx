@@ -11,7 +11,7 @@ import { useNavigate, redirect } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
+import Map from "./Map.jsx"
 import { useDispatch, useSelector } from 'react-redux'
 import { registerKeeper } from "../../store/AuthAction";
 
@@ -369,6 +369,9 @@ export default function BasicFormControl() {
                     placeholder="Enter your message"
                     {...register("detail", { maxLength: 1000 })}
                     />
+          </div>
+          <div className="col-md-12 pb-4">
+            <Map />
           </div>
           <div className="row">
             <div className="col-md-12 pb-4">
