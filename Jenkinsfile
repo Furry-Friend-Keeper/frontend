@@ -2,13 +2,21 @@ pipeline {
     agent any
   
     stages {
-        stage('Build') {
+        stage('Clear') {
             steps {
                 script {
-                    echo "INFO: Clear image+container | Build frontend image"
+                    echo "INFO: Clear image, container, network"
                     sh "docker rmi frontendimg || true"
                     sh "docker container rm -f frontend || true"
                     sh "docker network rm FFK-network || true"
+                    echo "INFO: All clear!!!"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    echo "INFO: Build frontend image"
                     sh "docker build -t frontendimg ."
                     sh "docker network create FFK-network || true"
                     echo "INFO: Finish build frontend image"
