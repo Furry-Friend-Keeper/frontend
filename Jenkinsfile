@@ -9,7 +9,7 @@ pipeline {
                     sh "docker rmi frontendimg || true"
                     sh "docker container rm -f frontend || true"
                     sh "docker network rm FFK-network || true"
-                    sh "docker build -t frontendimg ./frontend"
+                    sh "docker build -t frontendimg ."
                     sh "docker network create FFK-network || true"
                     echo "INFO: Finish build frontend image"
                 }
