@@ -25,7 +25,14 @@ pipeline {
             steps {
                 script {
                     echo "INFO: Deploy frontend container"
-                    sh "docker run -d --name frontend --network FFK-network -p 3000:80 --restart on-failure frontendimg"
+                    sh """
+                    docker run -d \
+                    --name frontend \
+                    --network FFK-network \
+                    -p 3000:80 \
+                    --restart on-failure \
+                    frontendimg
+                    """
                     echo "INFO: Finish deploy frontend container"
                 }
             }
