@@ -2,35 +2,13 @@ import React from 'react'
 import Slider from "react-slick";
 import { useState, useEffect } from "react";
 import $ from "jquery";
+import axios from "axios";
 
-function GallerySider() {
-    const [galleryData, setGalleryData] = useState([]);
+function GallerySider(props) {
+    const { galleryData, id } = props
     const [slider1, setSlider1] = useState(null);
     const [slider2, setSlider2] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
-                await axios.get(apiUrl).then((response) => {
-                    const data = response.data;
-                    setApiData(data);
-                    const transformedGallery = data.gallery.map(item => {
-                        const splitItem = item.split(',');
-                        return splitItem.length === 2 ? splitItem[1] : item;
-                    });
-                    
-                    console.log(transformedGallery)
-                      setGalleryData(transformedGallery);
-
-                });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     const slider_main = {
         asNavFor: slider2,

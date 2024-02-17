@@ -14,12 +14,20 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
+import Avatar from "@mui/material/Avatar";
+import { TextField, Button, styled, IconButton } from "@mui/material";
+import { useForm } from "react-hook-form";
+import Box from "@mui/material/Box";
+import { Textarea } from "@mui/joy";
 
 import GallerySider from "../components/GallerySider";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
     const [galleryData, setGalleryData] = useState([]);
+    const [isEditComment, setIsEditComment] = useState(false);
+    const [isReview, setIsReview] = useState([]);
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,14 +36,14 @@ function KeeperDetail() {
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
-                    const transformedGallery = data.gallery.map(item => {
-                        const splitItem = item.split(',');
+                    setIsReview(data.reviews);
+                    console.log(data.reviews);
+                    const transformedGallery = data.gallery.map((item) => {
+                        const splitItem = item.split(",");
                         return splitItem.length === 2 ? splitItem[1] : item;
                     });
-                    
-                    console.log(transformedGallery)
-                      setGalleryData(transformedGallery);
 
+                    setGalleryData(transformedGallery);
                 });
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -43,93 +51,33 @@ function KeeperDetail() {
         };
 
         fetchData();
-    }, []);
+    }, [id]);
 
-    const { id } = useParams();
-
-    const [slider1, setSlider1] = useState(null);
-    const [slider2, setSlider2] = useState(null);
-
-    const API_KEY = "AIzaSyD30UeQ7BApKME7TWIWej0tieTS__6OTBQ";
-    const [libraries] = useState(["places"]);
-    
-    const slider_main = {
-        asNavFor: slider2,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        infinite: false,
-        nextArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-            </svg>
-        ),
-        prevArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
-            </svg>
-        ),
-        afterChange: function (slick, nextSlide) {
-            if (nextSlide === 0) {
-                $(".slick-next").addClass("disabled");
-            } else {
-                $(".slick-next").removeClass("disabled");
-            }
-            if (nextSlide === slick.slideCount - 1) {
-                $(".slick-prev").addClass("disabled");
-            } else {
-                $(".slick-prev").removeClass("disabled");
-            }
-        },
+    const EditOwnerComment = async (data) => {
+        const result = {
+            comment: data.comment,
+        };
+        await axios
+            .patch(import.meta.env.VITE_KEEPERS_ID + id, result)
+            .then((res) => {
+                const response = res.data;
+                setApiData({ ...apiData, ...result });
+                setIsEditComment(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+    const onSubmit = (data) => {
+        EditOwnerComment(data);
     };
 
-    const slider_nav = {
-        asNavFor: slider1,
-        focusOnSelect: true,
-        slidesToShow: 5,
-        slidesToScroll: 5,
-        swipeToSlide: false,
-        arrows: false,
-        infinite: false,
-
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 4,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-        ],
-    };
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm();
 
     return (
         <>
@@ -161,7 +109,7 @@ function KeeperDetail() {
                     </div>
                 </div>
             </div> */}
-            <GallerySider />
+            <GallerySider id={id} galleryData={galleryData} />
             <div className="container pb-lg-5">
                 <div className="row mx-auto col-11">
                     <div className="col-lg-8">
@@ -178,35 +126,45 @@ function KeeperDetail() {
                                     )}
                             </Stack>
                             <div className="row">
-                              <div className="col-sm-4">
-                                <Card sx={{ maxWidth: 345, borderRadius: '20px' }}>
-                                    <CardMedia className="profile"
-                                        component="img"
-                                        alt="profile"
-                                        height="140"
-                                        img src={import.meta.env.VITE_KEEPER_IMAGE + apiData.id + "/" + apiData.img}
-                                    />
-                                </Card>
+                                <div className="col-sm-4">
+                                    <Card
+                                        sx={{
+                                            maxWidth: 345,
+                                            borderRadius: "20px",
+                                        }}
+                                    >
+                                        <CardMedia
+                                            className="profile"
+                                            component="img"
+                                            alt="profile"
+                                            height="140"
+                                            img
+                                            src={
+                                                import.meta.env
+                                                    .VITE_KEEPER_IMAGE +
+                                                apiData.id +
+                                                "/" +
+                                                apiData.img
+                                            }
+                                        />
+                                    </Card>
                                 </div>
                                 <div className="col">
-                                <div className="title d-flex justify-content-between align-items-center">
-                                    <h2 className="mb-lg-4 mt-lg-3">
-                                        {apiData.name}
-                                    </h2>
-                                    {/* <span className="fs-3">
+                                    <div className="title d-flex justify-content-between align-items-center">
+                                        <h2 className="mb-lg-4 mt-lg-3">
+                                            {apiData.name}
+                                        </h2>
+                                        {/* <span className="fs-3">
                                         <i className="bi bi-star"></i>
                                     </span> */}
-                                </div>
-                                
+                                    </div>
 
-                                <div className="des">
-                                    <h5>Description</h5>
-                                    <p>{apiData.detail}</p>
-                                
-                                </div>
+                                    <div className="des">
+                                        <h5>Description</h5>
+                                        <p>{apiData.detail}</p>
+                                    </div>
                                 </div>
                             </div>
-                            
                         </div>
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="title">
@@ -236,21 +194,9 @@ function KeeperDetail() {
                             </div>
                         </div>
                     </div>
+
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            <LoadScript
-                                googleMapsApiKey={API_KEY}
-                                libraries={libraries}
-                            >
-                                <GoogleMap
-                                    center={{ lat: -33.8688, lng: 151.2195 }}
-                                    zoom={13}
-                                    mapContainerStyle={{
-                                        width: "100%",
-                                        height: "200px",
-                                    }}
-                                ></GoogleMap>
-                            </LoadScript>
                             <div className="keeper-address p-md-2 bg-white">
                                 <div className="table">
                                     <table className="w-100">
@@ -299,20 +245,136 @@ function KeeperDetail() {
                                     />
                                     {/* <span className="">10 review</span> */}
                                 </div>
-                                <div className="review-des mt-3">
-                                    <textarea
-                                        className="form-control"
-                                        cols="30"
-                                        rows="5"
-                                        placeholder="Message to reviews"
-                                    ></textarea>
-                                </div>
-                                <div className="review-btn mt-3">
-                                    <button className="btn btn-success w-100">
-                                        Save
-                                    </button>
+                                <form onClick={handleSubmit(onSubmit)}>
+                                    <div className="review-des mt-3">
+                                        <Textarea
+                                            cols="30"
+                                            rows="5"
+                                            placeholder="Message to reviews"
+                                            {...register("comment", {
+                                                maxLength: {
+                                                    value: 200,
+                                                    message:
+                                                        "Comment must not more than 200 characters",
+                                                },
+                                            })}
+                                        ></Textarea>
+                                    </div>
+                                    <div className="review-btn mt-3">
+                                        <button className="btn btn-success w-100">
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-4">
+                        <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
+                            <div className="title">
+                                <h2>Reviews</h2>
+                            </div>
+                            <div className="row justify-content-start mt-4">
+                                <div className="col">
+                                    <div className="row">
+                                        {isReview.map((review, index) => (
+                                            <div key={index}>
+                                                <div className="row">
+                                                    <div className="col-md-1">
+                                                        <Avatar
+                                                            src={
+                                                                review?.petownerImg
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <p className="ps-4">
+                                                            {
+                                                                review?.petownerFirstname
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-md-7">
+                                                        <p className="ps-4">
+                                                            {review?.date}
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-md-1">
+                                                        <span className="fs-3 flex">
+                                                            <i
+                                                                className="bi bi-pencil-square fs-3 ju"
+                                                                onClick={() =>
+                                                                    setIsEditComment(
+                                                                        !isEditComment
+                                                                    )
+                                                                }
+                                                            ></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
+                            {isReview.map((review, index) => (
+                                <div key={index}>
+                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                        {!isEditComment ? (
+                                            <div className="mt-3">
+                                                <p>{review?.comment}</p>
+                                            </div>
+                                        ) : (
+                                            <TextField
+                                                label="Edit Comment"
+                                                margin="normal"
+                                                fullWidth
+                                                {...register("comment", {
+                                                    maxLength: {
+                                                        value: 200,
+                                                        message:
+                                                            "Comment must not more than 200 characters",
+                                                    },
+                                                })}
+                                            />
+                                        )}
+                                        {errors.comment && (
+                                            <p className="error-message">
+                                                {errors.comment.message}
+                                            </p>
+                                        )}
+                                        {isEditComment && (
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    justifyContent: "flex-end",
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="contained"
+                                                    style={{
+                                                        backgroundColor: "red",
+                                                        color: "white",
+                                                    }}
+                                                    onClick={() =>
+                                                        setIsEditComment(false)
+                                                    }
+                                                    sx={{ ml: 1 }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    type="submit"
+                                                    variant="contained"
+                                                    sx={{ ml: 1 }}
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Box>
+                                        )}
+                                    </form>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
