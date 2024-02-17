@@ -25,6 +25,8 @@ function KeeperDetail() {
     const [isReview, setIsReview] = useState([]);
     const { id } = useParams();
     const { loading, userInfo, error, success } = useSelector((state) => state.auth)  
+    const [ isOwnerReview, setIsOwnerReview ] = useState(null);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -32,8 +34,11 @@ function KeeperDetail() {
                 await axios.get(apiUrl).then((response) => {
                     const data = response.data;
                     setApiData(data);
-                    setIsReview(data.reviews);
-                    console.log(data.reviews);
+                    const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
+                    console.log(myReview)
+                    const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
+                    setIsReview(otherReview);
+                    setIsOwnerReview(myReview)
                     const transformedGallery = data.gallery.map((item) => {
                         const splitItem = item.split(",");
                         return splitItem.length === 2 ? splitItem[1] : item;
@@ -49,11 +54,12 @@ function KeeperDetail() {
         fetchData();
     }, [id]);
 
-    const EditOwnerComment = async (data) => {
+    const SaveOwnerComment = async (data) => {
         const result = {
             comment: data.comment,
-            petkeeperId: parseInt(id,10),
             petownerId: userInfo.id,
+            petkeeperId: parseInt(id,10),
+            reviewId: data.reviewId,
             stars: data.stars,
             date: moment().format()
         };
@@ -69,7 +75,7 @@ function KeeperDetail() {
             });
     };
     const onSubmit = (data) => {
-        // EditOwnerComment(data);
+        SaveOwnerComment(data);
         console.log(data);
     };
 
@@ -231,7 +237,8 @@ function KeeperDetail() {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
+                        { isOwnerReview === null && 
+                        <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4" >
                             <div className="title">
                                 <h4>Reviews</h4>
                             </div>
@@ -284,52 +291,90 @@ function KeeperDetail() {
                                 </form>
                             </div>
                         </div>
+                        }
                     </div>
                     <div className="mt-4">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
                             <div className="title">
-                                <h2>Reviews</h2>
+                                <h2>Overviews</h2>
                             </div>
                             <div className="rating">
                                 <span className="fs-3 rating-score me-2">
                                     {apiData.reviewStars}
                                 </span>
                                 <Rating
-                                    name="no-value"
+                                    name="read-only"
                                     value={apiData.reviewStars || 0}
                                     precision={0.5}
                                     readOnly
                                 />
                             </div>
                             <div className="row justify-content-start mt-4">
-                                <div className="col">
-                                    <div className="row">
-                                        {isReview.map((review, index) => (
-                                            <div className="d-flex align-items-center mt-4" key={index}>
+                                { isOwnerReview !== null &&
+                                <div className="mb-3">
+                                    <p>
+                                        My Review
+                                    </p>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="d-flex align-items-center mt-4">
                                                     <div className="col-md-1">
-                                                        <Avatar
+                                                        <img
                                                             src={
-                                                                review?.petownerImg
+                                                                import.meta.env.VITE_KEEPER_IMAGE + isOwnerReview?.petownerImg
                                                             }
                                                         />
                                                     </div>
                                                     <div className="col-md-3">
                                                         <span className="ps-4">
                                                             {
-                                                                review?.petownerFirstname
+                                                                isOwnerReview?.petownerFirstname
                                                             }
                                                         </span>
                                                     </div>
                                                     <div className="col-md-3">
+                                                    {!isEditComment ? (
+                                                        <Rating
+                                                            name="read-only"
+                                                            value={isOwnerReview?.stars}
+                                                            readOnly
+                                                        />
+                                                    ) : (
+                                                        <div className="rating">
+                                                            <Controller
+                                                                name="stars"
+                                                                control={control}
+                                                                defaultValue={0} // You can set the default value here
+                                                                rules={{
+                                                                    required: true,
+                                                                    max: 5,
+                                                                }}
+                                                                render={({ field }) => (
+                                                                    <Rating
+                                                                        {...field}
+                                                                        value={field.value}
+                                                                        onChange={(
+                                                                            event,
+                                                                            newValue
+                                                                        ) => {
+                                                                            field.onChange(
+                                                                                newValue
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    )}
                                                         <span className="ps-4">
-                                                            {review?.date}
+                                                            {isOwnerReview?.date}
                                                         </span>
                                                     </div>
                                                     <div className="col-md-4">
-                                                        <form onSubmit={handleSubmit(onSubmit)}>
+                                                        
+                                                                
                                                                 {!isEditComment ? (
                                                                     <div>
-                                                                        <span>{review?.comment}</span>
+                                                                        <span>{isOwnerReview?.comment}</span>
                                                                     </div>
                                                                 ) : (
                                                                     <TextField
@@ -384,7 +429,59 @@ function KeeperDetail() {
                                                                         </Button>
                                                                     </Box>
                                                                 )}
-                                                        </form>
+                                                    </div>
+                                                    <div className="col-md-1">
+                                                        {userInfo.id === isOwnerReview?.petownerId &&
+                                                            <span className="fs-3 flex">
+                                                                <i
+                                                                    className="bi bi-pencil-square fs-3 ju"
+                                                                    onClick={() =>
+                                                                        setIsEditComment(
+                                                                            !isEditComment
+                                                                        )
+                                                                    }
+                                                                ></i>
+                                                            </span>
+                                                        }
+                                                    </div>
+                                            
+                                            </div>
+                                            </form>
+                                </div>
+                                }
+                                <div className="col">
+                                    <div className="row">
+                                        <div>
+                                            Other Reviews
+                                        </div>
+                                        {isReview.map((review, index) => (
+                                            <div className="d-flex align-items-center mt-4" key={index}>
+                                                    <div className="col-md-1">
+                                                        <img
+                                                            src={
+                                                                import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <span className="ps-4">
+                                                            {
+                                                                review?.petownerFirstname
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <Rating
+                                                            name=""
+                                                            value={review?.stars}
+                                                            readOnly
+                                                        />
+                                                        <span className="ps-4">
+                                                            {review?.date}
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                            <span>{review?.comment}</span>
                                                     </div>
                                                     <div className="col-md-1">
                                                         {userInfo.id === review.petownerId &&
