@@ -9,16 +9,17 @@ import {
 import Rating from "@mui/material/Rating";
 import $ from "jquery";
 import axios from "axios";
-import { Navigate ,useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Avatar from "@mui/material/Avatar";
 import { TextField, Button, styled, IconButton } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
+import Typography from "@mui/material/Typography";
 
 import MapContainer from "../components/MapContainer";
 import GallerySider from "../components/GallerySider";
@@ -71,13 +72,15 @@ function KeeperDetail() {
             });
     };
     const onSubmit = (data) => {
-        EditOwnerComment(data);
+        // EditOwnerComment(data);
+        console.log(data);
     };
 
     const {
         register,
         handleSubmit,
         setValue,
+        control,
         formState: { errors },
     } = useForm();
 
@@ -236,19 +239,32 @@ function KeeperDetail() {
                                 <h4>Reviews</h4>
                             </div>
                             <div className="des">
-                                <div className="rating">
-                                    <span className="fs-3 rating-score me-2">
-                                        {apiData.reviewStars}
-                                    </span>
-                                    <Rating
-                                        name="half-rating-read"
-                                        value={apiData.reviewStars || 0}
-                                        precision={0.5}
-                                        readOnly
-                                    />
-                                    {/* <span className="">10 review</span> */}
-                                </div>
-                                <form onClick={handleSubmit(onSubmit)}>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="rating">
+                                        <Controller
+                                            name="stars"
+                                            control={control}
+                                            defaultValue={0} // You can set the default value here
+                                            rules={{
+                                                required: true,
+                                                max: 5,
+                                            }}
+                                            render={({ field }) => (
+                                                <Rating
+                                                    {...field}
+                                                    value={field.value}
+                                                    onChange={(
+                                                        event,
+                                                        newValue
+                                                    ) => {
+                                                        field.onChange(
+                                                            newValue
+                                                        );
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </div>
                                     <div className="review-des mt-3">
                                         <Textarea
                                             cols="30"
@@ -277,6 +293,17 @@ function KeeperDetail() {
                             <div className="title">
                                 <h2>Reviews</h2>
                             </div>
+                            <div className="rating">
+                                <span className="fs-3 rating-score me-2">
+                                    {apiData.reviewStars}
+                                </span>
+                                <Rating
+                                    name="no-value"
+                                    value={apiData.reviewStars || 0}
+                                    precision={0.5}
+                                    readOnly
+                                />
+                            </div>
                             <div className="row justify-content-start mt-4">
                                 <div className="col">
                                     <div className="row">
@@ -298,6 +325,15 @@ function KeeperDetail() {
                                                         </p>
                                                     </div>
                                                     <div className="col-md-7">
+                                                        <Rating
+                                                            name="no-value"
+                                                            value={
+                                                                apiData.reviewStars ||
+                                                                0
+                                                            }
+                                                            precision={0.5}
+                                                            readOnly
+                                                        />
                                                         <p className="ps-4">
                                                             {review?.date}
                                                         </p>
@@ -315,69 +351,96 @@ function KeeperDetail() {
                                                         </span>
                                                     </div>
                                                 </div>
+                                                {isReview.map(
+                                                    (review, index) => (
+                                                        <div key={index}>
+                                                            <form
+                                                                onSubmit={handleSubmit(
+                                                                    onSubmit
+                                                                )}
+                                                            >
+                                                                {!isEditComment ? (
+                                                                    <div className="mt-3">
+                                                                        <p>
+                                                                            {
+                                                                                review?.comment
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                ) : (
+                                                                    <TextField
+                                                                        label="Edit Comment"
+                                                                        margin="normal"
+                                                                        fullWidth
+                                                                        {...register(
+                                                                            "comment",
+                                                                            {
+                                                                                maxLength:
+                                                                                    {
+                                                                                        value: 200,
+                                                                                        message:
+                                                                                            "Comment must not more than 200 characters",
+                                                                                    },
+                                                                            }
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                                {errors.comment && (
+                                                                    <p className="error-message">
+                                                                        {
+                                                                            errors
+                                                                                .comment
+                                                                                .message
+                                                                        }
+                                                                    </p>
+                                                                )}
+                                                                {isEditComment && (
+                                                                    <Box
+                                                                        sx={{
+                                                                            display:
+                                                                                "flex",
+                                                                            justifyContent:
+                                                                                "flex-end",
+                                                                        }}
+                                                                    >
+                                                                        <Button
+                                                                            variant="contained"
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    "red",
+                                                                                color: "white",
+                                                                            }}
+                                                                            onClick={() =>
+                                                                                setIsEditComment(
+                                                                                    false
+                                                                                )
+                                                                            }
+                                                                            sx={{
+                                                                                ml: 1,
+                                                                            }}
+                                                                        >
+                                                                            Cancel
+                                                                        </Button>
+                                                                        <Button
+                                                                            type="submit"
+                                                                            variant="contained"
+                                                                            sx={{
+                                                                                ml: 1,
+                                                                            }}
+                                                                        >
+                                                                            Submit
+                                                                        </Button>
+                                                                    </Box>
+                                                                )}
+                                                            </form>
+                                                        </div>
+                                                    )
+                                                )}
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                            {isReview.map((review, index) => (
-                                <div key={index}>
-                                    <form onSubmit={handleSubmit(onSubmit)}>
-                                        {!isEditComment ? (
-                                            <div className="mt-3">
-                                                <p>{review?.comment}</p>
-                                            </div>
-                                        ) : (
-                                            <TextField
-                                                label="Edit Comment"
-                                                margin="normal"
-                                                fullWidth
-                                                {...register("comment", {
-                                                    maxLength: {
-                                                        value: 200,
-                                                        message:
-                                                            "Comment must not more than 200 characters",
-                                                    },
-                                                })}
-                                            />
-                                        )}
-                                        {errors.comment && (
-                                            <p className="error-message">
-                                                {errors.comment.message}
-                                            </p>
-                                        )}
-                                        {isEditComment && (
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    justifyContent: "flex-end",
-                                                }}
-                                            >
-                                                <Button
-                                                    variant="contained"
-                                                    style={{
-                                                        backgroundColor: "red",
-                                                        color: "white",
-                                                    }}
-                                                    onClick={() =>
-                                                        setIsEditComment(false)
-                                                    }
-                                                    sx={{ ml: 1 }}
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    variant="contained"
-                                                    sx={{ ml: 1 }}
-                                                >
-                                                    Submit
-                                                </Button>
-                                            </Box>
-                                        )}
-                                    </form>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>
