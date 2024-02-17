@@ -7,7 +7,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useSelector, useDispatch } from 'react-redux'
-import { authActions } from '../store/AuthReducer';
+import { logout } from '../store/AuthSlice';
 import { Button } from '@mui/material';
 
 function Navbar() {
@@ -88,7 +88,7 @@ function Navbar() {
                 onClose={handleCloseUserMenu}
               >
                   <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
+                    <Typography onClick={() => dispatch(logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
                   </MenuItem>
               </Menu>
         </div>
@@ -155,7 +155,7 @@ function Navbar() {
                       <Typography textAlign="center" ><Link className="text-black" to={"/at3/keeper-edit/"+ getId}>My Shop</Link></Typography>
                     </MenuItem>}
                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography onClick={() => dispatch(authActions.logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
+                      <Typography onClick={() => dispatch(logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
                     </MenuItem>
                 </Menu>
               </li>

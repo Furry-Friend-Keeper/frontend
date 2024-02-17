@@ -1,15 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import Slider from "react-slick";
-import {
-    GoogleMap,
-    LoadScript,
-    StandaloneSearchBox,
-    MarkerF,
-} from "@react-google-maps/api";
 import Rating from "@mui/material/Rating";
 import $ from "jquery";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -25,8 +18,11 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import { useSelector } from "react-redux";
+import { Navigate ,useParams } from "react-router-dom";
+import MapEditer from "../components/MapEditer";
 
-function KeeperDetail() {
+function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
     const [alertStatus, setAlertStatus] = useState("");
     const [messageLog, setMessageLog] = useState('')
@@ -38,6 +34,7 @@ function KeeperDetail() {
     const [isEditAddress, setIsEditAddress] = useState(false);
     const [isImg, setImg] = useState();
     const maxGallery = 8;
+    const getId = useSelector(state => state.auth.userInfo?.id)
 
     // const [isEdit, setIsEdit] = useState(false);
     const fetchData = async () => {
@@ -153,9 +150,6 @@ function KeeperDetail() {
 
     const { keeperId } = useParams();
 
-    const API_KEY = "AIzaSyD9JUPIBgFol7hDEGVGS6ASoubOOcGGtME";
-    const [libraries] = useState(["places"]);
-
     const [galleryPreviews, setGalleryPreviews] = useState(Array(maxGallery).fill(''));
     const [imageGallery, setImageGallery] = useState([]);
 
@@ -228,6 +222,10 @@ function KeeperDetail() {
         setOpen(false);
     };
 
+    // if(getId !== keeperId) {
+    //     return <Navigate to={`/at3/keeper-edit/${getId}`} />;
+    // }
+
     return (
         <>
          <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
@@ -247,7 +245,7 @@ function KeeperDetail() {
                 </Alert>
             </Snackbar>
             <div className="container pt-lg-4">
-                <div className="carousel col-md-11">
+                <div className="carousel col-md-12">
                     <div className="m-4">
                         <div className="gallery-wrapper">
                         <div className="gallery">
@@ -306,7 +304,7 @@ function KeeperDetail() {
                 </div>
             </div>
             <div className="container pb-lg-5">
-                <div className="row mx-auto col-11">
+                <div className="row mx-auto col-12">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="row">
@@ -539,25 +537,6 @@ function KeeperDetail() {
                                         <td className="text-end">
                                             {apiData.email}
                                         </td>
-                                        {/* <td className="text-end">
-                                                <TextField
-                                                    label="Edit Email"
-                                                    margin="normal"
-                                                    
-                                                    // fullWidth
-                                                    required
-                                                    {...register("email", {
-                                                        required:
-                                                            "Email is required",
-                                                        maxLength: 100,
-                                                        pattern: {
-                                                            value: /\S+@\S+\.\S+/,
-                                                            message:
-                                                                "Entered value does not match email format",
-                                                        },
-                                                    })}
-                                                />
-                                            </td> */}
                                     </tr>
                                     <tr>
                                         <td>Phone</td>
@@ -625,20 +604,7 @@ function KeeperDetail() {
                     </div>
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            <LoadScript
-                                googleMapsApiKey={API_KEY}
-                                libraries={libraries}
-                            >
-                                <GoogleMap
-                                    // onLoad={onLoad}
-                                    center={{ lat: -33.8688, lng: 151.2195 }}
-                                    zoom={13}
-                                    mapContainerStyle={{
-                                        width: "100%",
-                                        height: "200px",
-                                    }}
-                                ></GoogleMap>
-                            </LoadScript>
+                            <MapEditer editMap={isEditAddress} />
                             <div className="p-md-2 bg-white">
                             <div className="title d-flex justify-content-end align-items-center">
                                 <span className="fs-3">
@@ -815,4 +781,4 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-export default KeeperDetail;
+export default EditKeeperDetail;

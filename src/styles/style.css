@@ -57,7 +57,7 @@ body {
 
 a {
    text-decoration: none !important;
-}
+} 
 
 /* Navbar Page */
 .navbar {
@@ -68,12 +68,12 @@ a {
   /* border-bottom: 1.5px solid rgba(125, 129, 132, 0.3); */
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 1200;
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,.3);
 
   & .navbar-head {
-    font-family: 'Kanit', sans-serif;
+    font-family: 'Kanit', sans-serif; 
     letter-spacing: 2px;
     color: var(--c-blue-sky);
     font-weight: bold;
@@ -769,9 +769,17 @@ footer {
     cursor: pointer;
     & .card {
       color: #757778;
+      border: 3px solid var(--c-blue-white);
+      height: 150px;
+      
+      & .card-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+      }
       /* border-style: var(--c-charcoal); */
-      border-width: 3px;
-      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+      /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px; */
     }
   }
 
@@ -801,4 +809,14 @@ footer {
 #map {
   height: 350px !important;
   z-index: 9;
+}
+
+#map-container {
+  height: 200px !important;
+  width: 100%;
+}
+
+#map-editer {
+  height: 200px !important;
+  width: 100%;
 }

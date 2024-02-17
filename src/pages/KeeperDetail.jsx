@@ -9,17 +9,18 @@ import {
 import Rating from "@mui/material/Rating";
 import $ from "jquery";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Navigate ,useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
-
+import MapContainer from "../components/MapContainer";
 import GallerySider from "../components/GallerySider";
+import { useSelector } from "react-redux";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
-    const [galleryData, setGalleryData] = useState([]);
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,91 +46,10 @@ function KeeperDetail() {
         fetchData();
     }, []);
 
-    const { id } = useParams();
-
-    const [slider1, setSlider1] = useState(null);
-    const [slider2, setSlider2] = useState(null);
 
     const API_KEY = "AIzaSyD30UeQ7BApKME7TWIWej0tieTS__6OTBQ";
     const [libraries] = useState(["places"]);
-    
-    const slider_main = {
-        asNavFor: slider2,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        infinite: false,
-        nextArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-            </svg>
-        ),
-        prevArrow: (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 320 512"
-            >
-                <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
-            </svg>
-        ),
-        afterChange: function (slick, nextSlide) {
-            if (nextSlide === 0) {
-                $(".slick-next").addClass("disabled");
-            } else {
-                $(".slick-next").removeClass("disabled");
-            }
-            if (nextSlide === slick.slideCount - 1) {
-                $(".slick-prev").addClass("disabled");
-            } else {
-                $(".slick-prev").removeClass("disabled");
-            }
-        },
-    };
 
-    const slider_nav = {
-        asNavFor: slider1,
-        focusOnSelect: true,
-        slidesToShow: 5,
-        slidesToScroll: 5,
-        swipeToSlide: false,
-        arrows: false,
-        infinite: false,
-
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 4,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-            {
-                breakpoint: 992,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-            {
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    vertical: false,
-                    verticalSwiping: false,
-                },
-            },
-        ],
-    };
 
     return (
         <>
@@ -238,7 +158,7 @@ function KeeperDetail() {
                     </div>
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            <LoadScript
+                            {/* <LoadScript
                                 googleMapsApiKey={API_KEY}
                                 libraries={libraries}
                             >
@@ -250,7 +170,8 @@ function KeeperDetail() {
                                         height: "200px",
                                     }}
                                 ></GoogleMap>
-                            </LoadScript>
+                            </LoadScript> */}
+                            <MapContainer />
                             <div className="keeper-address p-md-2 bg-white">
                                 <div className="table">
                                     <table className="w-100">
