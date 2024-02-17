@@ -205,6 +205,7 @@ export default function BasicFormControl() {
 
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
+                            style={{ width: '100%'}}
                             type="submit"
                             size="large"
                             variant="contained"

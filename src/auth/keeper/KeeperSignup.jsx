@@ -42,7 +42,7 @@ export default function BasicFormControl() {
     // redirect user to login page if registration was successful
     if (success) {
       setTimeout(() => {
-        redirect("/at3/login");
+        navigate("/at3/login");
       }, 3000);
       // navigate('/at3/login')
     }
@@ -150,7 +150,7 @@ export default function BasicFormControl() {
         <Alert
           onClose={handleClose}
           severity={alertStatus === "success" ? "success" : "error"}
-          elevation={6}
+          elevation={4}
         >
           {alertStatus === "success" ? (
             <div>
@@ -371,7 +371,7 @@ export default function BasicFormControl() {
                     />
           </div>
           <div className="col-md-12 pb-4">
-            <Map />
+            <Map idName="map" />
           </div>
           <div className="row">
             <div className="col-md-12 pb-4">
@@ -446,7 +446,7 @@ export default function BasicFormControl() {
           </div>
 
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button type="submit" size="large" variant="contained" sx={{ mt: 3, ml: 1 }}>
+            <Button style={{ width: '100%'}} type="submit" size="large" variant="contained" sx={{ mt: 3, ml: 1 }}>
               Submit
             </Button>
           </Box>

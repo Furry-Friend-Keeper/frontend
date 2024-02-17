@@ -7,11 +7,11 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 // import "leaflet/dist/leaflet.css"
 // import 'leaflet-geosearch/dist/geosearch.css';
 
-  function Map() {
+  function Map({ idName }) {
 
     useEffect(() => {
       const latlng = L.latLng(13.7563, 100.5018);
-      const map = L.map('map').setView(latlng, 13);
+      const map = L.map(idName).setView(latlng, 13);
   
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
@@ -103,7 +103,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
         };
     }, []);
   
-    return <div id="map" />;
+    return <div id={idName} />;
   };
   
 

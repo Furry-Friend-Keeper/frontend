@@ -22,15 +22,15 @@ const Signup = () => {
         <>
             <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
                 <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 },  }}>
-                    <div className="d-flex justify-content-center align-items-center">
+                    {/* <div className="d-flex justify-content-center align-items-center">
                         <img src="/assets/cat.png" alt="" width={50} />
-                    </div>
-                    <Typography component="h1" variant="h5" align="center" mb={3} fontWeight="bold">
-                        Please select your role
-                    </Typography>
-                    <div className="role-list gap-2">
+                    </div> */}
+                  <h4 className="fw-bold text-center mb-5 mt-3">
+                    Select Your Role
+                  </h4>
+                    <div className="role-list">
                         {roles.map((role, index) => (
-                            <div key={index} className={`select-role ${selectedRole === role ? 'active' : ''} col-xl-6 col-md-6 col-sm-12`} onClick={() => handleRoleSelection(role)}>
+                            <div key={index} className={`select-role ${selectedRole === role ? 'active' : ''} col-xl-6 col-md-6 col-sm-12 px-2`} onClick={() => handleRoleSelection(role)}>
                                 <div className='card text-center'>
                                     <div className="card-body">
                                     <h5 className='my-3'>{role}</h5>

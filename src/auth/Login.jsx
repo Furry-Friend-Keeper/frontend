@@ -3,10 +3,10 @@ import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 // import { useSelector, useDispatch } from "react-redux";
 // import { authActions } from "../store/AuthReducer";
-import { FormControlLabel, Checkbox, Link, Box, TextField, Button, Grid, Typography, InputAdornment, IconButton, Container, Paper } from "@mui/material";
+import { FormControlLabel, Checkbox, Link, Box, TextField, Button, Grid, Typography, InputAdornment, IconButton, Container, Paper , Alert} from "@mui/material";
 import { ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Navigate   , useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -17,13 +17,23 @@ import { userLogin } from '../store/AuthAction'
 function Login() {
   const { handleSubmit, register, formState: { errors }, } = useForm();
 
-  const { loading, error } = useSelector((state) => state.auth)
+  const { loading, userInfo, error, success } = useSelector(
+    (state) => state.auth
+  )  
   const dispatch = useDispatch()
 
   const navigate = useNavigate()
   // const dispatch = useDispatch();
   const [loginError, setLoginError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  console.log(userInfo)
+  useEffect(() => {
+    // redirect user to login page if registration was successful
+    if (success) {
+      userInfo?.role === "PetKeeper" ? navigate(`/at3/keeper-edit/${userInfo?.id}`) : navigate("/at3/");
+    }
+  }, [success])
 
   // const LoginForm = async (data) => {
   //   await axios
@@ -70,12 +80,21 @@ function Login() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Login
-            </Typography>
+            <div className="d-flex justify-content-center align-items-center">
+              <img src="/assets/cat.png" alt="" width={50} />
+            </div>
+            <h4 className="fw-bold">Login</h4>
+            {!!error &&
+              <Alert
+              className="my-2"
+              sx={{ width: '100%' }}
+              severity={"error"}
+              >         
+                  <div className="fs-6">
+                    <span>Incorrect username or password.</span>
+                  </div>
+              </Alert>
+            }
             <form
               onSubmit={handleSubmit(onSubmit)}
               noValidate

@@ -9,7 +9,7 @@ import {
 import Rating from "@mui/material/Rating";
 import $ from "jquery";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Navigate ,useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -20,7 +20,9 @@ import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
 
+import MapContainer from "../components/MapContainer";
 import GallerySider from "../components/GallerySider";
+import { useSelector } from "react-redux";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -197,6 +199,7 @@ function KeeperDetail() {
 
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
+                            <MapContainer />
                             <div className="keeper-address p-md-2 bg-white">
                                 <div className="table">
                                     <table className="w-100">
