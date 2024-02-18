@@ -12,6 +12,7 @@ import OwnerDetail from './pages/OwnerDetail.jsx';
 import EditKeeperDetail from './pages/EditKeeperDetail.jsx';
 import About from './pages/About.jsx';
 import ProtectedKeeperRoute from './components/ProtectedKeeperRoute.jsx';
+import AuthVerify from './components/AuthVerify.jsx';
 // import Account from './auth/owner/Account.jsx';
 import Footer from './layouts/Footer.jsx';
 // const router = createBrowserRouter([
@@ -51,6 +52,7 @@ function App() {
           </Routes>
           </main>    
         <Footer />
+        <AuthVerify />
       </Router>
   )
 }

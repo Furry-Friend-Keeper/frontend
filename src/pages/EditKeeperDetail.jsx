@@ -34,12 +34,17 @@ function EditKeeperDetail() {
     const [isEditAddress, setIsEditAddress] = useState(false);
     const [isImg, setImg] = useState();
     const { keeperId } = useParams();
-
+    const [isError, setIsError] = useState(false);
+    const { loading, userInfo, error, success, accessToken } = useSelector(
+        (state) => state.auth
+      )  
     // const [isEdit, setIsEdit] = useState(false);
     const fetchData = async () => {
         try {
             const apiUrl = import.meta.env.VITE_KEEPERS_ID + keeperId;
-            await axios.get(apiUrl).then((response) => {
+            await axios.get(apiUrl, {
+                headers: { 'Authorization': 'Bearer ' + accessToken}
+            }).then((response) => {
                 const data = response.data;
                 setApiData(data);
                 setValue("name", data.name);
@@ -88,24 +93,27 @@ function EditKeeperDetail() {
                 postalCode: data.postalCode
             }
         };
-        
-        await axios
-            .patch(import.meta.env.VITE_KEEPERS_ID + keeperId, result)
-            .then((res) => {
-                const response = res.data;
-                setApiData({ ...apiData, ...result });
-                setIsEditName(false);
-                setIsEditContact(false);
-                setIsEditAddress(false);
-                setOpen(true)
-                setAlertStatus('success')
-            })
-            .catch((err) => {
-                console.log(err);
-                setOpen(true)
-                setMessageLog(err.message)
-                setAlertStatus('error')
-            });
+        if(!isError){
+            await axios
+                .patch(import.meta.env.VITE_KEEPERS_ID + keeperId,  result, {
+                    headers: { 'Authorization': 'Bearer ' + accessToken}
+                })
+                .then((res) => {
+                    const response = res.data;
+                    setApiData({ ...apiData, ...result });
+                    setIsEditName(false);
+                    setIsEditContact(false);
+                    setIsEditAddress(false);
+                    setOpen(true)
+                    setAlertStatus('success')
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setOpen(true)
+                    setMessageLog(err.message)
+                    setAlertStatus('error')
+                });
+        }
     };
 
     
@@ -113,37 +121,44 @@ function EditKeeperDetail() {
         const formData = new FormData();
         formData.append("file", isImg)
         await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
-            headers: { 'content-type': 'multipart/form-data' }
+            headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
         }).then((res) => {
             setOpen(true)
             setAlertStatus('success')
+            setIsError(false)
             fetchData()
-        }).catch((err) => {
-            console.log(err)
+        }).catch((error) => {
+            error.message === "Network Error" ?  setMessageLog("This image is too large.") : setMessageLog(error.message)
+            setIsError(true)
             setOpen(true)
-            setMessageLog(err.message)
             setAlertStatus('error')
         })
     };
 
     const onSubmit = (data) => {
-        EditKeeper(data);
         if(isImg !== undefined) {
-            EditProfileImg();
+            EditProfileImg()
         }
+        EditKeeper(data);
     };
 
     const [previewImage, setPreviewImage] = useState(null);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        if (file) {
+        if (file && file.type.startsWith('image/')) {
+            setOpen(false)
             setImg(file)
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result);
             };
             reader.readAsDataURL(file);
+        } else {
+            // Optionally, handle the case when the file is not an image.
+            // For example, alert the user or clear the preview.
+            setOpen(true)
+            setMessageLog('Please select an image file.')
         }
     };
 
@@ -165,19 +180,19 @@ function EditKeeperDetail() {
                 <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
                     {alertStatus === 'success' ?
                     <div>
-                        <AlertTitle>Success</AlertTitle>
-                        Successful!!!
+                        <AlertTitle><b>Success</b></AlertTitle>
+                        Your data has been successfully save.
                     </div>
                     :
                     <div>
-                        <AlertTitle>Failed</AlertTitle>
+                        <AlertTitle><b>Failed</b></AlertTitle>
                         {/* Signup Failed!! Email must be unique. */}
                         {messageLog}
                     </div>
                     }
                 </Alert>
             </Snackbar>
-            <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData()} /> 
+            <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData} /> 
             <div className="container pb-lg-5">
                 <div className="row mx-auto col-12">
                     <div className="col-lg-8">
@@ -321,7 +336,7 @@ function EditKeeperDetail() {
                                                     minRows={3}
                                                     placeholder="Type in here…"
                                                     margin="normal"
-                                                    required
+                                                    
                                                     {...register("detail")}
                                                 />
                                             )}
@@ -480,7 +495,7 @@ function EditKeeperDetail() {
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
                             <MapEditer editMap={isEditAddress} />
-                            <div className="p-md-2 bg-white">
+                            <div className="p-2 bg-white">
                             <div className="title d-flex justify-content-end align-items-center">
                                 <span className="fs-3">
                                     <i

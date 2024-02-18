@@ -1,5 +1,5 @@
-import React,{ useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React,{ useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
@@ -7,10 +7,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../store/AuthSlice';
+import { logout, resetStore } from '../store/AuthSlice';
 import { Button } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 function Navbar() {
   const settings = ['Profile', 'Logout'];
@@ -19,8 +18,14 @@ function Navbar() {
   const isLogin = useSelector(state => state.auth.accessToken)
   const getRole = useSelector(state => state.auth.role)
   const getId = useSelector(state => state.auth.id)
+  const location = useLocation()
 
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(resetStore())
+  },[location])
+  
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -60,7 +65,7 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            {isLogin && <li><Link className="dropdown-item" to="/at3">Logout</Link></li>}
+            {isLogin && <li onClick={() => dispatch(logout())} ><a className="dropdown-item" href="/at3">Logout</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
 
@@ -95,21 +100,6 @@ function Navbar() {
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
-            {/* <li className="nav-item">
-              <Link className="nav-link" aria-current="page" to="/at3">
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/at3/about-us">
-                About
-              </Link>
-            </li> */}
-            {/* <li className="nav-item">
-              <Link className="nav-link" to="#">
-                Contact
-              </Link>
-            </li> */}
             {!isLogin &&
             <li className="nav-item">
               <Link className="nav-link" to="/at3/login">
@@ -124,11 +114,6 @@ function Navbar() {
               </Link>
             </li>
           }
-            {/* <li className="nav-item">
-              <a className="nav-link" href="/owner">
-                <AccountCircleIcon fontSize='large' />
-              </a>
-            </li> */}
             {isLogin &&
               <li  className="nav-item ">
                 <Tooltip title="Open settings" className="ms-3">

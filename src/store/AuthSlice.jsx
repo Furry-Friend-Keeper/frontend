@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerKeeper, userLogin, registerOwner } from './AuthAction'
+import { registerKeeper, userLogin, registerOwner, refreshToken } from './AuthAction'
 
 // initialize accessToken from local storage
 
@@ -21,6 +21,10 @@ const authSlice = createSlice({
             state.userInfo = {}
             state.accessToken = null
             state.error = null
+            state.success = false
+          },
+          resetStore: (state) => {
+            state.error = null; // Resetting error to null
             state.success = false
           },
     },
@@ -67,8 +71,13 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
           });
+
+          // refresh token
+          builder.addCase(refreshToken.fulfilled, (state, action) => {
+            state.accessToken = action.payload.accessToken;
+          });
       },   
 })
 
-export const { logout } = authSlice.actions
+export const { logout, resetStore } = authSlice.actions
 export default authSlice.reducer;

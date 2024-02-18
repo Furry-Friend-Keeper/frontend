@@ -25,7 +25,6 @@ export const loadStateFromLocalStorage = () => {
 export const localStorageMiddleware = store => next => action => {
   const result = next(action);
   const state = store.getState();
-  console.log(state.auth.accessToken)
   if(state.auth.accessToken !== null) {
     saveStateToLocalStorage(state);
   }

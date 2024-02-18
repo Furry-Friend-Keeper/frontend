@@ -88,7 +88,6 @@ export default function BasicFormControl() {
       role: 3,
       address: data.address,
     };
-    console.log(result);
 
     dispatch(registerKeeper(result))
     // SignUpForm(data);
@@ -133,8 +132,9 @@ export default function BasicFormControl() {
             </div>
           ) : (
             <div  className="fs-6">
-              {/* <AlertTitle className="fs-5"><b>Failed</b></AlertTitle> */}
-              <b>Error: </b> Something went wrong. User signup failed.
+              <AlertTitle><b>Failed</b></AlertTitle>
+               {/* Something went wrong. User signup failed. */}
+               {error}
             </div>
           )}
         </Alert>
@@ -422,7 +422,7 @@ export default function BasicFormControl() {
 
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button style={{ width: '100%'}} type="submit" size="large" variant="contained" sx={{ mt: 3, ml: 1 }}>
-              Submit
+            {loading ? <span>loading...</span> : <span>Submit</span>}
             </Button>
           </Box>
           {/* <div className="grid justify-content-end">
