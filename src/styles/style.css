@@ -632,6 +632,9 @@ a:hover {
 }
 
 .rating {
+  display: flex;
+  align-items: center;
+  
   & .bi-star-fill::before, .rating-score {
     color: rgb(244,110,20) !important;
     font-size: 20px;
