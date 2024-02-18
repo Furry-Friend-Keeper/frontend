@@ -65,8 +65,9 @@ function KeeperDetail() {
             date: moment().format()
         };
         await axios
-            .post(import.meta.env.VITE_OWNER_REVIEWS, result, 
-                {headers: { "Authorization": "Bearer" + accessToken}})
+            .post(import.meta.env.VITE_OWNER_REVIEWS, result, {
+                headers: { 'Authorization': 'Bearer ' + accessToken}
+            })
             .then((res) => {
                 const response = res.data;
                 setApiData({ ...apiData, ...result });

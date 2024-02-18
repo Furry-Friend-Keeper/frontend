@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, IconButton, styled, Snackbar, Alert, AlertTitle } from '@mui/material'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import axios from "axios";
+import { useSelector } from 'react-redux';
 
 function GalleryEditer(props) {
     const { galleryData, keeperId, fetchData } = props
-    const [ galleryContent, setGalleyContent] = useState(galleryData)
+    const [ galleryContent, setGalleryContent] = useState(galleryData)
     const [galleryDelete, setGalleryDelete] = useState([]);
     const maxGallery = 8;
     const [galleryPreviews, setGalleryPreviews] = useState(Array(maxGallery).fill(''));
@@ -15,6 +16,11 @@ function GalleryEditer(props) {
     const [alertStatus, setAlertStatus] = useState("");
     const [messageLog, setMessageLog] = useState('')
     const [open, setOpen] = useState(false);
+    const { accessToken } = useSelector((state) => state.auth)  
+
+    useEffect(() => {
+        setGalleryContent(galleryData);
+      }, [galleryData]);
 
     const handleGalleryChange = (event, index) => {
         const file = event.target.files[0];
@@ -40,7 +46,7 @@ function GalleryEditer(props) {
 
     const removeImageGallery = (data) => {
         console.log(galleryContent)
-        setGalleyContent(galleryContent.filter(image => image !== data))
+        setGalleryContent(galleryContent.filter(image => image !== data))
         setGalleryDelete([...galleryDelete,data])
     }
 
@@ -61,7 +67,7 @@ function GalleryEditer(props) {
         }
         // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
         await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
-            headers: { 'content-type': 'multipart/form-data' }
+            headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
         }).then((res) => {
             fetchData();
             setImageGallery([])
@@ -90,12 +96,12 @@ function GalleryEditer(props) {
         <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
             {alertStatus === 'success' ?
             <div>
-                <AlertTitle>Success</AlertTitle>
-                Successful!!!
+                <AlertTitle><b>Success</b></AlertTitle>
+                Your data has been successfully save.
             </div>
             :
             <div>
-                <AlertTitle>Failed</AlertTitle>
+                <AlertTitle><b>Failed</b></AlertTitle>
                 {/* Signup Failed!! Email must be unique. */}
                 {messageLog}
             </div>

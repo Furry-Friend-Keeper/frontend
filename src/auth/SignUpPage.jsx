@@ -3,11 +3,12 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { Link, useNavigate } from 'react-router-dom';
+import StoreIcon from '@mui/icons-material/Store';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Signup = () => {
     const navigate = useNavigate();
-
-    const [roles, setRoles] = useState(["Owner", "Keeper"])
+    const roles = ["Owner", "Keeper"]
     const [selectedRole, setSelectedRole] = useState(null)
 
     const handleRoleSelection = (role) => {
@@ -16,7 +17,7 @@ const Signup = () => {
 
     const handleContinue = () => {
         const roleLowerCase = selectedRole.toLowerCase()
-        navigate(`/at3/signup/${roleLowerCase}`)
+        navigate(`/at3/signup/${roleLowerCase}`, { replace: true })
     }
     return (
         <>
@@ -30,10 +31,13 @@ const Signup = () => {
                   </h4>
                     <div className="role-list">
                         {roles.map((role, index) => (
-                            <div key={index} className={`select-role ${selectedRole === role ? 'active' : ''} col-xl-6 col-md-6 col-sm-12 px-2`} onClick={() => handleRoleSelection(role)}>
+                            <div key={index} className={`select-role ${selectedRole === role ? 'active' : ''} col-xl-6 col-md-6 col-6 px-2`} onClick={() => handleRoleSelection(role)}>
                                 <div className='card text-center'>
                                     <div className="card-body">
-                                    <h5 className='my-3'>{role}</h5>
+                                        <div>
+                                            {role === "Keeper" ? <StoreIcon className="fs-1" /> : <PersonIcon className="fs-1" />}
+                                            <h5 className=''>{role}</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

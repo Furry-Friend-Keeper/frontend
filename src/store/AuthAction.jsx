@@ -62,7 +62,11 @@ export const refreshToken = createAsyncThunk(
     'auth/refreshToken',
     async (_, { getState }) => {
       const state = getState();
-      const { data } = await axios.get(import.meta.env.VITE_REFRESH_TOKEN)
+      const { data } = await axios.get(import.meta.env.VITE_REFRESH_TOKEN, {
+        headers : {
+            'refreshToken': state.auth.userInfo.refreshToken
+        }
+      })
       return data; // Should include the new access token
     }
   );

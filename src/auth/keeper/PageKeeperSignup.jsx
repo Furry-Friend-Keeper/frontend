@@ -1,45 +1,11 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-
 import KeeperSignup from './KeeperSignup';
-import KeeperDetail from './UploadImage';
-import Map from './Map';
-import { Bolt } from '@mui/icons-material';
-
-  
-  const steps = ['KeeperSignup', 'Keeper Detail', 'Map'];
-  
-  function getStepContent(step) {
-    switch (step) {
-        case 0:
-          return <KeeperSignup/>;
-        case 1:
-          return <KeeperDetail />;
-        default:
-          return <Map />;
-      }
-  }
 
 export default function KeeperSignUp() {
-    const [activeStep, setActiveStep] = React.useState(0);
 
-    const handleNext = () => {
-      setActiveStep(activeStep + 1);
-    };
-  
-    const handleBack = () => {
-      setActiveStep(activeStep - 1);
-    };
-  
     return (
       <React.Fragment>
         {/* <CssBaseline /> */}

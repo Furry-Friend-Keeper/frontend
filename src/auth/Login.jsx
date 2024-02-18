@@ -27,7 +27,6 @@ function Login() {
   const [loginError, setLoginError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  console.log(userInfo)
   useEffect(() => {
     // redirect user to login page if registration was successful
     if (accessToken) {
