@@ -327,10 +327,15 @@ a:hover {
 }
 
 .sort-active {
-  background-color: var(--c-blue-semidark) !important;
+  background-color: var(--c-blue-sky) !important;
   color : white !important;
 }
 
+.person-icon {
+  color: var(--c-blue-sky);
+  /* width: 50px !important; */
+  font-size: 2.3rem !important;
+}
 
 @media (max-width: 768px) {
   .keeper-list {
@@ -643,6 +648,32 @@ footer {
   position: absolute;
   width: 100%;
   /* bottom: 0; */
+}
+
+.footer-container {
+  background-color: #c4d5fb;
+  color: black;
+}
+
+.footer-warpper {
+  background-color: rgba(18, 124, 254, 0.659)
+  
+}
+
+.footer-header {
+  font-weight: bold;
+  color: var(--c-blue-sky);
+}
+
+.list-unstyled {
+  li {
+    display: flex;
+    margin-bottom: 10px;
+    svg {
+      margin-right: 0.5rem;
+      color: var(--c-blue-sky);
+    }
+  }
 }
 
 .error-message {

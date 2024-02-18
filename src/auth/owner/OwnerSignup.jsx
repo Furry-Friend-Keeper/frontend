@@ -1,11 +1,12 @@
 // import * as React from "react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useFormControlContext } from "@mui/base/FormControl";
 import { Input, inputClasses } from "@mui/base/Input";
 import { styled } from "@mui/system";
 // import clsx from "clsx";
 import { useForm, Controller } from "react-hook-form";
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,9 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
+import { useDispatch, useSelector } from 'react-redux'
+import { registerOwner } from "../../store/AuthAction";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function BasicFormControl() {
     const {
@@ -24,36 +28,67 @@ export default function BasicFormControl() {
         formState: { errors },
     } = useForm();
 
-    const [open, setOpen] = useState(false);
-    const [alertStatus, setAlertStatus] = useState("");
+    const { loading, userInfo, error, success } = useSelector(
+        (state) => state.auth
+        )
+    const dispatch = useDispatch()
     const navigate = useNavigate();
 
-    const SignUpForm = async (data) => {
-        const result = {
-            "firstname": data.firstName,
-            "lastname": data.lastName,
-            "phone": data.phone,
-            "petname": data.petName,
-            "email":data.email,
-            "password": data.password,
-            "role": 2
-          } 
-        await axios.post(import.meta.env.VITE_OWNER_SIGNUP, result).then((res) => {
-            setOpen(true)
-            setAlertStatus('success')
-            setTimeout(() =>{
-                navigate('/at3/login')
-            },3000)
-        }).catch((err) => {
-            setOpen(true)
-            setAlertStatus('error')
-            console.log(err.message)
-        })
-    }
+      useEffect(() => {
+        // redirect user to login page if registration was successful
+        if (success) {
+        //   setTimeout(() => {
+        //     navigate("/at3/login");
+        //   }, 3000);
+          navigate('/at3/login', { replace: true })
+        }
+      }, [success])
+
+    const [open, setOpen] = useState(false);
+    const [alertStatus, setAlertStatus] = useState("");
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+
+    // const SignUpForm = async (data) => {
+    //     const result = {
+    //         "firstname": data.firstName,
+    //         "lastname": data.lastName,
+    //         "phone": data.phone,
+    //         "petname": data.petName,
+    //         "email":data.email,
+    //         "password": data.password,
+    //         "role": 2
+    //       } 
+    //     await axios.post(import.meta.env.VITE_OWNER_SIGNUP, result).then((res) => {
+    //         setOpen(true)
+    //         setAlertStatus('success')
+    //         setTimeout(() =>{
+    //             navigate('/at3/login')
+    //         },3000)
+    //     }).catch((err) => {
+    //         setOpen(true)
+    //         setAlertStatus('error')
+    //         console.log(err.message)
+    //     })
+    // }
 
     const onSubmit = (data) => {
-        console.log(data)
-        SignUpForm(data)
+        const phoneNumber = (data.phone).replace(/^66/, "0") 
+        console.log(phoneNumber )  
+
+        const result = {
+            firstname : data.firstName,
+            lastname : data.lastName,
+            phone : phoneNumber,
+            petname : data.petName,
+            email :data.email,
+            password : data.password,
+            role : 2
+          } 
+        console.log(result)
+        // SignUpForm(data)
+        dispatch(registerOwner(result))
+        // SignUpForm(data);
     };
 
     const password = useRef({});
@@ -68,7 +103,7 @@ export default function BasicFormControl() {
 
     return (
         <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)} >
-            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
+            <Snackbar open={error} autoHideDuration={3000} onClose={handleClose}  anchorOrigin={{ vertical : 'top', horizontal : 'center' }} >
                 <Alert onClose={handleClose} severity={alertStatus === 'success' ? 'success' : 'error'} elevation={6} >
                     {alertStatus === 'success' ?
                     <div>
@@ -154,7 +189,7 @@ export default function BasicFormControl() {
                                         autoFocus: true,
                                         // className: "form-control py-2"
                                     }}
-                                    masks={{th: '.. - ... - ....', }}
+                                    masks={{th: '.. ... ....', }}
                                     inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
                                     inputStyle={{ width: "100%"}}
                                     specialLabel={""}
@@ -168,27 +203,44 @@ export default function BasicFormControl() {
                     </div>
                     <div className="col-md-12 pb-4">
                         <Label>Password</Label>
-                        <input className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
-                            placeholder="Write your Password here"
-                            {...register("password", { required: "Please enter your password.", minLength: {
-                                value: 8,
-                                message: "Password must have at least 8 characters"
-                            },maxLength: {
-                                value: 20,
-                                message: "Password must not more than 20 characters"
-                            } })}
-                        />
-                        {errors.password && <small className="invalid-feedback">{errors.password.message}</small>}
+                        <div className="form-password">
+                            <input className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
+                                placeholder="Write your Password here"
+                                type={showPassword1 ? "text" : "password"}
+                                {...register("password", { required: "Please enter your password.", minLength: {
+                                    value: 8,
+                                    message: "Password must have at least 8 characters"
+                                },maxLength: {
+                                    value: 20,
+                                    message: "Password must not more than 20 characters"
+                                } })}
+                            />
+                            {errors.password && <small className="invalid-feedback">{errors.password.message}</small>}
+                            <div className="toggle-password">
+                                <IconButton onClick={() => { setShowPassword1(!showPassword1) }} edge="end">
+                                {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </div>
+                        </div>
                     </div>
                     <div className="col-md-12 pb-4">
                         <Label>Confirm Password</Label>
-                        <input className={`form-control ${errors.confirmPassword ? "is-invalid" : ""} py-2`}
-                            placeholder="Please confirm your password"
-                            {...register("confirmPassword", { required: "Please enter your confirm password.", validate: value =>
-                                value === password.current || "The passwords do not match" 
-                            })}
-                        />
-                        {errors.confirmPassword && <small className="invalid-feedback">{errors.confirmPassword.message}</small>}
+                        <div className="form-password">
+                            <input                 
+                            type={showPassword2 ? "text" : "password"}
+                            className={`form-control ${errors.confirmPassword ? "is-invalid" : ""} py-2`}
+                                placeholder="Please confirm your password"
+                                {...register("confirmPassword", { required: "Please enter your confirm password.", validate: value =>
+                                    value === password.current || "The passwords do not match" 
+                                })}
+                            />
+                            {errors.confirmPassword && <small className="invalid-feedback">{errors.confirmPassword.message}</small>}
+                            <div className="toggle-password">
+                                <IconButton onClick={() => { setShowPassword2(!showPassword2) }} edge="end">
+                                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </div>
+                        </div>
                     </div>
                     
                     <div className="col-md-12 pb-4">

@@ -25,6 +25,7 @@ export default function BasicFormControl() {
   const [petCategories, setPetCategories] = useState([]);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
+  const [getLocation, setLocation] = useState({})
   const navigate = useNavigate();
 
   const { register, handleSubmit, watch, control, formState: { errors } } = useForm();
@@ -41,10 +42,10 @@ export default function BasicFormControl() {
   useEffect(() => {
     // redirect user to login page if registration was successful
     if (success) {
-      setTimeout(() => {
-        navigate("/at3/login");
-      }, 3000);
-      // navigate('/at3/login')
+      // setTimeout(() => {
+      //   navigate("/at3/login");
+      // }, 3000);
+      navigate('/at3/login')
     }
   }, [success])
 
@@ -60,35 +61,6 @@ export default function BasicFormControl() {
       });
   };
 
-  const SignUpForm = async (data) => {
-    watch()
-    const result = {
-      name: data.keeperName,
-      detail: data.detail,
-      contact: data.contact,
-      phone: data.phone,
-      categoryId: data.petCategories,
-      email: data.email,
-      password: data.password,
-      role: 3,
-      address: data.address,
-    };
-    await axios
-      .post(import.meta.env.VITE_KEEPER_SIGNUP, result)
-      .then((res) => {
-        setOpen(true);
-        setAlertStatus("success");
-        setTimeout(() => {
-          navigate("/at3/login");
-        }, 3000);
-      })
-      .catch((err) => {
-        setOpen(true);
-        setAlertStatus("error");
-        console.log(err.message);
-      });
-  };
-
   const onSubmit = (data) => {
     // console.log('Selected petCategories:', JSON.parse(data.petCategories));
     const address = {
@@ -96,25 +68,27 @@ export default function BasicFormControl() {
       district: district,
       province: province,
       postalCode: zipcode,
-      map: "https://maps.example.com/12345",
+      map: getLocation,
     };
     data.address = address;
     if (data.petCategories !== "") {
       data.petCategories = JSON.parse(data.petCategories);
     }
-    console.log(data);
+
+    const phoneNumber = (data.phone).replace(/^66/, "0").trim()
+    console.log(phoneNumber)
     const result = {
       name: data.keeperName,
       detail: data.detail,
       contact: data.contact,
-      phone: "0627482960",
-      // phone: data.phone,
+      phone: phoneNumber,
       categoryId: data.petCategories,
       email: data.email,
       password: data.password,
       role: 3,
       address: data.address,
     };
+    console.log(result);
 
     dispatch(registerKeeper(result))
     // SignUpForm(data);
@@ -309,8 +283,8 @@ export default function BasicFormControl() {
                 control={control}
                 name="phone"
                 rules={{ required: "Please enter your phone number.",
-                        maxLength: { value:10, message: "Phone number must not more than 10 characters"},
-                        minLength : { value:10, message: "Phone number must not more than 10 characters"}
+                        maxLength: { value:11, message: "Phone number must not more than 10 characters"},
+                        minLength : { value:11, message: "Phone number must not more than 10 characters"}
 
                     }}
                 // className="form-control"
@@ -327,6 +301,7 @@ export default function BasicFormControl() {
                     inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
                     inputStyle={{ width: "100%"}}
                     specialLabel={""}
+                    disableDropdown={true}
                     country={"th"}
                     countryCodeEditable={false}
                     placeholder="Enter phone number"
@@ -371,7 +346,7 @@ export default function BasicFormControl() {
                     />
           </div>
           <div className="col-md-12 pb-4">
-            <Map idName="map" />
+            <Map idName="map" getLocation={setLocation} />
           </div>
           <div className="row">
             <div className="col-md-12 pb-4">

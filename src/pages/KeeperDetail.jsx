@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
-import { Navigate ,useParams } from "react-router-dom";
+import { useNavigate, Navigate ,useParams } from "react-router-dom";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -23,7 +23,8 @@ function KeeperDetail() {
     const [isEditComment, setIsEditComment] = useState(false);
     const [isReview, setIsReview] = useState([]);
     const { id } = useParams();
-    const { loading, userInfo, error, success } = useSelector((state) => state.auth)  
+    const { loading, userInfo, error, success, accessToken } = useSelector((state) => state.auth)  
+    const navigate = useNavigate()
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -68,6 +69,9 @@ function KeeperDetail() {
             });
     };
     const onSubmit = (data) => {
+        if(!accessToken){
+            navigate("/at3/login")
+        }
         EditOwnerComment(data);
     };
 

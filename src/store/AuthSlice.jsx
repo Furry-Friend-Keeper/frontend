@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerKeeper, userLogin } from './AuthAction'
+import { registerKeeper, userLogin, registerOwner } from './AuthAction'
 
 // initialize accessToken from local storage
 
@@ -8,7 +8,7 @@ const initialState = {
     userInfo: {},
     accessToken: null,
     error: null,
-    success: false
+    success: false,
 }
 
 const authSlice = createSlice({
@@ -51,6 +51,19 @@ const authSlice = createSlice({
             state.success = true; // registration successful
           })
           .addCase(registerKeeper.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          })
+        // register owner
+          .addCase(registerOwner.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+          })
+          .addCase(registerOwner.fulfilled, (state) => {
+            state.loading = false;
+            state.success = true; // registration successful
+          })
+          .addCase(registerOwner.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
           });

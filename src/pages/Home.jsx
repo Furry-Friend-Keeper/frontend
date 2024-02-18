@@ -173,11 +173,11 @@ const SortReviewStar = () => {
         <div className="container p-2 mb-5 mt-3">
           <div className="keeper-panel">
             {/* KeeperCategory */}
-              <KeeperCategory petCategories={petCategories} selected={selected} />
+              <KeeperCategory petCategories={petCategories} selected={selected} handleCategory={handleCategory} />
             <div className="keeper-list row">
               <div className="d-flex justify-content-between mb-3">
                   <div className="sort-list">
-                      <h4>Sort</h4>
+                      <h4 className="m-auto">Sort</h4>
                       <button onClick={() => SortReviewStar()} className={`btn bg-white  mx-3 ${sortAscending ? "" : "sort-active"}`} type='button'>Rating</button>
                   </div>
               </div>

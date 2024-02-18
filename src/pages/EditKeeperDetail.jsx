@@ -21,6 +21,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { useSelector } from "react-redux";
 import { Navigate ,useParams } from "react-router-dom";
 import MapEditer from "../components/MapEditer";
+import GalleryEditer from "../components/GalleryEditer";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -28,13 +29,11 @@ function EditKeeperDetail() {
     const [messageLog, setMessageLog] = useState('')
     const [open, setOpen] = useState(false);
     const [galleryData, setGalleryData] = useState([]);
-    const [galleryDelete, setGalleryDelete] = useState([]);
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
     const [isEditAddress, setIsEditAddress] = useState(false);
     const [isImg, setImg] = useState();
-    const maxGallery = 8;
-    const getId = useSelector(state => state.auth.userInfo?.id)
+    const { keeperId } = useParams();
 
     // const [isEdit, setIsEdit] = useState(false);
     const fetchData = async () => {
@@ -148,73 +147,7 @@ function EditKeeperDetail() {
         }
     };
 
-    const { keeperId } = useParams();
-
-    const [galleryPreviews, setGalleryPreviews] = useState(Array(maxGallery).fill(''));
-    const [imageGallery, setImageGallery] = useState([]);
-
-    const handleGalleryChange = (event, index) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = (e) => {
-            const updatedPreviews = [...galleryPreviews];
-            updatedPreviews[index] = e.target.result;
-            setGalleryPreviews(updatedPreviews);
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-            setImageGallery([...imageGallery,file])
-        }
-    };
-
-    const removeImagePreview = (index) => {
-        const updatedPreviews = [...galleryPreviews];
-        updatedPreviews[index] = '';
-        setGalleryPreviews(updatedPreviews);
-    };
-
-    const removeImageGallery = (data) => {
-        console.log(galleryData)
-        setGalleryData(galleryData.filter(image => image !== data))
-        setGalleryDelete([...galleryDelete,data])
-    }
-
-    const GalleryImageKeeper = async () => {
-        const formData = new FormData();
-        console.log(galleryDelete)
-        console.log(imageGallery)
-        galleryDelete.forEach(image => {
-            formData.append('delete', image)
-        })
-        imageGallery.forEach((preview) => {
-            formData.append(`file`, preview);
-        });
-        if( galleryDelete.length === 0 ) {
-            formData.append('delete', '')
-        }
-        if (imageGallery.length === 0) {
-            const emptyFile = new Blob([], { type: 'application/octet-stream' });
-            formData.append('file', emptyFile)
-        }
-        // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
-        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
-            headers: { 'content-type': 'multipart/form-data' }
-        }).then((res) => {
-            fetchData();
-            setImageGallery([])
-            setGalleryPreviews(Array(maxGallery).fill(''))
-            setOpen(true)
-            setAlertStatus('success')
-        }).catch((err) => {
-            console.log(err)
-            setOpen(true)
-            setMessageLog(err.message)
-            setAlertStatus('error')
-        })
    
-    }
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -244,65 +177,7 @@ function EditKeeperDetail() {
                     }
                 </Alert>
             </Snackbar>
-            <div className="container pt-lg-4">
-                <div className="carousel col-md-12">
-                    <div className="m-4">
-                        <div className="gallery-wrapper">
-                        <div className="gallery">
-                            {galleryData.map((gallery, index) => (
-                                <div key={index} className="position-relative">
-                                    <img
-                                        src={import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/gallery/" + gallery}
-                                        alt={`Preview ${index}`}
-                                        style={{ maxWidth: '100%', maxHeight: 'auto' }}
-                                    />
-                                    <IconButton
-                                        style={{ position: 'absolute', top: 0, right: 0 }}
-                                        onClick={() => removeImageGallery(gallery)}
-                                    >
-                                        <CloseIcon className="close-gallery" />
-                                    </IconButton>
-                                </div>
-                            ))}
-                            {Array.from(Array(maxGallery-galleryData.length),(_, index) => (
-                            <div key={index} className="gallery-list">
-                                <Button component="label">
-                                    {!galleryPreviews[index] && (
-                                    <div>
-                                        <AddPhotoAlternateIcon className="add-gallery" />
-                                        <VisuallyHiddenInput type="file" onChange={(e) => handleGalleryChange(e, index)} />
-                                    </div>
-                                    )}
-                                    {/* <AddPhotoAlternateIcon /> */}
-                                </Button>
-
-                                {galleryPreviews[index] && (
-                                        <div className="position-relative">
-                                            <img
-                                                src={galleryPreviews[index]}
-                                                alt={`Preview ${index}`}
-                                                style={{ maxWidth: '100%', maxHeight: 'auto' }}
-                                            />
-                                             <IconButton
-                                                style={{ position: 'absolute', top: 0, right: 0 }}
-                                                onClick={() => removeImagePreview(index)}
-                                            >
-                                                <CloseIcon className="close-gallery" />
-                                            </IconButton>
-                                        </div>  ) }
-                            </div>
-                            ))}
-                        </div>
-                            {/* <h4 className="error-message text-center">Image  (0/9)</h4> */}
-                            <div className="text-center">
-                                <Button onClick={GalleryImageKeeper} className="rounded-5 py-3 px-4 fs-6" variant="contained" size="large" color="warning" startIcon={ <CollectionsIcon />}>
-                                    Save Gallery
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData()} /> 
             <div className="container pb-lg-5">
                 <div className="row mx-auto col-12">
                     <div className="col-lg-8">

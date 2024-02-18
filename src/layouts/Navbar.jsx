@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../store/AuthSlice';
 import { Button } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 function Navbar() {
   const settings = ['Profile', 'Logout'];
@@ -17,6 +19,7 @@ function Navbar() {
   const isLogin = useSelector(state => state.auth.accessToken)
   const getRole = useSelector(state => state.auth.role)
   const getId = useSelector(state => state.auth.id)
+
   const dispatch = useDispatch()
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -57,17 +60,15 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            {/* <li><Link className="dropdown-item" to="/at3">Home</Link></li> */}
-            {/* <li><Link className="dropdown-item" to="/at3/about-us">About</Link></li> */}
-            {/* <li><Link className="dropdown-item" to="#">Contact</Link></li> */}
+            {isLogin && <li><Link className="dropdown-item" to="/at3">Logout</Link></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
 
           </ul>
-          {isLogin && 
+          {/* {isLogin && 
           <Tooltip title="Open settings" className="ms-3 navbar-toggler">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="" />
+                <PersonIcon className="person-icon" />
               </IconButton>
             </Tooltip>
             }
@@ -90,7 +91,7 @@ function Navbar() {
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Typography onClick={() => dispatch(logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
                   </MenuItem>
-              </Menu>
+              </Menu> */}
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">
@@ -132,7 +133,7 @@ function Navbar() {
               <li  className="nav-item ">
                 <Tooltip title="Open settings" className="ms-3">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="" />
+                  <PersonIcon className="person-icon" />
                 </IconButton>
               </Tooltip>
                 <Menu

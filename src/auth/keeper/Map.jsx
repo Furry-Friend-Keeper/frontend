@@ -7,7 +7,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 // import "leaflet/dist/leaflet.css"
 // import 'leaflet-geosearch/dist/geosearch.css';
 
-  function Map({ idName }) {
+  function Map({ idName, getLocation }) {
 
     useEffect(() => {
       const latlng = L.latLng(13.7563, 100.5018);
@@ -19,12 +19,25 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
         // Remove the map when the component is unmounted
 
         const provider = new OpenStreetMapProvider();
+
+        const getLocationData = async (location, updatePopupContent) => {
+          const results = await provider.search({ query: `${location.lat}, ${location.lng}` });
+          if (results && results.length > 0) {
+              let label = results[0].label; // Use the first result as an example
+              // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
+              updatePopupContent("<b>Location:</b> " + label)
+          } else {
+              // currentMarker.getPopup().setContent("<b>Location:</b> Coordinates Only");
+              updatePopupContent("<b>Location:</b> Coordinates Only")
+          }
+      };
         const searchControl = new GeoSearchControl({
           provider,
           autoComplete: true, // Optional: enable or disable auto-complete suggestions
           style: 'bar',
           showPopup: true,
-          keepResult: true,      
+          keepResult: true,    
+          popupFormat: ({ query, result }) => "This is your current location.",   
           marker: {
             // optional: L.Marker    - default L.Icon.Default
             icon: new L.Icon.Default(),
@@ -55,6 +68,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
           // const marker = L.marker(currentLocation, { icon: customIcon }).addTo(map);
 
           // Optionally, you can open a popup with additional information
+          getLocation(`${currentLocation.lat}, ${currentLocation.lng}`)
           currentMarker.bindPopup('You are here!').openPopup();
 
           // Pan the map to the current location
@@ -62,15 +76,20 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
           currentMarker.on('dragend', (event) => {
             const newLocation = event.target.getLatLng();
-            currentMarker.bindPopup(`Latitude ${newLocation?.lat.toFixed(4)}, Longitude ${newLocation.lng.toFixed(4)}`).openPopup();
-          });
+            getLocation(`${newLocation.lat}, ${newLocation.lng}`)
+            getLocationData(newLocation, (newContent) => {
+              currentMarker.bindPopup(newContent).openPopup()
+          })});
         },
         (error) => {
           console.error('Error getting current location:', error.message);
         }
       );
     }
-    map.on('geosearch/showlocation', () => {
+    map.on('geosearch/showlocation', (event) => {
+      const { location } = event
+      getLocation(`${location.raw.lat}, ${location.raw.lon}`)
+      // console.log("lat "+location.lat, "lon " + location.lng)
       if (currentMarker) {
         currentMarker.removeFrom(map); // Remove previous marker
       }
@@ -78,23 +97,16 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
     map.on('geosearch/marker/dragend', (event) => {
       const { location } = event; // Assuming the event object contains the marker
-      const popupContent = `Latitude: ${location.lat.toFixed(4)}, Longitude: ${location.lng.toFixed(4)}`;
+      getLocation(`${location.lat}, ${location.lng}`)
+      const popupContent = "This is your current location.";
       const popup = L.popup({ offset: L.point(0, -35) }).setLatLng(location) 
       .setContent(popupContent)
-      .openOn(map);
-      popup.setContent(popupContent)
+      // .openOn(map);
+      // popup.setContent(popupContent)
+      getLocationData(location, (newContent) => {
+        popup.setContent(newContent).update();
+    })
 
-      // fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.lat}&lon=${location.lng}`)
-      // .then(response => response.json())
-      // .then(data => {
-      //     if (data.address) {
-      //         let label = data.address.road || data.address.city || data.address.country; // Customize as needed
-      //         console.log(data)
-      //         // marker.getPopup().setContent("<b>Location:</b> " + label);
-      //     } else {
-      //         // marker.getPopup().setContent("<b>Location:</b> Coordinates Only"); 
-      //     }
-      // })
     });
 
     

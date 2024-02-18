@@ -17,7 +17,7 @@ import { userLogin } from '../store/AuthAction'
 function Login() {
   const { handleSubmit, register, formState: { errors }, } = useForm();
 
-  const { loading, userInfo, error, success } = useSelector(
+  const { loading, userInfo, error, success, accessToken } = useSelector(
     (state) => state.auth
   )  
   const dispatch = useDispatch()
@@ -30,10 +30,10 @@ function Login() {
   console.log(userInfo)
   useEffect(() => {
     // redirect user to login page if registration was successful
-    if (success) {
+    if (accessToken) {
       userInfo?.role === "PetKeeper" ? navigate(`/at3/keeper-edit/${userInfo?.id}`) : navigate("/at3/");
     }
-  }, [success])
+  }, [accessToken])
 
   // const LoginForm = async (data) => {
   //   await axios
@@ -162,7 +162,7 @@ function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Login
+                {loading ? <span>loading...</span> : <span>Login</span>}
               </Button>
               <Grid container>
                 <Grid item xs>

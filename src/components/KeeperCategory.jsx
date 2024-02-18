@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 function KeeperCategory(props) {
-    const { petCategories, selected } = props;
+    const { petCategories, selected, handleCategory } = props;
   return (
     <div className="filter-panel">
         <div className="pet-category">
