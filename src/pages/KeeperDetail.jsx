@@ -61,7 +61,7 @@ function KeeperDetail() {
             petownerId: userInfo.id,
             petkeeperId: parseInt(id,10),
             reviewId: data.reviewId,
-            stars: data.stars,
+            star: data.stars,
             date: moment().format()
         };
         await axios

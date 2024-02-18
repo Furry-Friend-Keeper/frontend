@@ -38,7 +38,9 @@ function EditKeeperDetail() {
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
       )  
-    // const [isEdit, setIsEdit] = useState(false);
+    const [isReview, setIsReview] = useState([]);
+    const [ isOwnerReview, setIsOwnerReview ] = useState(null);
+    
     const fetchData = async () => {
         try {
             const apiUrl = import.meta.env.VITE_KEEPERS_ID + keeperId;
@@ -56,7 +58,11 @@ function EditKeeperDetail() {
                 setValue("district", data.address.district);
                 setValue("province", data.address.province);
                 setValue("postalCode", data.address.postalCode);
-
+                const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
+                console.log(myReview)
+                const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
+                setIsReview(otherReview);
+                setIsOwnerReview(myReview)
                 const transformedGallery = data.gallery.map(item => {
                     const splitItem = item.split(',');
                     return splitItem.length === 2 ? splitItem[1] : item;
@@ -635,24 +641,56 @@ function EditKeeperDetail() {
                                         precision={0.5}
                                         readOnly
                                     />
-                                    {/* <span className="">10 review</span> */}
                                 </div>
-                                {/* <div className="review-des mt-3">
-                                    <textarea
-                                        className="form-control"
-                                        cols="30"
-                                        rows="5"
-                                        placeholder="Message to reviews"
-                                    ></textarea>
-                                </div>
-                                <div className="review-btn mt-3">
-                                    <button className="btn btn-success w-100">
-                                        Save
-                                    </button>
-                                </div> */}
                             </div>
                         </div>
                     </div>
+                    <div className="mt-4">
+
+                    
+                    <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
+                            <div className="title">
+                                <h2>Overviews</h2>
+                            </div>
+                            <div className="row justify-content-start mt-4">
+                                <div className="col">
+                                    <div className="row">
+                                        {isReview.map((review, index) => (
+                                            <div className="d-flex align-items-center mt-4" key={index}>
+                                                    <div className="col-md-1">
+                                                        <img
+                                                            src={
+                                                                import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <span className="ps-4">
+                                                            {
+                                                                review?.petownerFirstname
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    <div className="col-md-3">
+                                                        <Rating
+                                                            name=""
+                                                            value={review?.stars}
+                                                            readOnly
+                                                        />
+                                                        <span className="ps-4">
+                                                            {review?.date}
+                                                        </span>
+                                                    </div>  
+                                                    <div className="col-md-4">
+                                                            <span>{review?.comment}</span>
+                                                    </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
                 </div>
             </div>
         </>
