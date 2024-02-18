@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import { useNavigate ,Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Unauthorized from "../components/Unauthorized.jsx"
 
 function ProtectedKeeperRoute({ element: Element }) {
     const { loading, userInfo, error, success, accessToken } = useSelector((state) => state.auth)  
@@ -11,11 +12,9 @@ function ProtectedKeeperRoute({ element: Element }) {
       if (!accessToken) {
         // Redirect to login if not logged in
           navigate('/at3/');
-      } else if (userInfo?.id !== keeperId && userInfo?.role === "PetKeeper") {
+      } else if (userInfo?.id !== parseInt(keeperId) && userInfo?.role === "PetKeeper") {
         // Redirect to their keeper edit page if keeperId doesn't match
-          navigate(`/at3/keeper-edit/${userInfo?.id}`);
-      }else {
-        navigate('/at3/');
+          navigate('/at3/unauthorized');
       }
       // Adding navigate, success, userInfo, and keeperId as dependencies ensures that
       // the effect runs again if any of these values change.

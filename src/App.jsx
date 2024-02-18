@@ -15,6 +15,7 @@ import ProtectedKeeperRoute from './components/ProtectedKeeperRoute.jsx';
 import AuthVerify from './components/AuthVerify.jsx';
 // import Account from './auth/owner/Account.jsx';
 import Footer from './layouts/Footer.jsx';
+import Unauthorized from './components/Unauthorized.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",
@@ -48,7 +49,7 @@ function App() {
             <Route path="/at3/keeper-edit/:keeperId" element={<ProtectedKeeperRoute element={EditKeeperDetail} />} />
             <Route path="/at3/about-us" element={<About />} />
             {/* Add more routes as needed */}
-      
+            <Route path="/at3/unauthorized" element={<Unauthorized />} />
           </Routes>
           </main>    
         <Footer />

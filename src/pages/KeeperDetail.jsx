@@ -28,62 +28,93 @@ function KeeperDetail() {
     const navigate = useNavigate()
     const [ isOwnerReview, setIsOwnerReview ] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
-                await axios.get(apiUrl).then((response) => {
-                    const data = response.data;
-                    setApiData(data);
-                    const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
-                    console.log(myReview)
-                    const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
-                    setIsReview(otherReview);
-                    setIsOwnerReview(myReview)
-                    const transformedGallery = data.gallery.map((item) => {
-                        const splitItem = item.split(",");
-                        return splitItem.length === 2 ? splitItem[1] : item;
-                    });
-
-                    setGalleryData(transformedGallery);
+    const fetchData = async () => {
+        try {
+            const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
+            await axios.get(apiUrl).then((response) => {
+                const data = response.data;
+                setApiData(data);
+                const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
+                console.log(data)
+                console.log(myReview)
+                setValue('comment', myReview?.comment)
+                setValue('reviewId', myReview?.reviewId)
+                const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
+                setIsReview(otherReview);
+                setIsOwnerReview(myReview)
+                const transformedGallery = data.gallery.map((item) => {
+                    const splitItem = item.split(",");
+                    return splitItem.length === 2 ? splitItem[1] : item;
                 });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
 
+                setGalleryData(transformedGallery);
+            });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, [id]);
 
     const SaveOwnerComment = async (data) => {
-        const result = {
-            comment: data.comment,
-            petownerId: userInfo.id,
-            petkeeperId: parseInt(id,10),
-            reviewId: data.reviewId,
-            stars: data.stars,
-            date: moment().format()
-        };
         await axios
-            .post(import.meta.env.VITE_OWNER_REVIEWS, result, {
+            .post(import.meta.env.VITE_OWNER_REVIEWS, data, {
                 headers: { 'Authorization': 'Bearer ' + accessToken}
             })
             .then((res) => {
                 const response = res.data;
-                setApiData({ ...apiData, ...result });
+                setApiData({ ...apiData, ...data });
                 setIsEditComment(false);
+                fetchData()
             })
             .catch((err) => {
                 console.log(err);
             });
     };
+
+    const EditOwnerComment = async (data) => {
+        await axios
+        .patch(import.meta.env.VITE_OWNER_REVIEWS_EDIT + data.reviewId, data, {
+            headers: { 'Authorization': 'Bearer ' + accessToken}
+        })
+        .then((res) => {
+            const response = res.data;
+            setApiData({ ...apiData, ...data });
+            setIsEditComment(false);
+            fetchData()
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+        
     const onSubmit = (data) => {
         if(!accessToken){
             navigate("/at3/login")
         }
-        SaveOwnerComment(data);
+        const result = {
+            comment: data.comment,
+            petownerId: userInfo.id,
+            petkeeperId: parseInt(id,10),
+            star: data.stars,
+            date: moment().format()
+        };
+        SaveOwnerComment(result);
         console.log(data);
     };
+
+    const onEditSubmit = (data) => {
+        const result = {
+            reviewId: data.reviewId,
+            comment: data.comment,
+            star: data.rating,
+            date: moment().format()
+        };
+        console.log(result)
+        EditOwnerComment(result)
+    }
 
     const {
         register,
@@ -314,6 +345,7 @@ function KeeperDetail() {
                                     precision={0.5}
                                     readOnly
                                 />
+                                <span className="ms-1">({apiData.reviews?.length})</span>
                             </div>
                             <div className="row justify-content-start mt-4">
                                 { isOwnerReview !== null &&
@@ -321,120 +353,130 @@ function KeeperDetail() {
                                     <p>
                                         My Review
                                     </p>
-                                <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="d-flex align-items-center mt-4">
-                                                    <div className="col-md-1">
-                                                        <img
-                                                            src={
-                                                                import.meta.env.VITE_KEEPER_IMAGE + isOwnerReview?.petownerImg
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-3">
-                                                        <span className="ps-4">
-                                                            {
-                                                                isOwnerReview?.petownerFirstname
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-md-3">
-                                                    {!isEditComment ? (
+                                <form onSubmit={handleSubmit(onEditSubmit)}>
+                                    <input type="hidden" {...register("reviewId")}/>
+                                    <div className="d-flex align-items-center mt-4">
+                                            <div className="col-md-1">
+                                                <img
+                                                    src={
+                                                        import.meta.env.VITE_KEEPER_IMAGE + isOwnerReview?.petownerImg
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="col-md-3">
+                                                <span className="ps-4">
+                                                    {
+                                                        isOwnerReview?.petownerFirstname
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div className="col-md-3">
+                                            {!isEditComment ? (
+                                                <Rating
+                                                    name="read-only"
+                                                    value={isOwnerReview?.stars}
+                                                    readOnly
+                                                />
+                                            ) : (
+                                                <div className="rating">
+                                                    <Controller
+                                                        name="rating"
+                                                        control={control}
+                                                        defaultValue={isOwnerReview?.stars}
+                                                        render={({ field }) => (
                                                         <Rating
-                                                            name="read-only"
-                                                            value={isOwnerReview?.stars}
-                                                            readOnly
+                                                            {...field}
+                                                            onChange={(_, value) => field.onChange(value)}
                                                         />
-                                                    ) : (
-                                                        <div className="rating">
-                                                            <Controller
-                                                                name="stars"
-                                                                control={control}
-                                                                defaultValue={0} // You can set the default value here
-                                                                rules={{
-                                                                    required: true,
-                                                                    max: 5,
+                                                        )}
+                                                    />
+                                                    {/* <Controller
+                                                        name="stars"
+                                                        control={control}
+                                                        defaultValue={isOwnerReview?.stars} 
+                                                        rules={{
+                                                            required: true,
+                                                            max: 5,
+                                                        }}
+                                                        render={({ field }) => (
+                                                            <Rating
+                                                                {...field}
+                                                                value={field.value}
+                                                                onChange={(
+                                                                    event,
+                                                                    newValue
+                                                                ) => {
+                                                                    field.onChange(
+                                                                        newValue
+                                                                    );
                                                                 }}
-                                                                render={({ field }) => (
-                                                                    <Rating
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(
-                                                                            event,
-                                                                            newValue
-                                                                        ) => {
-                                                                            field.onChange(
-                                                                                newValue
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                )}
                                                             />
-                                                        </div>
-                                                    )}
-                                                        <span className="ps-4">
-                                                            {isOwnerReview?.date}
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        
-                                                                
-                                                                {!isEditComment ? (
-                                                                    <div>
-                                                                        <span>{isOwnerReview?.comment}</span>
-                                                                    </div>
-                                                                ) : (
-                                                                    <TextField
-                                                                        label="Edit Comment"
-                                                                        margin="normal"
-                                                                        fullWidth
-                                                                        {...register("comment", {
-                                                                            maxLength: {
-                                                                                value: 200,
-                                                                                message:
-                                                                                    "Comment must not more than 200 characters",
-                                                                            },
-                                                                        })}
-                                                                    />
-                                                                )}
-                                                                {errors.comment && (
-                                                                    <p className="error-message">
-                                                                        {errors.comment.message}
-                                                                    </p>
-                                                                )}
-                                                                {isEditComment && (
-                                                                    <Box
-                                                                        sx={{
-                                                                            display: "flex",
-                                                                            justifyContent: "flex-end",
-                                                                        }}
-                                                                    >
-                                                                        <Button
-                                                                            variant="contained"
-                                                                            style={{
-                                                                                backgroundColor:
-                                                                                    "red",
-                                                                                color: "white",
-                                                                            }}
-                                                                            onClick={() =>
-                                                                                setIsEditComment(
-                                                                                    false
-                                                                                )
-                                                                            }
-                                                                            sx={{
-                                                                                ml: 1,
-                                                                            }}
-                                                                        >
-                                                                            Cancel
-                                                                        </Button>
-                                                                        <Button
-                                                                            type="submit"
-                                                                            variant="contained"
-                                                                            sx={{ ml: 1 }}
-                                                                        >
-                                                                            Submit
-                                                                        </Button>
-                                                                    </Box>
-                                                                )}
+                                                        )}
+                                                    /> */}
+                                                </div>
+                                            )}
+                                                <span className="ps-4">
+                                                    {moment.unix(isOwnerReview?.date).format('DD/MM/YYYY')}
+                                                </span>
+                                            </div>
+                                            <div className="col-md-4">
+                                                        {!isEditComment ? (
+                                                            <div>
+                                                                <span>{isOwnerReview?.comment}</span>
+                                                            </div>
+                                                        ) : (
+                                                            <TextField
+                                                                label="Edit Comment"
+                                                                margin="normal"
+                                                                fullWidth
+                                                                {...register("comment", {
+                                                                    maxLength: {
+                                                                        value: 200,
+                                                                        message:
+                                                                            "Comment must not more than 200 characters",
+                                                                    },
+                                                                })}
+                                                            />
+                                                        )}
+                                                        {errors.comment && (
+                                                            <p className="error-message">
+                                                                {errors.comment.message}
+                                                            </p>
+                                                        )}
+                                                        {isEditComment && (
+                                                            <Box
+                                                                sx={{
+                                                                    display: "flex",
+                                                                    justifyContent: "flex-end",
+                                                                }}
+                                                            >
+                                                                <Button
+                                                                    variant="contained"
+                                                                    style={{
+                                                                        backgroundColor:
+                                                                            "red",
+                                                                        color: "white",
+                                                                    }}
+                                                                    onClick={() =>
+                                                                        setIsEditComment(
+                                                                            false
+                                                                        )
+                                                                    }
+                                                                    sx={{
+                                                                        ml: 1,
+                                                                    }}
+                                                                >
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button
+                                                                    type="submit"
+                                                                    variant="contained"
+                                                                    sx={{ ml: 1 }}
+                                                                >
+                                                                    Save
+                                                                </Button>
+                                                            </Box>
+                                                        )}
                                                     </div>
                                                     <div className="col-md-1">
                                                         {userInfo.id === isOwnerReview?.petownerId &&
@@ -483,7 +525,7 @@ function KeeperDetail() {
                                                             readOnly
                                                         />
                                                         <span className="ps-4">
-                                                            {review?.date}
+                                                            {moment.unix(review?.date).format("DD/MM/YYYY")}
                                                         </span>
                                                     </div>
                                                     <div className="col-md-4">
