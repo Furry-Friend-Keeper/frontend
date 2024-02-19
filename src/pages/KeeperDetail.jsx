@@ -362,11 +362,11 @@ function KeeperDetail() {
                                     <input type="hidden" {...register("reviewId")}/>
                                     <div className="d-flex align-items-center mt-4">
                                             <div className="col-md-1">
-                                                <img
+                                                {/* <img
                                                     src={
                                                         import.meta.env.VITE_KEEPER_IMAGE + isOwnerReview?.petownerImg
                                                     }
-                                                />
+                                                /> */}
                                             </div>
                                             <div className="col-md-3">
                                                 <span className="ps-4">
@@ -510,11 +510,11 @@ function KeeperDetail() {
                                         {isReview.map((review, index) => (
                                             <div className="d-flex align-items-center mt-4" key={index}>
                                                     <div className="col-md-1">
-                                                        <img
+                                                        {/* <img
                                                             src={
                                                                 import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
                                                             }
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <div className="col-md-3">
                                                         <span className="ps-4">

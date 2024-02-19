@@ -12,7 +12,7 @@ function Footer() {
             <div className="col-lg-5 col-md-4 text-center">
             <h5 className="footer-header mb-4">PRODUCT NAME</h5>
             <div className="d-flex justify-content-center align-items-center mb-3">
-              <img src="/assets/cat.png" alt="" width={75} />
+              <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={75} />
             </div>
                 <h6 className="footer-header">Furry Friend Keeper</h6>
                 <p>Website for animal lover</p>
@@ -24,7 +24,7 @@ function Footer() {
                     <li><PetsIcon />Cat</li>
                     <li><PetsIcon />Humster</li>
                     <li><PetsIcon />Hedgehog</li>
-                    <li><PetsIcon />rabbit</li>
+                    <li><PetsIcon />Rabbit</li>
                 </ul>
             </div>
             <div className="col-lg-4 col-md-4">

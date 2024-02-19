@@ -12,13 +12,14 @@ function ProtectedKeeperRoute({ element: Element }) {
       if (!accessToken) {
         // Redirect to login if not logged in
           navigate('/at3/');
+      } else if (userInfo?.role !== "PetKeeper") { 
+          navigate('/at3/')
       } else if (userInfo?.id !== parseInt(keeperId) && userInfo?.role === "PetKeeper") {
         // Redirect to their keeper edit page if keeperId doesn't match
           navigate('/at3/unauthorized');
-      }
       // Adding navigate, success, userInfo, and keeperId as dependencies ensures that
       // the effect runs again if any of these values change.
-    }, [navigate, accessToken, userInfo, keeperId]);
+    } },  [navigate, accessToken, userInfo, keeperId]);
   
     // If everything checks out, render the requested component
     return <Element />;
