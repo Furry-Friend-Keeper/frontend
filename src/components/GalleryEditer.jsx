@@ -32,9 +32,12 @@ function GalleryEditer(props) {
             setGalleryPreviews(updatedPreviews);
         };
 
-        if (file) {
-            reader.readAsDataURL(file);
+        if (file && file.type.startsWith('image/')) {
+            setOpen(false);
             setImageGallery([...imageGallery,file])
+        }else {
+            setOpen(true);
+            setMessageLog('Please insert an image file.')
         }
     };
 
