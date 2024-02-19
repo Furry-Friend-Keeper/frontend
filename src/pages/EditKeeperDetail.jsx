@@ -10,7 +10,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { TextField, Button, styled, IconButton  } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
-import { Textarea } from "@mui/joy";
+// import { Textarea } from "@mui/joy";
 import ImageIcon from '@mui/icons-material/Image';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { Navigate ,useParams } from "react-router-dom";
 import MapEditer from "../components/MapEditer";
 import GalleryEditer from "../components/GalleryEditer";
+import moment from "moment";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -32,9 +33,12 @@ function EditKeeperDetail() {
     const [isEditName, setIsEditName] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
     const [isEditAddress, setIsEditAddress] = useState(false);
+    const [isMap, setIsMap] = useState([]);
+    const [getLocation, setLocation] = useState("")
+    const [addressLabel, setAddressLabel] = useState("")
     const [isImg, setImg] = useState();
     const { keeperId } = useParams();
-    const [isError, setIsError] = useState(false);
+    // const [isError, setIsError] = useState(false);
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
       )  
@@ -54,12 +58,15 @@ function EditKeeperDetail() {
                 setValue("contact", data.contact);
                 setValue("email", data.email);
                 setValue("phone", data.phone);
-                setValue("address", data.address.address);
+                // setValue("address", data.address.address);
                 setValue("district", data.address.district);
                 setValue("province", data.address.province);
                 setValue("postalCode", data.address.postalCode);
                 const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
+                const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
+                setIsMap(splitMap)
+                setAddressLabel(data.address.address)
                 setIsReview(otherReview);
                 setIsOwnerReview(myReview)
                 const transformedGallery = data.gallery.map(item => {
@@ -85,17 +92,18 @@ function EditKeeperDetail() {
         formState: { errors },
     } = useForm();
 
-    const EditKeeper = async (data) => {
+    const EditKeeper = async (data, isError) => {
         const result = {
             name: data.name,
             detail: data.detail,
             contact: data.contact,
             phone: data.phone,
             address: {
-                address: data.address,
+                address: addressLabel,
                 district: data.district,
                 province: data.province,
-                postalCode: data.postalCode
+                postalCode: data.postalCode,
+                map: getLocation,
             }
         };
         if(!isError){
@@ -104,13 +112,14 @@ function EditKeeperDetail() {
                     headers: { 'Authorization': 'Bearer ' + accessToken}
                 })
                 .then((res) => {
-                    const response = res.data;
                     setApiData({ ...apiData, ...result });
                     setIsEditName(false);
                     setIsEditContact(false);
                     setIsEditAddress(false);
                     setOpen(true)
                     setAlertStatus('success')
+                    const splitMap = getLocation.split(',').map(coord => parseFloat(coord));
+                    setIsMap(splitMap)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -122,7 +131,9 @@ function EditKeeperDetail() {
     };
 
     
-    const EditProfileImg = async () => {
+    const EditProfileImg = async (data) => {
+        let isError = false;
+        if(isImg !== undefined) {
         const formData = new FormData();
         formData.append("file", isImg)
         await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
@@ -130,21 +141,31 @@ function EditKeeperDetail() {
         }).then((res) => {
             setOpen(true)
             setAlertStatus('success')
-            setIsError(false)
+            // setIsError(false)
+            isError = false
             fetchData()
         }).catch((error) => {
-            error.message === "Network Error" ?  setMessageLog("This image is too large.") : setMessageLog(error.message)
-            setIsError(true)
+            if (error.response?.status === 413) {
+                // Handle Payload Too Large error specifically
+                setMessageLog("The file you are trying to upload is too large.");
+            }else if(error.message === "Network Error") {
+                setMessageLog("The file you are trying to upload is too large.") 
+            }else {
+                setMessageLog(error.message)
+            }
+            // setIsError(true)
             setOpen(true)
+            isError = true
             setAlertStatus('error')
         })
+    }
+
+        EditKeeper(data, isError)
     };
 
     const onSubmit = (data) => {
-        if(isImg !== undefined) {
-            EditProfileImg()
-        }
-        EditKeeper(data);
+        EditProfileImg(data)
+        // EditKeeper(data);
     };
 
     const [previewImage, setPreviewImage] = useState(null);
@@ -337,10 +358,11 @@ function EditKeeperDetail() {
                                             {!isEditName ? (
                                                 <p>{apiData.detail}</p>
                                             ) : (
-                                                <Textarea
-                                                    minRows={3}
+                                                <textarea
+                                                    className="form-control"
+                                                    rows={3}
+                                                
                                                     placeholder="Type in here…"
-                                                    margin="normal"
                                                     
                                                     {...register("detail")}
                                                 />
@@ -397,7 +419,6 @@ function EditKeeperDetail() {
 
                             <div className="table">
                                 <table className="w-100">
-                                    <tbody>
                                     <tr>
                                         <td>Name</td>
                                         {!isEditContact ? (
@@ -465,7 +486,6 @@ function EditKeeperDetail() {
                                             </td>
                                         )}
                                     </tr>
-                                    </tbody>
                                 </table>
                             </div>
                             {isEditContact && (
@@ -501,7 +521,7 @@ function EditKeeperDetail() {
                     </div>
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            <MapEditer editMap={isEditAddress} />
+                            {isMap.length > 0 && <MapEditer editMap={isEditAddress} isMap={isMap} getLocation={setLocation} getLocationLabel={setAddressLabel} />}     
                             <div className="p-2 bg-white">
                             <div className="title d-flex justify-content-end align-items-center">
                                 <span className="fs-3">
@@ -516,85 +536,84 @@ function EditKeeperDetail() {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="table">
                                     <table className="w-100">
-                                        <tbody>
-
-                                            <tr>
-                                                <td>Address</td>
-                                                {!isEditAddress ? (
-                                                <td className="text-end">
-                                                    {apiData?.address?.address}
-                                                </td>
-                                                ) : (
-                                                <td className="text-end">
-                                                <TextField
-                                                        label="Edit Address"
-                                                        margin="normal"
-                                                        required
-                                                        {...register("address", {
-                                                            maxLength: {
-                                                                value: 200,
-                                                                message:
-                                                                    "Address must not more than 200 characters",
-                                                            },
-                                                        })}
-                                                    />
-                                                    {errors.address && (
-                                                    <p className="error-message">
-                                                        {errors.address.message}
-                                                    </p>
-                                                )}
-                                                </td>
-                                                )}
-                                            </tr>
-                                            <tr>
-                                                <td>District</td>
-                                                {!isEditAddress ? (
-                                                <td className="text-end">
-                                                    {apiData?.address?.district}
-                                                </td>
-                                                ) : (
-                                                <td className="text-end">
-                                                <TextField
-                                                        label="Edit "
-                                                        margin="normal"
-                                                        {...register("district")}
-                                                    />
-                                                </td>
-                                                )}
-                                            </tr>
-                                            <tr>
-                                                <td>Province</td>
-                                                {!isEditAddress ? (
-                                                <td className="text-end">
-                                                    {apiData?.address?.province}
-                                                </td>
-                                                ) : (
-                                                <td className="text-end">
-                                                <TextField
-                                                        label="Edit Province"
-                                                        margin="normal"
-                                                        {...register("province")}
-                                                    />
-                                                </td>
-                                                )}
-                                            </tr>
-                                            <tr>
-                                                <td>PostalCode</td>
-                                                {!isEditAddress ? (
-                                                <td className="text-end">
-                                                    {apiData.address?.postalCode}
-                                                </td>
-                                                ) : (
-                                                <td className="text-end">
-                                                <TextField
-                                                        label="Edit Postal Code"
-                                                        margin="normal"
-                                                        {...register("postalCode")}
-                                                    />
-                                                </td>
-                                                )}
-                                            </tr>
-                                        </tbody>
+                                        <tr>
+                                            <td>Address</td>
+                                            {!isEditAddress ? (
+                                            <td className="text-end">
+                                                {apiData?.address?.address}
+                                            </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Address"
+                                                    margin="normal"
+                                                    required
+                                                    value={addressLabel}
+                                                    onChange={(event) => setAddressLabel(event.target.value)}
+                                                    // {...register("address", {
+                                                    //     maxLength: {
+                                                    //         value: 200,
+                                                    //         message:
+                                                    //             "Address must not more than 200 characters",
+                                                    //     },
+                                                    // })}
+                                                />
+                                                {errors.address && (
+                                                <p className="error-message">
+                                                    {errors.address.message}
+                                                </p>
+                                            )}
+                                            </td>
+                                            )}
+                                        </tr>
+                                        <tr>
+                                            <td>District</td>
+                                            {!isEditAddress ? (
+                                            <td className="text-end">
+                                                {apiData?.address?.district}
+                                            </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit "
+                                                    margin="normal"
+                                                    {...register("district")}
+                                                />
+                                            </td>
+                                            )}
+                                        </tr>
+                                        <tr>
+                                            <td>Province</td>
+                                            {!isEditAddress ? (
+                                            <td className="text-end">
+                                                {apiData?.address?.province}
+                                            </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Province"
+                                                    margin="normal"
+                                                    {...register("province")}
+                                                />
+                                            </td>
+                                            )}
+                                        </tr>
+                                        <tr>
+                                            <td>PostalCode</td>
+                                            {!isEditAddress ? (
+                                            <td className="text-end">
+                                                {apiData.address?.postalCode}
+                                            </td>
+                                            ) : (
+                                            <td className="text-end">
+                                            <TextField
+                                                    label="Edit Postal Code"
+                                                    margin="normal"
+                                                    {...register("postalCode")}
+                                                />
+                                            </td>
+                                            )}
+                                        </tr>
                                     </table>
                                     
                                 </div>
@@ -630,7 +649,7 @@ function EditKeeperDetail() {
                                 </form>
                             </div>
                         </div>
-                        <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
+                        {/* <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
                             <div className="title">
                                 <h4>Reviews</h4>
                             </div>
@@ -647,7 +666,7 @@ function EditKeeperDetail() {
                                     />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="mt-4">
 
@@ -656,38 +675,50 @@ function EditKeeperDetail() {
                             <div className="title">
                                 <h2>Overviews</h2>
                             </div>
+                            <div className="rating">
+                                <span className="fs-3 rating-score me-2">
+                                    {apiData.reviewStars}
+                                </span>
+                                <Rating
+                                    name="read-only"
+                                    value={apiData.reviewStars || 0}
+                                    precision={0.5}
+                                    readOnly
+                                />
+                                <span className="ms-1">({apiData.reviews?.length})</span>
+                            </div>
                             <div className="row justify-content-start mt-4">
                                 <div className="col">
                                     <div className="row">
                                         {isReview.map((review, index) => (
                                             <div className="d-flex align-items-center mt-4" key={index}>
-                                                    <div className="col-md-1">
-                                                        <img
-                                                            src={
-                                                                import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-3">
-                                                        <span className="ps-4">
-                                                            {
-                                                                review?.petownerFirstname
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                    <div className="col-md-3">
-                                                        <Rating
-                                                            name=""
-                                                            value={review?.stars}
-                                                            readOnly
-                                                        />
-                                                        <span className="ps-4">
-                                                            {review?.date}
-                                                        </span>
-                                                    </div>  
-                                                    <div className="col-md-4">
-                                                            <span>{review?.comment}</span>
-                                                    </div>
+                                                <div className="col-md-1">
+                                                    <img
+                                                        src={
+                                                            import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <span className="ps-4">
+                                                        {
+                                                            review?.petownerFirstname
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <div className="col-md-3">
+                                                    <Rating
+                                                        name=""
+                                                        value={review?.stars}
+                                                        readOnly
+                                                    />
+                                                    <span className="ps-4">
+                                                        {moment.unix(review?.date).format("DD/MM/YYYY"  )}
+                                                    </span>
+                                                </div>  
+                                                <div className="col-md-4">
+                                                        <span>{review?.comment}</span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>

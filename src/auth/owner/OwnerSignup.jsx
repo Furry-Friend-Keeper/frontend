@@ -136,7 +136,7 @@ export default function BasicFormControl() {
                         <Label>Lastname</Label>
                         <input className={`form-control ${errors.lastName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Lastname here"
-                            {...register("lastName", { required: "Lastname is required", maxLength: {
+                            {...register("lastName", { required: "Please enter your lastname.", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}

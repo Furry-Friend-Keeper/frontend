@@ -37,15 +37,13 @@ function KeeperDetail() {
                 const data = response.data;
                 setApiData(data);
                 const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
-                console.log(data)
-                console.log(myReview)   
                 const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
                 setMap(splitMap)
                 // console.log(splitMap);
                 setValue('comment', myReview?.comment)
                 setValue('reviewId', myReview?.reviewId)
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
-                setIsReview(otherReview);
+                setIsReview(otherReview.sort((a,b) => b.date - a.date));
                 setIsOwnerReview(myReview)
                 const transformedGallery = data.gallery.map((item) => {
                     const splitItem = item.split(",");
@@ -281,7 +279,7 @@ function KeeperDetail() {
                                 </div>
                             </div>
                         </div>
-                        { isOwnerReview === null && 
+                        { isOwnerReview === null && userInfo?.role === "Owner" &&
                         <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4" >
                             <div className="title">
                                 <h4>Reviews</h4>
@@ -531,9 +529,9 @@ function KeeperDetail() {
                                                             value={review?.stars}
                                                             readOnly
                                                         />
-                                                        <span className="ps-4">
-                                                            {moment.unix(review?.date).format("DD/MM/YYYY")}
-                                                        </span>
+                                                        <div>
+                                                            {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A")}
+                                                        </div>
                                                     </div>
                                                     <div className="col-md-4">
                                                             <span>{review?.comment}</span>

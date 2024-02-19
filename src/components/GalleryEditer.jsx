@@ -78,10 +78,16 @@ function GalleryEditer(props) {
             setGalleryPreviews(Array(maxGallery).fill(''))
             setOpen(true)
             setAlertStatus('success')
-        }).catch((err) => {
-            console.log(err)
+        }).catch((error) => {
+            if (error.response?.status === 413) {
+                // Handle Payload Too Large error specifically
+                setMessageLog("The file you are trying to upload is too large.");
+            }else if(error.message == "Network Error") {
+                setMessageLog("The file you are trying to upload is too large.") 
+            }else {
+                setMessageLog(error.message)
+            }
             setOpen(true)
-            setMessageLog(err.message)
             setAlertStatus('error')
         })
    

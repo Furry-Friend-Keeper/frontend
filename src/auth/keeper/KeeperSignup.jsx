@@ -25,7 +25,8 @@ export default function BasicFormControl() {
   const [petCategories, setPetCategories] = useState([]);
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
-  const [getLocation, setLocation] = useState({})
+  const [getLocation, setLocation] = useState("")
+  const [addressLabel, setAddressLabel] = useState("")
   const navigate = useNavigate();
 
   const { register, handleSubmit, watch, control, formState: { errors } } = useForm();
@@ -64,13 +65,12 @@ export default function BasicFormControl() {
   const onSubmit = (data) => {
     // console.log('Selected petCategories:', JSON.parse(data.petCategories));
     const address = {
-      address: data.address,
+      address: addressLabel,
       district: district,
       province: province,
       postalCode: zipcode,
       map: getLocation,
     };
-    data.address = address;
     if (data.petCategories !== "") {
       data.petCategories = JSON.parse(data.petCategories);
     }
@@ -86,7 +86,7 @@ export default function BasicFormControl() {
       email: data.email,
       password: data.password,
       role: 3,
-      address: data.address,
+      address: address,
     };
 
     dispatch(registerKeeper(result))
@@ -342,11 +342,11 @@ export default function BasicFormControl() {
                     className="form-control"
                     rows="4"
                     placeholder="Enter your message"
-                    {...register("detail", { maxLength: 1000 })}
+                    {...register("detail", { maxLength: 200 })}
                     />
           </div>
           <div className="col-md-12 pb-4">
-            <Map idName="map" getLocation={setLocation} />
+            <Map idName="map" getLocation={setLocation} getLocationLabel={setAddressLabel} />
           </div>
           <div className="row">
             <div className="col-md-12 pb-4">
@@ -354,13 +354,16 @@ export default function BasicFormControl() {
                 <input
                 className={`form-control ${errors.address ? "is-invalid" : ""} py-2`}
                 placeholder="Street Address"
-                {...register("address", {
-                    required: "Please enter your address.",
-                    maxLength: {
-                    value: 200,
-                    message: "Name must not more than 200 characters",
-                    },
-                })}
+                value={addressLabel}
+                onChange={(event) => setAddressLabel(event.target.value)}
+                required
+                // {...register("address", {
+                //     required: "Please enter your address.",
+                //     maxLength: {
+                //     value: 200,
+                //     message: "Name must not more than 200 characters",
+                //     },
+                // })}
                 />
                 {errors.address && (
                 <small className="invalid-feedback">{errors.address.message}</small>

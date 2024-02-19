@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
-  function Map({ idName, getLocation }) {
+  function Map({ idName, getLocation, getLocationLabel }) {
 
     useEffect(() => {
       const latlng = L.latLng(13.7563, 100.5018);
@@ -22,6 +22,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
           const results = await provider.search({ query: `${location.lat}, ${location.lng}` });
           if (results && results.length > 0) {
               let label = results[0].label;
+              getLocationLabel(label)
               // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
               updatePopupContent("<b>Location:</b> " + label)
           } else {
@@ -88,6 +89,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
     map.on('geosearch/showlocation', (event) => {
       const { location } = event
       getLocation(`${location.raw.lat}, ${location.raw.lon}`)
+      getLocationLabel(location.label)
       // console.log("lat "+location.lat, "lon " + location.lng)
       if (currentMarker) {
         currentMarker.removeFrom(map); // Remove previous marker

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { refreshToken } from "../store/AuthAction";
 import { logout } from '../store/AuthSlice';
@@ -17,23 +17,25 @@ const getTokenExpireTime = (token) => {
 }
 function AuthVerify() {
     let location = useLocation();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { loading, userInfo, error, success, accessToken } = useSelector((state) => state.auth)  
+    const { userInfo, accessToken } = useSelector((state) => state.auth)  
     useEffect(() => {
   
       if (accessToken) {
         const decodedJwt_accessToken = parseJwt(accessToken);
         const decodedJwt_refreshToken = parseJwt(userInfo.refreshToken);
-        // console.log("access" + new Date(getTokenExpireTime(decodedJwt_accessToken)))
-        // console.log("refresh" + new Date(getTokenExpireTime(decodedJwt_refreshToken)))
+
         if(getTokenExpireTime(decodedJwt_refreshToken) < Date.now()) {
             dispatch(logout())
         }
         else if (getTokenExpireTime(decodedJwt_accessToken) < Date.now()) {
-            dispatch(refreshToken())
+            dispatch(refreshToken()).then(() => {
+              navigate(0)
+            })
         }
       }
-    }, [location]);
+    }, [location, dispatch, accessToken]);
   
     return ;
 }

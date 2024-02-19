@@ -140,7 +140,6 @@ function Home() {
 const PetKeeperCategories = async() => {
     await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
         const response = res.data;
-        console.log(response)
         setPetCategories(response)
     }).catch((err) => {
         console.log(err)
