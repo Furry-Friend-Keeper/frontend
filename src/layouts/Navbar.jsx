@@ -16,8 +16,8 @@ function Navbar() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const isLogin = useSelector(state => state.auth.accessToken)
-  const getRole = useSelector(state => state.auth.role)
-  const getId = useSelector(state => state.auth.id)
+  const getRole = useSelector(state => state.auth.userInfo.role)
+  const getId = useSelector(state => state.auth.userInfo.id)
   const location = useLocation()
 
   const dispatch = useDispatch()
@@ -65,6 +65,7 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
+            {isLogin && <li ><a className="dropdown-item" href={`/at3/keeper-edit/${getId}`}>My Shop</a></li>}
             {isLogin && <li onClick={() => dispatch(logout())} ><a className="dropdown-item" href="/at3">Logout</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
