@@ -5,11 +5,15 @@ import 'leaflet/dist/leaflet.css';
 function MapContainer(props) {
 
     const {isMap} = props;
-    console.log(isMap)
+    // console.log(isMap[0])
+    // console.log(isMap[1])
+    const lat = isMap[0] || 13.7563;
+    const lng = isMap[1] || 100.5018
 
     useEffect(() => {
+        
         const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
-        const latlng = L.latLng(isMap[0], isMap[1]);
+        const latlng = L.latLng(lat, lng);
         const map = L.map('map-container').setView(latlng, 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
