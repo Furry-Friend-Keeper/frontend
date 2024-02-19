@@ -16,6 +16,8 @@ import KeeperCategory from '../components/KeeperCategory';
 import KeeperContents from '../components/KeeperContents';
 import axios from 'axios';
 import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 function Home() {  
 
@@ -145,10 +147,12 @@ const PetKeeperCategories = async() => {
     })
 }
 
-const [sortAscending, setSortAscending] = useState(true);
+const [sortAscending, setSortAscending] = useState(false);
+const [arrow, setArrow] = useState(false);
 const SortReviewStar = () => {
-  setSortAscending((prevSortAscending) => !prevSortAscending);
-  const sortStar = [...search].sort((a, b) => sortAscending ? a.reviewStars - b.reviewStars : b.reviewStars - a.reviewStars)
+  setArrow(!arrow)
+  setSortAscending(true)
+  const sortStar = [...search].sort((a, b) => !arrow ? b.reviewStars - a.reviewStars : a.reviewStars - b.reviewStars)
   setSearch(sortStar);
 }
 
@@ -195,7 +199,11 @@ const SortReviewStar = () => {
               <div className="d-flex justify-content-between mb-3">
                   <div className="sort-list">
                       <h4 className="m-auto">Sort</h4>
-                      <button onClick={() => SortReviewStar()} className={`btn bg-white  mx-3 ${sortAscending ? "" : "sort-active"}`} type='button'>Rating</button>
+                      <button onClick={() => SortReviewStar()} className={`btn bg-white mx-3 ${sortAscending ? "sort-active" : ""}`} >
+                        Rating 
+                        {/* {sortAscending ? arrow === true ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> : ""} */}
+                        {sortAscending ?<ArrowDropUpIcon className={`arrow-icon ${arrow ? "rotate-up" : "rotate-down"}`} /> : ""}
+                      </button>
                   </div>
                   <Search>
                 <SearchIconWrapper>

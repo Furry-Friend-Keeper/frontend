@@ -641,6 +641,18 @@ a:hover {
   } 
 }
 
+.arrow-icon {
+  transition: transform 0.2s ease !important;
+}
+
+.rotate-up {
+  transform: rotate(0);
+}
+
+.rotate-down {
+  transform: rotate(180deg);
+}
+
 .main-container {
   min-height: calc(100vh - 60px);
   position: relative;
