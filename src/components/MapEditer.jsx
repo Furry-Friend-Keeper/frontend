@@ -62,7 +62,7 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
 
         map.on('geosearch/showlocation', (event) => {
           const { location } = event 
-          getLocation(`${location.raw.lat}, ${location.raw.lon}`)
+          getLocation(`${location.y}, ${location.x}`)
           getLocationLabel(location.label)
         if (currentMarker) {
             currentMarker.removeFrom(map); // Remove previous marker
@@ -85,7 +85,7 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
           return () => {
             map.remove();
           };
-    },[editMap])
+    },[editMap, isMap])
   return (
     <div id="map-editer" />
   )

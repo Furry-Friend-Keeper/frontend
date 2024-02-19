@@ -88,7 +88,8 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
     }
     map.on('geosearch/showlocation', (event) => {
       const { location } = event
-      getLocation(`${location.raw.lat}, ${location.raw.lon}`)
+      console.log(location)
+      getLocation(`${location.y}, ${location.x}`)
       getLocationLabel(location.label)
       // console.log("lat "+location.lat, "lon " + location.lng)
       if (currentMarker) {

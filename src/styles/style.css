@@ -241,7 +241,22 @@ a:hover {
 /* a:active {
   background-color: #ffbaba;
 } */
-
+.edit-notImage {
+  /* margin: 0 auto; */
+  margin: auto;
+  display: flex !important;
+  /* align-items: center; */
+  height: 100% !important;
+  opacity: 0.5;
+  width: 70px !important;
+  color: var(--c-blue-sky);
+}
+/* .notImage {
+  height: 200px!important;
+  margin: 0 auto;
+  width: 50px;
+  opacity: 0.5;
+} */
 
 .navbar-toggler:hover {
   border-color: #5e5e5e;
@@ -273,7 +288,7 @@ a:hover {
     opacity: 0.5;
   }
 
-  .keeper-tag {
+  /* .keeper-tag {
     & div {
       background-color: var(--c-blue-white);
       color: var(--c-blue);
@@ -283,6 +298,18 @@ a:hover {
       line-height: 1;
       border-radius: 6px;
     }
+  } */
+}
+
+.keeper-tag {
+  & div {
+    background-color: var(--c-blue-white);
+    color: var(--c-blue);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.5em 0.75em;
+    line-height: 1;
+    border-radius: 6px;
   }
 }
 

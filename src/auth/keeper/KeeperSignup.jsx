@@ -76,7 +76,6 @@ export default function BasicFormControl() {
     }
 
     const phoneNumber = (data.phone).replace(/^66/, "0").trim()
-    console.log(phoneNumber)
     const result = {
       name: data.keeperName,
       detail: data.detail,
@@ -113,7 +112,7 @@ export default function BasicFormControl() {
   };
 
   return (
-    <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)}>
+    <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)} noValidate>
       <Snackbar
         open={!!error}
         autoHideDuration={3000}
@@ -352,7 +351,7 @@ export default function BasicFormControl() {
             <div className="col-md-12 pb-4">
                 <Label>Address</Label>
                 <input
-                className={`form-control ${errors.address ? "is-invalid" : ""} py-2`}
+                className={`form-control py-2`}
                 placeholder="Street Address"
                 value={addressLabel}
                 onChange={(event) => setAddressLabel(event.target.value)}
@@ -365,9 +364,10 @@ export default function BasicFormControl() {
                 //     },
                 // })}
                 />
-                {errors.address && (
-                <small className="invalid-feedback">{errors.address.message}</small>
-                )}
+                {/* {!addressLabel && (
+                <small className="invalid-feedback">Please enter your address.</small>
+                // <small className="invalid-feedback">{errors.address.message}</small>
+                )} */}
             </div>
             <div className="col-md-6 pb-4">
                 <Label>Subdistrict</Label>

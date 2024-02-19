@@ -162,7 +162,7 @@ function KeeperDetail() {
                 <div className="row mx-auto col-11">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <Stack direction="row" spacing={1} className="pb-4">
+                            <Stack direction="row" spacing={1} className="pb-4 keeper-tag">
                                 {apiData.categories &&
                                     apiData.categories.map(
                                         (category, index) => (

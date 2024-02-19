@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { TextField, Button, styled, IconButton  } from "@mui/material";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 // import { Textarea } from "@mui/joy";
@@ -65,6 +66,7 @@ function EditKeeperDetail() {
                 const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
                 const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
+                console.log(data)
                 setIsMap(splitMap)
                 setAddressLabel(data.address.address)
                 setIsReview(otherReview);
@@ -229,7 +231,7 @@ function EditKeeperDetail() {
                                     <Stack
                                         direction="row"
                                         spacing={1}
-                                        className="pb-4"
+                                        className="pb-4 keeper-tag"
                                     >
                                         {apiData.categories &&
                                             apiData.categories.map(
@@ -257,6 +259,8 @@ function EditKeeperDetail() {
                                 <div className="row">
                                     <div className="col-sm-4">
                                         {!isEditName ? 
+                                        !apiData.img ?
+                                        <ImageNotSupportedIcon className="edit-notImage" /> :
                                         <Card sx={{
                                             maxWidth: 345,
                                             borderRadius: "15px",

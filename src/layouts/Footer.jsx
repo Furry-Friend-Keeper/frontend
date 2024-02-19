@@ -22,7 +22,7 @@ function Footer() {
                 <ul className='list-unstyled'>
                     <li><PetsIcon />Dog</li>
                     <li><PetsIcon />Cat</li>
-                    <li><PetsIcon />Humster</li>
+                    <li><PetsIcon />Hamster</li>
                     <li><PetsIcon />Hedgehog</li>
                     <li><PetsIcon />Rabbit</li>
                 </ul>
