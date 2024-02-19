@@ -5,11 +5,12 @@ import 'leaflet/dist/leaflet.css';
 function MapContainer(props) {
 
     const {isMap} = props;
-    console.log(isMap)
 
     useEffect(() => {
+      // You can customize the marker icon if needed
         const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
         const latlng = L.latLng(isMap[0], isMap[1]);
+
         const map = L.map('map-container').setView(latlng, 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',

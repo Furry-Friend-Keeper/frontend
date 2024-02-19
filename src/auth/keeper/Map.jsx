@@ -4,9 +4,6 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
-// import "leaflet/dist/leaflet.css"
-// import 'leaflet-geosearch/dist/geosearch.css';
-
   function Map({ idName, getLocation }) {
 
     useEffect(() => {
@@ -24,7 +21,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
         const getLocationData = async (location, updatePopupContent) => {
           const results = await provider.search({ query: `${location.lat}, ${location.lng}` });
           if (results && results.length > 0) {
-              let label = results[0].label; // Use the first result as an example
+              let label = results[0].label;
               // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
               updatePopupContent("<b>Location:</b> " + label)
           } else {

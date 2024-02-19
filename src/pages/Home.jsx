@@ -97,19 +97,36 @@ function Home() {
 
   }
 
-  // const handleSearch = (event) => {
-  //   event.preventDefault()
-  //   const filteredContent = contents.filter((item) =>
-  //     item.title.toLowerCase().includes(searchInput.toLowerCase())
-  //   );
-  //   setSearch(filteredContent);
-  // }
+  const handleSearch = (event) => {
+    if(event.key === "Enter") {      
+      // event.preventDefault()
+      // const filteredContent = contents.filter((item) =>
+      //   item.title.toLowerCase().includes(searchInput.toLowerCase())
+      // );
+      // setSearch(filteredContent);
+      const filteredBySearch = apiData.filter((item) =>
+      item.name?.toLowerCase().includes(searchInput?.toLowerCase())
+    );
+  
+    const filteredByCategory = filteredBySearch.filter((item) => {
+      if (selected.length > 0) {
+        if (item.categories !== null) {
+          return item.categories.some((category) => selected.includes(category));
+        }
+      } else {
+          return item
+        }
+    });
+    console.log(search)
+    setSearch(filteredByCategory);
+    }
+  }
 
-  const handleFavorite = (index) => {
-    const updateContents = [...apiData]
-    updateContents[index].favorite = !updateContents[index].favorite
-    setApiData(updateContents);
-  } 
+  // const handleFavorite = (index) => {
+  //   const updateContents = [...apiData]
+  //   updateContents[index].favorite = !updateContents[index].favorite
+  //   setApiData(updateContents);
+  // } 
 
 
   const [petCategories, setPetCategories] = useState([]);
@@ -174,15 +191,35 @@ const SortReviewStar = () => {
           <div className="keeper-panel">
             {/* KeeperCategory */}
               <KeeperCategory petCategories={petCategories} selected={selected} handleCategory={handleCategory} />
-            <div className="keeper-list row">
+            <div className="keeper-list">
               <div className="d-flex justify-content-between mb-3">
                   <div className="sort-list">
                       <h4 className="m-auto">Sort</h4>
                       <button onClick={() => SortReviewStar()} className={`btn bg-white  mx-3 ${sortAscending ? "" : "sort-active"}`} type='button'>Rating</button>
                   </div>
+                  <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={searchInput}
+                  onChange={handleSearchInput}
+                  onKeyUp={handleSearch}
+                />
+                {searchInput && (
+                    <ClearButton onClick={handleClearSearch}>
+                      <ClearIcon />
+                    </ClearButton>
+                  )}
+              </Search>
+              </div>
+              <div className='row'>
+                {search.length > 0 ? <KeeperContents search={search} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}
-              <KeeperContents search={search} />
             </div>
           </div>
         </div>

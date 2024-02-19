@@ -7,7 +7,8 @@ const store = configureStore({
     reducer : {
         auth : AuthReducer
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(localStorageMiddleware),
+    middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(localStorageMiddleware),
     preloadedState: loadStateFromLocalStorage()
 })
 
