@@ -27,6 +27,8 @@ function KeeperDetail() {
     const { loading, userInfo, error, success, accessToken } = useSelector((state) => state.auth)  
     const navigate = useNavigate()
     const [ isOwnerReview, setIsOwnerReview ] = useState(null);
+    const [isMap, setMap] = useState([]);
+
 
     const fetchData = async () => {
         try {
@@ -36,7 +38,10 @@ function KeeperDetail() {
                 setApiData(data);
                 const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
                 console.log(data)
-                console.log(myReview)
+                console.log(myReview)   
+                const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
+                setMap(splitMap)
+                // console.log(splitMap);
                 setValue('comment', myReview?.comment)
                 setValue('reviewId', myReview?.reviewId)
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
@@ -242,7 +247,9 @@ function KeeperDetail() {
 
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            <MapContainer />
+                            {isMap.length > 0 && 
+                                <MapContainer isMap={isMap}/>
+                            }
                             <div className="keeper-address p-md-2 bg-white">
                                 <div className="table">
                                     <table className="w-100">

@@ -90,7 +90,7 @@ function Login() {
               severity={"error"}
               >         
                   <div className="fs-6">
-                    <span>Incorrect username or password.</span>
+                    <span>Incorrect email or password.</span>
                   </div>
               </Alert>
             }

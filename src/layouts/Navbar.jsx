@@ -40,7 +40,7 @@ function Navbar() {
       <div className="container">
         <Link className="navbar-brand navbar-head" to="/at3">
           <div className='d-flex align-items-center'>
-            <img className="me-3 object-fit-contain" src="/assets/cat.png" alt="" width={50} />
+            <img className="me-3 object-fit-contain" src="https://i.imgur.com/ids0WFZ.png" alt="" width={50} />
             <div className='logo-content'>
               <p className='m-0'>Furry Friend</p>
               <p className='m-0'>Keeper</p>
@@ -69,7 +69,6 @@ function Navbar() {
             {isLogin && <li onClick={() => dispatch(logout())} ><a className="dropdown-item" href="/at3">Logout</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
-
           </ul>
           {/* {isLogin && 
           <Tooltip title="Open settings" className="ms-3 navbar-toggler">

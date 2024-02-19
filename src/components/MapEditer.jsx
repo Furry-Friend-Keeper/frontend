@@ -5,15 +5,17 @@ import 'leaflet-geosearch/dist/geosearch.css';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
 function MapEditer({ editMap }) {
+
     
     useEffect(() => {
+        const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
         const latlng = L.latLng(13.7563, 100.5018);
         const map = L.map('map-editer').setView(latlng, 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
           }).addTo(map);
 
-        const currentMarker = L.marker(latlng, { draggable: editMap}).addTo(map);
+        const currentMarker = L.marker(latlng, { draggable: editMap, icon: customIcon}).addTo(map);
         currentMarker.bindPopup('You are here!');
 
         const provider = new OpenStreetMapProvider();
@@ -30,6 +32,7 @@ function MapEditer({ editMap }) {
             }
         };
 
+
         const searchControl = new GeoSearchControl({
           provider,
           autoComplete: true, // Optional: enable or disable auto-complete suggestions
@@ -38,7 +41,7 @@ function MapEditer({ editMap }) {
           popupFormat: ({ query, result }) => "This is your current location.", 
           marker: {
             // optional: L.Marker    - default L.Icon.Default
-            icon: new L.Icon.Default(),
+            icon: customIcon,
             draggable: true,
           },
         });

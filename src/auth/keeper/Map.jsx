@@ -19,6 +19,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
         // Remove the map when the component is unmounted
 
         const provider = new OpenStreetMapProvider();
+        const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
 
         const getLocationData = async (location, updatePopupContent) => {
           const results = await provider.search({ query: `${location.lat}, ${location.lng}` });
@@ -40,7 +41,7 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
           popupFormat: ({ query, result }) => "This is your current location.",   
           marker: {
             // optional: L.Marker    - default L.Icon.Default
-            icon: new L.Icon.Default(),
+            icon: customIcon,
             draggable: true,
           },
         });
@@ -61,10 +62,11 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
           }
 
           // Add a marker at the current location
-          currentMarker = L.marker(currentLocation, { draggable: true }).addTo(map);
+          
+          currentMarker = L.marker(currentLocation, { draggable: true, icon: customIcon }).addTo(map);
           
           // You can customize the marker icon if needed
-          // const customIcon = L.icon({ iconUrl: 'path/to/custom-icon.png', iconSize: [32, 32] });
+          
           // const marker = L.marker(currentLocation, { icon: customIcon }).addTo(map);
 
           // Optionally, you can open a popup with additional information
