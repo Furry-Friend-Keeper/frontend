@@ -33,6 +33,7 @@ function GalleryEditer(props) {
         };
 
         if (file && file.type.startsWith('image/')) {
+            reader.readAsDataURL(file);
             setOpen(false);
             setImageGallery([...imageGallery,file])
         }else {

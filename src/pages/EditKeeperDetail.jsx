@@ -59,7 +59,6 @@ function EditKeeperDetail() {
                 setValue("province", data.address.province);
                 setValue("postalCode", data.address.postalCode);
                 const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
-                console.log(myReview)
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
                 setIsReview(otherReview);
                 setIsOwnerReview(myReview)
@@ -398,6 +397,7 @@ function EditKeeperDetail() {
 
                             <div className="table">
                                 <table className="w-100">
+                                    <tbody>
                                     <tr>
                                         <td>Name</td>
                                         {!isEditContact ? (
@@ -465,6 +465,7 @@ function EditKeeperDetail() {
                                             </td>
                                         )}
                                     </tr>
+                                    </tbody>
                                 </table>
                             </div>
                             {isEditContact && (
@@ -515,82 +516,85 @@ function EditKeeperDetail() {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="table">
                                     <table className="w-100">
-                                        <tr>
-                                            <td>Address</td>
-                                            {!isEditAddress ? (
-                                            <td className="text-end">
-                                                {apiData?.address?.address}
-                                            </td>
-                                             ) : (
-                                            <td className="text-end">
-                                            <TextField
-                                                    label="Edit Address"
-                                                    margin="normal"
-                                                    required
-                                                    {...register("address", {
-                                                        maxLength: {
-                                                            value: 200,
-                                                            message:
-                                                                "Address must not more than 200 characters",
-                                                        },
-                                                    })}
-                                                />
-                                                {errors.address && (
-                                                <p className="error-message">
-                                                    {errors.address.message}
-                                                </p>
-                                            )}
-                                            </td>
-                                            )}
-                                        </tr>
-                                        <tr>
-                                            <td>District</td>
-                                            {!isEditAddress ? (
-                                            <td className="text-end">
-                                                {apiData?.address?.district}
-                                            </td>
-                                            ) : (
-                                            <td className="text-end">
-                                            <TextField
-                                                    label="Edit "
-                                                    margin="normal"
-                                                    {...register("district")}
-                                                />
-                                            </td>
-                                            )}
-                                        </tr>
-                                        <tr>
-                                            <td>Province</td>
-                                            {!isEditAddress ? (
-                                            <td className="text-end">
-                                                {apiData?.address?.province}
-                                            </td>
-                                            ) : (
-                                            <td className="text-end">
-                                            <TextField
-                                                    label="Edit Province"
-                                                    margin="normal"
-                                                    {...register("province")}
-                                                />
-                                            </td>
-                                            )}
-                                        </tr>
-                                        <tr>
-                                            <td>PostalCode</td>
-                                            {!isEditAddress ? (
-                                            <td className="text-end">
-                                                {apiData.address?.postalCode}
-                                            </td>
-                                            ) : (
-                                            <td className="text-end">
-                                            <TextField
-                                                    label="Edit Postal Code"
-                                                    margin="normal"
-                                                    {...register("postalCode")}
-                                                />
-                                            </td>
-                                            )}
-                                        </tr>
+                                        <tbody>
+
+                                            <tr>
+                                                <td>Address</td>
+                                                {!isEditAddress ? (
+                                                <td className="text-end">
+                                                    {apiData?.address?.address}
+                                                </td>
+                                                ) : (
+                                                <td className="text-end">
+                                                <TextField
+                                                        label="Edit Address"
+                                                        margin="normal"
+                                                        required
+                                                        {...register("address", {
+                                                            maxLength: {
+                                                                value: 200,
+                                                                message:
+                                                                    "Address must not more than 200 characters",
+                                                            },
+                                                        })}
+                                                    />
+                                                    {errors.address && (
+                                                    <p className="error-message">
+                                                        {errors.address.message}
+                                                    </p>
+                                                )}
+                                                </td>
+                                                )}
+                                            </tr>
+                                            <tr>
+                                                <td>District</td>
+                                                {!isEditAddress ? (
+                                                <td className="text-end">
+                                                    {apiData?.address?.district}
+                                                </td>
+                                                ) : (
+                                                <td className="text-end">
+                                                <TextField
+                                                        label="Edit "
+                                                        margin="normal"
+                                                        {...register("district")}
+                                                    />
+                                                </td>
+                                                )}
+                                            </tr>
+                                            <tr>
+                                                <td>Province</td>
+                                                {!isEditAddress ? (
+                                                <td className="text-end">
+                                                    {apiData?.address?.province}
+                                                </td>
+                                                ) : (
+                                                <td className="text-end">
+                                                <TextField
+                                                        label="Edit Province"
+                                                        margin="normal"
+                                                        {...register("province")}
+                                                    />
+                                                </td>
+                                                )}
+                                            </tr>
+                                            <tr>
+                                                <td>PostalCode</td>
+                                                {!isEditAddress ? (
+                                                <td className="text-end">
+                                                    {apiData.address?.postalCode}
+                                                </td>
+                                                ) : (
+                                                <td className="text-end">
+                                                <TextField
+                                                        label="Edit Postal Code"
+                                                        margin="normal"
+                                                        {...register("postalCode")}
+                                                    />
+                                                </td>
+                                                )}
+                                            </tr>
+                                        </tbody>
                                     </table>
                                     
                                 </div>
