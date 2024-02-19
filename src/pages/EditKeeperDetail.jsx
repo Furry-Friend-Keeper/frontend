@@ -112,6 +112,7 @@ function EditKeeperDetail() {
                     headers: { 'Authorization': 'Bearer ' + accessToken}
                 })
                 .then((res) => {
+                    fetchData();
                     setApiData({ ...apiData, ...result });
                     setIsEditName(false);
                     setIsEditContact(false);
@@ -134,31 +135,31 @@ function EditKeeperDetail() {
     const EditProfileImg = async (data) => {
         let isError = false;
         if(isImg !== undefined) {
-        const formData = new FormData();
-        formData.append("file", isImg)
-        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
-            headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
-        }).then((res) => {
-            setOpen(true)
-            setAlertStatus('success')
-            // setIsError(false)
-            isError = false
-            fetchData()
-        }).catch((error) => {
-            if (error.response?.status === 413) {
-                // Handle Payload Too Large error specifically
-                setMessageLog("The file you are trying to upload is too large.");
-            }else if(error.message === "Network Error") {
-                setMessageLog("The file you are trying to upload is too large.") 
-            }else {
-                setMessageLog(error.message)
-            }
-            // setIsError(true)
-            setOpen(true)
-            isError = true
-            setAlertStatus('error')
-        })
-    }
+            const formData = new FormData();
+            formData.append("file", isImg)
+            await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
+                headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
+            }).then((res) => {
+                fetchData()
+                setOpen(true)
+                setAlertStatus('success')
+                // setIsError(false)
+                isError = false
+            }).catch((error) => {
+                if (error.response?.status === 413) {
+                    // Handle Payload Too Large error specifically
+                    setMessageLog("The file you are trying to upload is too large.");
+                }else if(error.message === "Network Error") {
+                    setMessageLog("The file you are trying to upload is too large.") 
+                }else {
+                    setMessageLog(error.message)
+                }
+                // setIsError(true)
+                setOpen(true)
+                isError = true
+                setAlertStatus('error')
+            })
+        }
 
         EditKeeper(data, isError)
     };
