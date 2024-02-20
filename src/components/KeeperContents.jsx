@@ -4,7 +4,28 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import {Rating, Stack, Chip} from '@mui/material/';
 
 function KeeperContents(props) {
-    const { search } = props;
+    const { search, petCategories } = props;
+
+    const namesArray = petCategories.map(item => item.name) || [];
+
+    // const displayTags = (item) => {
+    //     if(namesArray.every((arr) => item.categories.includes(arr))){
+    //           return ( 
+    //           <Chip
+    //             label="All"
+    //             size='small'
+    //              />)
+    //     }else {
+    //         // console.log(it)
+    //         return item.categories.map((category, index) => (
+    //         <Chip
+    //             key={index}
+    //             label={category}
+    //             size='small'
+    //         />
+    //         ))
+    //     }
+    // }
   return (
     <>
         {search.map((item, index) => {
@@ -20,16 +41,19 @@ function KeeperContents(props) {
                     <div>
                     <Rating name="half-rating-read" value={item.reviewStars} precision={1} readOnly />
                     <Stack direction="row" spacing={1} className="justify-content-center keeper-tag">
-                            {item.categories &&
+                            {item.categories && 
+                            // displayTags(item)
                                 item.categories.map(
-                                    (category, index) => (
+                                    (category, index) => 
+                                    (
                                         <Chip
                                             key={index}
                                             label={category}
                                             size='small'
                                         />
                                     )
-                                )}
+                                )
+                                }
                         </Stack>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-geosearch/dist/geosearch.css';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
+import 'leaflet-geosearch/dist/geosearch.css';
 
   function Map({ idName, getLocation, getLocationLabel }) {
 
@@ -15,21 +15,21 @@ import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
       }).addTo(map);
         // Remove the map when the component is unmounted
 
-        const provider = new OpenStreetMapProvider();
         const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
-
+        
         const getLocationData = async (location, updatePopupContent) => {
           const results = await provider.search({ query: `${location.lat}, ${location.lng}` });
           if (results && results.length > 0) {
-              let label = results[0].label;
-              getLocationLabel(label)
-              // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
-              updatePopupContent("<b>Location:</b> " + label)
+            let label = results[0].label;
+            getLocationLabel(label)
+            // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
+            updatePopupContent("<b>Location:</b> " + label)
           } else {
-              // currentMarker.getPopup().setContent("<b>Location:</b> Coordinates Only");
-              updatePopupContent("<b>Location:</b> Coordinates Only")
+            // currentMarker.getPopup().setContent("<b>Location:</b> Coordinates Only");
+            updatePopupContent("<b>Location:</b> Coordinates Only")
           }
-      };
+        };
+        const provider = new OpenStreetMapProvider();
         const searchControl = new GeoSearchControl({
           provider,
           autoComplete: true, // Optional: enable or disable auto-complete suggestions

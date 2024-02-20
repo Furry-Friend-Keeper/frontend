@@ -302,6 +302,7 @@ a:hover {
 }
 
 .keeper-tag {
+  display: block !important;
   & div {
     background-color: var(--c-blue-white);
     color: var(--c-blue);

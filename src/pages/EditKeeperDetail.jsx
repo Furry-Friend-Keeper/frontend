@@ -697,13 +697,13 @@ function EditKeeperDetail() {
                                     <div className="row">
                                         {isReview.map((review, index) => (
                                             <div className="d-flex align-items-center mt-4" key={index}>
-                                                <div className="col-md-1">
+                                                {/* <div className="col-md-1">
                                                     <img
                                                         src={
                                                             import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
                                                         }
                                                     />
-                                                </div>
+                                                </div> */}
                                                 <div className="col-md-3">
                                                     <span className="ps-4">
                                                         {
@@ -711,17 +711,17 @@ function EditKeeperDetail() {
                                                         }
                                                     </span>
                                                 </div>
-                                                <div className="col-md-3">
+                                                <div className="col-md-4">
                                                     <Rating
                                                         name=""
                                                         value={review?.stars}
                                                         readOnly
                                                     />
-                                                    <span className="ps-4">
-                                                        {moment.unix(review?.date).format("DD/MM/YYYY"  )}
-                                                    </span>
+                                                    <div >
+                                                        {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A"  )}
+                                                    </div>
                                                 </div>  
-                                                <div className="col-md-4">
+                                                <div className="col-md-5">
                                                         <span>{review?.comment}</span>
                                                 </div>
                                             </div>

@@ -21,20 +21,20 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 function Home() {  
 
   const [apiData, setApiData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
-        await axios.get(apiUrl).then(response => {
-          const data = response.data;
-          setApiData(data)
-        });
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const fetchData = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
+      await axios.get(apiUrl).then(response => {
+        const data = response.data;
+        setApiData(data)
+      });
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -222,7 +222,7 @@ const SortReviewStar = () => {
               </Search>
               </div>
               <div className='row'>
-                {search.length > 0 ? <KeeperContents search={search} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                {search.length > 0 ? <KeeperContents search={search} petCategories={petCategories} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}

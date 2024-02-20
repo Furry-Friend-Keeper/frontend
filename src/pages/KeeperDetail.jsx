@@ -12,6 +12,7 @@ import { useForm, Controller } from "react-hook-form";
 import Box from "@mui/material/Box";
 import { Textarea } from "@mui/joy";
 import Typography from "@mui/material/Typography";
+import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
 import moment from "moment";
 import MapContainer from "../components/MapContainer";
@@ -175,6 +176,8 @@ function KeeperDetail() {
                             </Stack>
                             <div className="row">
                                 <div className="col-sm-4">
+                                {!apiData.img ?
+                                        <ImageNotSupportedIcon className="edit-notImage" /> :
                                     <Card
                                         sx={{
                                             maxWidth: 345,
@@ -196,6 +199,7 @@ function KeeperDetail() {
                                             }
                                         />
                                     </Card>
+                                }
                                 </div>
                                 <div className="col">
                                     <div className="title d-flex justify-content-between align-items-center">
@@ -509,13 +513,13 @@ function KeeperDetail() {
                                         </div>
                                         {isReview.map((review, index) => (
                                             <div className="d-flex align-items-center mt-4" key={index}>
-                                                    <div className="col-md-1">
-                                                        {/* <img
+                                                    {/* <div className="col-md-1">
+                                                        <img
                                                             src={
                                                                 import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
                                                             }
-                                                        /> */}
-                                                    </div>
+                                                        />
+                                                    </div> */}
                                                     <div className="col-md-3">
                                                         <span className="ps-4">
                                                             {
@@ -523,7 +527,7 @@ function KeeperDetail() {
                                                             }
                                                         </span>
                                                     </div>
-                                                    <div className="col-md-3">
+                                                    <div className="col-md-4">
                                                         <Rating
                                                             name=""
                                                             value={review?.stars}
@@ -533,22 +537,8 @@ function KeeperDetail() {
                                                             {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A")}
                                                         </div>
                                                     </div>
-                                                    <div className="col-md-4">
+                                                    <div className="col-md-5">
                                                             <span>{review?.comment}</span>
-                                                    </div>
-                                                    <div className="col-md-1">
-                                                        {userInfo.id === review.petownerId &&
-                                                            <span className="fs-3 flex">
-                                                                <i
-                                                                    className="bi bi-pencil-square fs-3 ju"
-                                                                    onClick={() =>
-                                                                        setIsEditComment(
-                                                                            !isEditComment
-                                                                        )
-                                                                    }
-                                                                ></i>
-                                                            </span>
-                                                        }
                                                     </div>
                                                
                                             </div>

@@ -5,8 +5,6 @@ import 'leaflet/dist/leaflet.css';
 function MapContainer(props) {
 
     const {isMap} = props;
-    // console.log(isMap[0])
-    // console.log(isMap[1])
     const lat = isMap[0] || 13.7563;
     const lng = isMap[1] || 100.5018
 
