@@ -269,8 +269,10 @@ function EditKeeperDetail() {
                                             />
                                         </Card>
                                         :
+                                        !apiData.img ?
+                                        <ImageNotSupportedIcon className="edit-notImage" /> :
                                         <div>
-                                            
+                                         
                                         <Card
                                             sx={{
                                                 maxWidth: 345,
