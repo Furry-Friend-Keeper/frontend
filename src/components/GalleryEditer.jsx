@@ -33,9 +33,15 @@ function GalleryEditer(props) {
         };
 
         if (file && file.type.startsWith('image/')) {
-            reader.readAsDataURL(file);
-            setOpen(false);
-            setImageGallery([...imageGallery,file])
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (validImageTypes.includes(file.type)) {
+                reader.readAsDataURL(file);
+                setOpen(false);
+                setImageGallery([...imageGallery,file])
+            } else {
+                setOpen(true);
+                setMessageLog('Please select a JPG, PNG, or JPEG image file.');
+            }
         }else {
             setOpen(true);
             setMessageLog('Please insert an image file.')

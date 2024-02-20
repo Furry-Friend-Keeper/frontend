@@ -57,7 +57,6 @@ function EditKeeperDetail() {
                 setValue("district", data.address.district);
                 setValue("province", data.address.province);
                 setValue("postalCode", data.address.postalCode);
-                const myReview = data.reviews.find((review) => review.petownerId === userInfo.id) || null
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
                 const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
                 console.log(data)
@@ -85,7 +84,6 @@ function EditKeeperDetail() {
         register,
         handleSubmit,
         setValue,
-        control,
         formState: { errors },
     } = useForm();
 
@@ -171,13 +169,20 @@ function EditKeeperDetail() {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && file.type.startsWith('image/')) {
-            setOpen(false)
-            setImg(file)
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewImage(reader.result);
-            };
-            reader.readAsDataURL(file);
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (validImageTypes.includes(file.type)) {
+                setOpen(false)
+                setImg(file)
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setPreviewImage(reader.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Handling the case when the file is not a JPG, PNG, or JPEG image.
+                setOpen(true);
+                setMessageLog('Please select a JPG, PNG, or JPEG image file.');
+            }
         } else {
             // Optionally, handle the case when the file is not an image.
             // For example, alert the user or clear the preview.
