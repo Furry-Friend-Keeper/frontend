@@ -17,12 +17,11 @@ const authSlice = createSlice({
     reducers: {
         logout: (state) => {
             localStorage.removeItem('userInfo') // deletes token from storage
-            state = initialState
-            // state.loading = false
-            // state.userInfo = {}
-            // state.accessToken = null
-            // state.error = null
-            // state.success = false
+            state.loading = false
+            state.userInfo = {}
+            state.accessToken = null
+            state.error = null
+            state.success = false
           },
           resetStore: (state) => {
             state.error = null; // Resetting error to null

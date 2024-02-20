@@ -282,8 +282,8 @@ export default function BasicFormControl() {
                 control={control}
                 name="phone"
                 rules={{ required: "Please enter your phone number.",
-                        maxLength: { value:11, message: "Phone number must not more than 10 characters"},
-                        minLength : { value:11, message: "Phone number must not more than 10 characters"}
+                        maxLength: { value:11, message: "Phone number must be 10 digits"},
+                        minLength : { value:11, message: "Phone number must be 10 digits"}
 
                     }}
                 // className="form-control"

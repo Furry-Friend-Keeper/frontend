@@ -40,6 +40,8 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
           provider,
           autoComplete: true, // Optional: enable or disable auto-complete suggestions
           showPopup: true,
+          keepResult: true,   
+          autoClose: true, 
           popupFormat: ({ query, result }) => "This is your current location.", 
           marker: {
             // optional: L.Marker    - default L.Icon.Default

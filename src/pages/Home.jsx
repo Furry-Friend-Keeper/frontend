@@ -200,7 +200,7 @@ const SortReviewStar = () => {
                       <button onClick={() => SortReviewStar()} className={`btn bg-white mx-3 ${sortAscending ? "sort-active" : ""}`} >
                         Rating 
                         {/* {sortAscending ? arrow === true ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> : ""} */}
-                        {sortAscending ?<ArrowDropUpIcon className={`arrow-icon ${arrow ? "rotate-up" : "rotate-down"}`} /> : ""}
+                        {sortAscending ?<ArrowDropUpIcon className={`arrow-icon ${arrow ? "rotate-down" : "rotate-up"}`} /> : ""}
                       </button>
                   </div>
                   <Search>

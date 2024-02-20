@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import Slider from "react-slick";
 import Rating from "@mui/material/Rating";
-import $ from "jquery";
 import axios from "axios";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
@@ -13,9 +11,6 @@ import { useForm } from "react-hook-form";
 import Box from "@mui/material/Box";
 // import { Textarea } from "@mui/joy";
 import ImageIcon from '@mui/icons-material/Image';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import CloseIcon from '@mui/icons-material/Close';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
@@ -44,7 +39,6 @@ function EditKeeperDetail() {
         (state) => state.auth
       )  
     const [isReview, setIsReview] = useState([]);
-    const [ isOwnerReview, setIsOwnerReview ] = useState(null);
     
     const fetchData = async () => {
         try {
@@ -69,8 +63,8 @@ function EditKeeperDetail() {
                 console.log(data)
                 setIsMap(splitMap)
                 setAddressLabel(data.address.address)
+                setLocation(data.address.map)
                 setIsReview(otherReview);
-                setIsOwnerReview(myReview)
                 const transformedGallery = data.gallery.map(item => {
                     const splitItem = item.split(',');
                     return splitItem.length === 2 ? splitItem[1] : item;
@@ -91,6 +85,7 @@ function EditKeeperDetail() {
         register,
         handleSubmit,
         setValue,
+        control,
         formState: { errors },
     } = useForm();
 
@@ -469,6 +464,7 @@ function EditKeeperDetail() {
                                         ) : (
                                             <td className="text-end">
                                                 <TextField
+                                                    type="number"
                                                     label="Edit Phone"
                                                     margin="normal"
                                                     // fullWidth
@@ -479,8 +475,13 @@ function EditKeeperDetail() {
                                                         maxLength: {
                                                             value: 10,
                                                             message:
-                                                                "Phone number must not more than 10 characters",
+                                                                "Phone number must be 10 digits",
                                                         },
+                                                        minLength: {
+                                                            value: 10,
+                                                            message:
+                                                                "Phone number must be 10 digits",
+                                                        }
                                                     })}
                                                 />
                                                 {errors.phone && (

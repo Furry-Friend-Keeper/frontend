@@ -16,6 +16,7 @@ import AuthVerify from './components/AuthVerify.jsx';
 // import Account from './auth/owner/Account.jsx';
 import Footer from './layouts/Footer.jsx';
 import Unauthorized from './components/Unauthorized.jsx';
+import NotFound from './components/NotFound.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",
@@ -50,6 +51,7 @@ function App() {
             <Route path="/at3/about-us" element={<About />} />
             {/* Add more routes as needed */}
             <Route path="/at3/unauthorized" element={<Unauthorized />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           </main>    
         <Footer />

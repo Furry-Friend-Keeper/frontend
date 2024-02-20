@@ -156,27 +156,12 @@ export default function BasicFormControl() {
                     </div>
                     <div className="col-md-12 pb-4">
                         <Label>Phone</Label>
-                        {/* <PhoneInput
-                            inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
-                            inputStyle={{ width: "100%"}}
-                            specialLabel={""}
-                            country={"th"}
-                            countryCodeEditable={false}
-                            placeholder="Enter phone number"
-                            {...register("phone", {
-                                required: "Please enter your phone number.",
-                                maxLength: {
-                                value: 10,
-                                message: "Phone number must not more than 10 characters",
-                                },
-                            })}
-                            /> */}
                             <Controller
                                 control={control}
                                 name="phone"
                                 rules={{ required: "Please enter your phone number.",
-                                        maxLength: { value:11, message: "Phone number must not more than 10 characters"},
-                                        minLength : { value:11, message: "Phone number must not more than 10 characters"}
+                                        maxLength: { value:11, message: "Phone number must be 10 digits"},
+                                        minLength : { value:11, message: "Phone number must be 10 digits"}
 
                                     }}
                                 // className="form-control"
