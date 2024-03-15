@@ -5,7 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/style.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import App from "./App";
+import App from "./App.jsx";
 import { Provider } from "react-redux";
 import store from "./store/Store.jsx"; // Assuming you've created your Redux store
 

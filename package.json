@@ -18,6 +18,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.6",
     "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^2.0.1",
+    "@stomp/stompjs": "^7.0.0",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.2",
@@ -26,6 +27,7 @@
     "leaflet": "^1.9.4",
     "leaflet-geosearch": "^3.11.0",
     "moment": "^2.29.4",
+    "net": "^1.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
@@ -33,8 +35,12 @@
     "react-redux": "^9.0.2",
     "react-router-dom": "^6.18.0",
     "react-slick": "^0.29.0",
+    "react-stomp": "^5.1.0",
     "react-thailand-address-autocomplete": "^0.0.6",
     "slick-carousel": "^1.8.1",
+    "sockjs": "^0.3.24",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "styled-components": "^6.1.1"
   },
   "devDependencies": {
