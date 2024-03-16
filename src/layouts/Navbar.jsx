@@ -66,6 +66,7 @@ function Navbar() {
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
             {isLogin && getRole === "PetKeeper" && <li ><a className="dropdown-item" href={`/at3/keeper-edit/${getId}`}>My Shop</a></li>}
+            {isLogin && getRole === "Owner" && <li ><a className="dropdown-item" href={`/at3/owner/${getId}`}>Profile</a></li>}
             {isLogin && <li onClick={() => dispatch(logout())} ><a className="dropdown-item" href="/at3">Logout</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
@@ -112,6 +113,9 @@ function Navbar() {
                 >
                    {getRole === "PetKeeper" && <MenuItem onClick={handleCloseUserMenu}>
                       <Typography textAlign="center" ><Link className="text-black" to={"/at3/keeper-edit/"+ getId}>My Shop</Link></Typography>
+                    </MenuItem>}
+                    {getRole === "Owner" && <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center" ><Link className="text-black" to={"/at3/owner/" + getId}>Profile</Link></Typography>
                     </MenuItem>}
                    <MenuItem onClick={handleCloseUserMenu}>
                       <Typography onClick={() => dispatch(logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>

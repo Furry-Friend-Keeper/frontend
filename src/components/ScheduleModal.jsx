@@ -4,8 +4,20 @@ import AddIcon from '@mui/icons-material/Add';
 import { Modal, Button, Placeholder, DateRangePicker } from 'rsuite';
 import { Button as ButtonMui  } from "@mui/material"
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 function ScheduleModal() {
+  const Ranges = [
+    {
+      label: 'today',
+      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+    },
+    {
+      label: 'Next 7 Days',
+      value: [moment().startOf('day').toDate(), moment().add(6, 'days').endOf('day').toDate()]
+    }
+  ];
+  const { beforeToday } = DateRangePicker;
   const { loading, userInfo, error, success, accessToken } = useSelector(
     (state) => state.auth
   )  
@@ -75,7 +87,7 @@ function ScheduleModal() {
                 <div className="modal-body">
                   <div className="mb-3">
                   <label htmlFor="message" className="form-label">Booking Period</label>
-                      <DateRangePicker appearance="default" block />
+                      <DateRangePicker appearance="default" block shouldDisableDate={beforeToday()} ranges={Ranges}/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="petName" className="form-label">Pet Name (Optional)</label>
