@@ -18,6 +18,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.6",
     "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^2.0.1",
+    "@rsuite/icons": "^1.0.3",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.2",
@@ -34,6 +35,7 @@
     "react-router-dom": "^6.18.0",
     "react-slick": "^0.29.0",
     "react-thailand-address-autocomplete": "^0.0.6",
+    "rsuite": "^5.56.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.1"
   },

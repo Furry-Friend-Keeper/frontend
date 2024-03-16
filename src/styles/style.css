@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@300;400;500&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@500&display=swap');
+@import "rsuite/dist/rsuite.css";
+
 *,
 *::before,
 *::after {
@@ -36,6 +38,7 @@
 
   /* blue */
   --c-blue-white: #e0eaff;
+  --c-blue-gray: #f4f8fd;
   --c-blue-sky: #3074fe;
   --c-blue: #187bcd;
   --c-blue-semidark: #0741AD;
@@ -59,6 +62,11 @@ a {
    text-decoration: none !important;
 } 
 
+p {
+  font-size: 16px;
+  color: #5e5e5eba;
+}
+
 /* Navbar Page */
 .navbar {
   padding-top: 1em;
@@ -68,7 +76,8 @@ a {
   /* border-bottom: 1.5px solid rgba(125, 129, 132, 0.3); */
   position: sticky;
   top: 0;
-  z-index: 1200;
+  /* z-index: 1200;  */
+  z-index: 1001; 
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,.3);
 
@@ -87,6 +96,63 @@ a {
   }
 
 }
+.icon-container {
+  position: relative;
+  display: inline-block;
+  padding : 6px 8px;
+
+  & .circle {
+    width: 35px; /* Adjust size as needed */
+    height: 35px; /* Adjust size as needed */
+    border-radius: 50%; /* Makes it a circle */
+    background-color: var(--c-blue-gray);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  & .calendar-icon {
+    color: var(--c-blue-sky);
+    position: relative;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 3px;
+  }
+}
+
+.booking {
+  color: var(--c-blue-sky);
+}
+
+/* .rs-picker-popup {
+    left: 798.48px !important;
+    top: 1347.81px;
+
+} */
+
+@media (max-width: 1550px) {
+
+  .rs-picker-popup .rs-calendar:first-child {
+    border-right: none !important;
+}
+  .rs-picker-popup .rs-calendar {
+    margin: 0 !important;
+  }
+
+  /* Custom CSS to force the DateRangePicker popup into a column layout */
+  .rs-picker-daterange-calendar-group {
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    min-width: auto !important;
+  }
+  
+  .rs-picker-daterange-panel {
+    min-width: 0 !important;
+  }
+}
+
 
 /* .navbar {
   position: fixed !important;
@@ -313,7 +379,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-.keeper-tag {
+/* .keeper-tag {
   display: block !important;
   & div {
     background-color: var(--c-blue-white);
@@ -324,6 +390,16 @@ input[type=number] {
     line-height: 1;
     border-radius: 6px;
   }
+} */
+
+.keeper-tag {
+  background-color: var(--c-blue-white) !important;
+  color: var(--c-blue) !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  padding: 0.5em 0.75em !important;
+  line-height: 1 !important;
+  border-radius: 6px !important;
 }
 
 .keeper:hover {

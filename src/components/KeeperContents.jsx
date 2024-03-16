@@ -40,13 +40,14 @@ function KeeperContents(props) {
                     </div>
                     <div>
                     <Rating name="half-rating-read" value={item.reviewStars} precision={1} readOnly />
-                    <Stack direction="row" spacing={1} className="justify-content-center keeper-tag">
+                    <Stack direction="row" spacing={1} className="justify-content-center d-block">
                             {item.categories && 
                             // displayTags(item)
                                 item.categories.map(
                                     (category, index) => 
                                     (
                                         <Chip
+                                            className="keeper-tag"
                                             key={index}
                                             label={category}
                                             size='small'

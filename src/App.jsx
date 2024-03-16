@@ -13,10 +13,10 @@ import EditKeeperDetail from './pages/EditKeeperDetail.jsx';
 import About from './pages/About.jsx';
 import ProtectedKeeperRoute from './components/ProtectedKeeperRoute.jsx';
 import AuthVerify from './components/AuthVerify.jsx';
-// import Account from './auth/owner/Account.jsx';
 import Footer from './layouts/Footer.jsx';
 import Unauthorized from './components/Unauthorized.jsx';
 import NotFound from './components/NotFound.jsx';
+import ScrollTop from './components/ScrollTop.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",
@@ -37,6 +37,7 @@ import NotFound from './components/NotFound.jsx';
 function App() {
   return (
       <Router>
+        <ScrollTop />
         <Navbar />
           <main className="main-container">
           <Routes>

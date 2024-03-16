@@ -5,6 +5,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/style.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'rsuite/DateRangePicker/styles/index.css';
+import 'rsuite/Modal/styles/index.css';
 import App from "./App";
 import { Provider } from "react-redux";
 import store from "./store/Store.jsx"; // Assuming you've created your Redux store

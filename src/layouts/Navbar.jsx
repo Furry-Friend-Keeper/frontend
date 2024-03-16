@@ -42,8 +42,8 @@ function Navbar() {
           <div className='d-flex align-items-center'>
             <img className="me-3 object-fit-contain" src="https://i.imgur.com/ids0WFZ.png" alt="" width={50} />
             <div className='logo-content'>
-              <p className='m-0'>Furry Friend</p>
-              <p className='m-0'>Keeper</p>
+              <div className='m-0'>Furry Friend</div>
+              <div className='m-0'>Keeper</div>
             </ div>
           </div>
           {/* <div className='d-flex align-items-center'>
@@ -65,38 +65,11 @@ function Navbar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <ul className={isDropdownOpen ? 'dropdown-menu show' : 'dropdown-menu'} aria-labelledby="dropdownMenuButton">
-            {isLogin && <li ><a className="dropdown-item" href={`/at3/keeper-edit/${getId}`}>My Shop</a></li>}
+            {isLogin && getRole === "PetKeeper" && <li ><a className="dropdown-item" href={`/at3/keeper-edit/${getId}`}>My Shop</a></li>}
             {isLogin && <li onClick={() => dispatch(logout())} ><a className="dropdown-item" href="/at3">Logout</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/login">Login</a></li>}
             {!isLogin && <li><a className="dropdown-item" href="/at3/signup">Sign up</a></li>}
           </ul>
-          {/* {isLogin && 
-          <Tooltip title="Open settings" className="ms-3 navbar-toggler">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <PersonIcon className="person-icon" />
-              </IconButton>
-            </Tooltip>
-            }
-              <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography onClick={() => dispatch(logout())} textAlign="center" ><a className="text-black" href="/at3" >Logout</a></Typography>
-                  </MenuItem>
-              </Menu> */}
         </div>
         <div className="nav-page collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav align-items-center">

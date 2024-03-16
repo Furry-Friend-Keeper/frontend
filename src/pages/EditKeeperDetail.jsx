@@ -1,32 +1,26 @@
 import { useState, useRef, useEffect } from "react";
-import Rating from "@mui/material/Rating";
 import axios from "axios";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import { TextField, Button, styled, IconButton  } from "@mui/material";
+import { TextField, Button, styled, IconButton, Rating,Select, Chip, Stack, Card, CardMedia, Box, Snackbar, Alert, AlertTitle, OutlinedInput, MenuItem, FormControl, InputLabel  } from "@mui/material";
+// import { Select, Chip, Option } from "@mui/joy";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { useForm } from "react-hook-form";
-import Box from "@mui/material/Box";
-// import { Textarea } from "@mui/joy";
 import ImageIcon from '@mui/icons-material/Image';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import { useSelector } from "react-redux";
 import { Navigate ,useParams } from "react-router-dom";
 import MapEditer from "../components/MapEditer";
 import GalleryEditer from "../components/GalleryEditer";
 import moment from "moment";
+import ScheduleRequest from "../components/ScheduleRequest";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
+    const [petCategories, setPetCategories] = useState([]);
+    const [defaultCategories, setDefaultCategories] = useState([])
     const [alertStatus, setAlertStatus] = useState("");
     const [messageLog, setMessageLog] = useState('')
     const [open, setOpen] = useState(false);
     const [galleryData, setGalleryData] = useState([]);
-    const [isEditName, setIsEditName] = useState(false);
+    const [isEditName, setIsEditName ] = useState(false);
     const [isEditContact, setIsEditContact] = useState(false);
     const [isEditAddress, setIsEditAddress] = useState(false);
     const [isMap, setIsMap] = useState([]);
@@ -53,13 +47,13 @@ function EditKeeperDetail() {
                 setValue("contact", data.contact);
                 setValue("email", data.email);
                 setValue("phone", data.phone);
-                // setValue("address", data.address.address);
                 setValue("district", data.address.district);
                 setValue("province", data.address.province);
                 setValue("postalCode", data.address.postalCode);
+                setValue("petcategories", data.categories);
+                setDefaultCategories(data.categories);
                 const otherReview = data.reviews.filter((review) => review.petownerId !== userInfo.id)
                 const splitMap = data.address.map.split(',').map(coord => parseFloat(coord));
-                console.log(data)
                 setIsMap(splitMap)
                 setAddressLabel(data.address.address)
                 setLocation(data.address.map)
@@ -75,9 +69,21 @@ function EditKeeperDetail() {
             console.error("Error fetching data:", error);
         }
     };
+    const PetKeeperCategories = async () => {
+        await axios
+          .get(import.meta.env.VITE_KEEPER_CATEGORIES)
+          .then((res) => {
+            const response = res.data;
+            setPetCategories(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
     
     useEffect(() => {
         fetchData();
+        PetKeeperCategories();
     }, []);
 
     const {
@@ -93,6 +99,7 @@ function EditKeeperDetail() {
             detail: data.detail,
             contact: data.contact,
             phone: data.phone,
+            categoryId: defaultCategories,
             address: {
                 address: addressLabel,
                 district: data.district,
@@ -202,6 +209,15 @@ function EditKeeperDetail() {
     // if(getId !== keeperId) {
     //     return <Navigate to={`/at3/keeper-edit/${getId}`} />;
     // }
+    const handleChange = (event) => {
+        const {
+          target: { value },
+        } = event;
+        setDefaultCategories(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
 
     return (
         <>
@@ -224,314 +240,359 @@ function EditKeeperDetail() {
             <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData} /> 
             <div className="container pb-lg-5">
                 <div className="row mx-auto col-12">
-                    <div className="col-lg-8">
-                        <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        className="pb-4 keeper-tag"
-                                    >
-                                        {apiData.categories &&
-                                            apiData.categories.map(
-                                                (category, index) => (
-                                                    <Chip
+                    <div className="col-lg-12">
+                        <ScheduleRequest />
+                    </div>
+                        <div className="row mx-auto col-12 px-0">
+                            <div className="col-lg-6">
+                                <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="row">
+                                        <div className="col-md-9">
+                                            {!isEditName ? 
+                                            <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            >
+                                                {apiData.categories &&
+                                                    apiData.categories.map(
+                                                        (category, index) => (
+                                                            <Chip className="keeper-tag" key={index} label={category}/>
+                                                            )
+                                                            )}
+                                            </Stack>
+                                                :
+                                            <FormControl sx={{ mb:5 ,width: "100%" }}>
+                                                <InputLabel id="demo-multiple-chip-label">Pet Category</InputLabel>
+                                                <Select
+                                                    labelId="demo-multiple-chip-label"
+                                                    id="demo-multiple-chip"
+                                                    multiple
+                                                    value={defaultCategories}
+                                                    onChange={handleChange}
+                                                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                                                    renderValue={(selected) => (
+                                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                        {selected.map((value) => (
+                                                            <Chip key={value} label={value} className="keeper-tag" />
+                                                            ))}
+                                                        </Box>
+                                                    )}
+                                                    >
+                                                    {petCategories.map((category, index) => (
+                                                        <MenuItem
                                                         key={index}
-                                                        label={category}
-                                                    />
-                                                )
-                                            )}
-                                    </Stack>
-                                </div>
-                                <div className="col-md-4 d-flex justify-content-end">
-                                    <span className="fs-3">
-                                        <i
-                                            className="bi bi-pencil-square fs-3 ju"
-                                            onClick={() =>
-                                                setIsEditName(!isEditName)
+                                                        value={category.name}
+                                                        >
+                                                        {category.name}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
                                             }
-                                        ></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="row">
-                                    <div className="col-sm-4">
-                                        {!isEditName ? 
-                                        !apiData.img ?
-                                        <ImageNotSupportedIcon className="edit-notImage" /> :
-                                        <Card sx={{
-                                            maxWidth: 345,
-                                            borderRadius: "15px",
-                                        }}>
-                                            <CardMedia
-                                                className="profile"
-                                                component="img"
-                                                alt="profile"
-                                                height="140"
-                                                src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
-                                            />
-                                        </Card>
-                                        :
-                                        !apiData.img ?
-                                        <ImageNotSupportedIcon className="edit-notImage" /> :
-                                        <div>
-                                         
-                                        <Card
-                                            sx={{
-                                                maxWidth: 345,
-                                                borderRadius: "15px",
-                                            }}
-                                        >
-                                            {previewImage ? (
-                                                <CardMedia
-                                                    className="profile"
-                                                    component="img"
-                                                    alt="profile"
-                                                    height="auto"
-                                                    src={previewImage}
-                                                />
-                                            ) : (
-                                                <CardMedia
-                                                    className="profile"
-                                                    component="img"
-                                                    alt="profile"
-                                                    height="140"
-                                                    src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
-                                                />
-                                            )}
-                                        </Card>
-                                        
-
-                                        <Button
-                                            className="w-100 mt-2 upload-image"
-                                            component="label"
-                                            variant="outlined"
-                                            startIcon={<ImageIcon />}
-                                        >
-                                            Select Image
-                                            <VisuallyHiddenInput
-                                                onChange={handleFileChange}
-                                                type="file"
-                                            />
-                                        </Button>
                                         </div>
-                                        }
-                                    </div>
-                                    <div className="col">
-                                        <div className="title d-flex justify-content-between align-items-center">
-                                            {!isEditName ? (
-                                                <h2 className="mb-lg-4 mt-lg-3">
-                                                    {apiData.name}
-                                                </h2>
-                                            ) : (
-                                                <TextField
-                                                    label="Edit Keeper Name"
-                                                    margin="normal"
-                                                    fullWidth
-                                                    required
-                                                    {...register("name", {
-                                                        required:
-                                                            "Name is required",
-                                                        maxLength: {
-                                                            value: 200,
-                                                            message:
-                                                                "Name must not more than 200 characters",
-                                                        },
-                                                    })}
-                                                />
-                                            )}
-                                            {errors.name && (
-                                                <p className="error-message">
-                                                    {errors.name.message}
-                                                </p>
-                                            )}
-
-                                            {/* <span className="fs-3">
+                                        <div className="col-md-3 d-flex justify-content-end">
+                                            <span className="fs-3">
                                                 <i
                                                     className="bi bi-pencil-square fs-3 ju"
                                                     onClick={() =>
-                                                        setIsEditName(
-                                                            !isEditName
-                                                        )
+                                                        setIsEditName(!isEditName)
                                                     }
                                                 ></i>
-                                            </span> */}
+                                            </span>
                                         </div>
-
-                                        <div className="des">
-                                            <h5>Description</h5>
-                                            {!isEditName ? (
-                                                <p>{apiData.detail}</p>
-                                            ) : (
-                                                <textarea
-                                                    className="form-control"
-                                                    rows={3}
-                                                
-                                                    placeholder="Type in here…"
-                                                    
-                                                    {...register("detail")}
-                                                />
-                                            )}
-                                        </div>
-                                        {isEditName && (
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    justifyContent: "flex-end",
-                                                }}
-                                            >
-                                                <Button
-                                                    variant="contained"
-                                                    style={{
-                                                        backgroundColor: "red",
-                                                        color: "white",
-                                                    }}
-                                                    onClick={() =>
-                                                        setIsEditName(false)
-                                                    }
-                                                    
-                                                    sx={{ mt: 3, ml: 1 }}
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    variant="contained"
-                                                    sx={{ mt: 3, ml: 1 }}
-                                                    
-                                                >
-                                                    Submit
-                                                </Button>
-                                            </Box>
-                                        )}
                                     </div>
+                                        <div className="row">
+                                            <div className="col-sm-4">
+                                                {!isEditName ? 
+                                                !apiData.img ?
+                                                <ImageNotSupportedIcon className="edit-notImage" /> :
+                                                <Card sx={{
+                                                    maxWidth: 345,
+                                                    borderRadius: "15px",
+                                                }}>
+                                                    <CardMedia
+                                                        className="profile"
+                                                        component="img"
+                                                        alt="profile"
+                                                        height="140"
+                                                        src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
+                                                    />
+                                                </Card>
+                                                :
+                                                !apiData.img ?
+                                                <div>
+                                                    <ImageNotSupportedIcon className="edit-notImage" /> 
+                                                    <Button
+                                                        className="w-100 mt-2 upload-image"
+                                                        component="label"
+                                                        variant="outlined"
+                                                        startIcon={<ImageIcon />}
+                                                    >
+                                                        Select Image
+                                                        <VisuallyHiddenInput
+                                                            onChange={handleFileChange}
+                                                            type="file"
+                                                        />
+                                                    </Button>
+                                                </div>
+                                                    :
+                                                <div> 
+                                                    <Card
+                                                        sx={{
+                                                            maxWidth: 345,
+                                                            borderRadius: "15px",
+                                                        }}
+                                                    >
+                                                        {previewImage ? (
+                                                            <CardMedia
+                                                                className="profile"
+                                                                component="img"
+                                                                alt="profile"
+                                                                height="auto"
+                                                                src={previewImage}
+                                                            />
+                                                        ) : (
+                                                            <CardMedia
+                                                                className="profile"
+                                                                component="img"
+                                                                alt="profile"
+                                                                height="140"
+                                                                src={apiData.img ? import.meta.env.VITE_KEEPER_IMAGE + keeperId + "/" + apiData.img : null}
+                                                            />
+                                                        )}
+                                                    </Card>
+                                                    <Button
+                                                        className="w-100 mt-2 upload-image"
+                                                        component="label"
+                                                        variant="outlined"
+                                                        startIcon={<ImageIcon />}
+                                                    >
+                                                        Select Image
+                                                        <VisuallyHiddenInput
+                                                            onChange={handleFileChange}
+                                                            type="file"
+                                                        />
+                                                    </Button>
+                                                </div>
+                                                }
+                                            </div>
+                                            <div className="col">
+                                                <div className="title d-flex justify-content-between align-items-center">
+                                                    {!isEditName ? (
+                                                        <h2 className="mb-lg-4 mt-lg-3">
+                                                            {apiData.name}
+                                                        </h2>
+                                                    ) : (
+                                                        <TextField
+                                                            label="Edit Keeper Name"
+                                                            margin="normal"
+                                                            fullWidth
+                                                            required
+                                                            {...register("name", {
+                                                                required:
+                                                                    "Name is required",
+                                                                maxLength: {
+                                                                    value: 200,
+                                                                    message:
+                                                                        "Name must not more than 200 characters",
+                                                                },
+                                                            })}
+                                                        />
+                                                    )}
+                                                    {errors.name && (
+                                                        <p className="error-message">
+                                                            {errors.name.message}
+                                                        </p>
+                                                    )}
+
+                                                    {/* <span className="fs-3">
+                                                        <i
+                                                            className="bi bi-pencil-square fs-3 ju"
+                                                            onClick={() =>
+                                                                setIsEditName(
+                                                                    !isEditName
+                                                                )
+                                                            }
+                                                        ></i>
+                                                    </span> */}
+                                                </div>
+
+                                                <div className="des">
+                                                    <h5>Description</h5>
+                                                    {!isEditName ? (
+                                                        <p className="text-break">{apiData.detail}</p>
+                                                    ) : (
+                                                        <textarea
+                                                            className="form-control"
+                                                            rows={3}
+                                                        
+                                                            placeholder="Type in here…"
+                                                            
+                                                            {...register("detail")}
+                                                        />
+                                                    )}
+                                                </div>
+                                                {isEditName && (
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent: "flex-end",
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            variant="contained"
+                                                            style={{
+                                                                backgroundColor: "red",
+                                                                color: "white",
+                                                            }}
+                                                            onClick={() =>
+                                                                setIsEditName(false)
+                                                            }
+                                                            
+                                                            sx={{ mt: 3, ml: 1 }}
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                        <Button
+                                                            type="submit"
+                                                            variant="contained"
+                                                            sx={{ mt: 3, ml: 1 }}
+                                                            
+                                                        >
+                                                            Submit
+                                                        </Button>
+                                                    </Box>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
-                        </div>
-                        <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="title d-flex justify-content-between align-items-center">
-                                <h2>Contact</h2>
-                                <span className="fs-3">
-                                    <i
-                                        className="bi bi-pencil-square fs-3 ju"
-                                        onClick={() =>
-                                            setIsEditContact(!isEditContact)
-                                        }
-                                    ></i>
-                                </span>
-                            </div>
 
-                            <div className="table">
-                                <table className="w-100">
-                                    <tr>
-                                        <td>Name</td>
-                                        {!isEditContact ? (
-                                            <td className="text-end">
-                                                {apiData.contact}
-                                            </td>
-                                        ) : (
-                                            <td className="text-end">
-                                                <TextField
-                                                    label="Edit Name"
-                                                    margin="normal"
-                                                    // fullWidth
-                                                    required
-                                                    {...register("contact", {
-                                                        maxLength: {
-                                                            value: 200,
-                                                            message:
-                                                                "Contact must not more than 200 characters",
-                                                        },
-                                                    })}
-                                                />
-                                                {errors.contact && (
-                                                <p className="error-message">
-                                                    {errors.contact.message}
-                                                </p>
-                                            )}
-                                            </td>
-                                        )}
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-
-                                        <td className="text-end">
-                                            {apiData.email}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Phone</td>
-                                        {!isEditContact ? (
-                                            <td className="text-end">
-                                                {apiData.phone}
-                                            </td>
-                                        ) : (
-                                            <td className="text-end">
-                                                <TextField
-                                                    type="number"
-                                                    label="Edit Phone"
-                                                    margin="normal"
-                                                    // fullWidth
-                                                    required
-                                                    {...register("phone", {
-                                                        required:
-                                                            "Phone is required",
-                                                        maxLength: {
-                                                            value: 10,
-                                                            message:
-                                                                "Phone number must be 10 digits",
-                                                        },
-                                                        minLength: {
-                                                            value: 10,
-                                                            message:
-                                                                "Phone number must be 10 digits",
-                                                        }
-                                                    })}
-                                                />
-                                                {errors.phone && (
-                                                <p className="error-message">
-                                                    {errors.phone.message}
-                                                </p>
-                                            )}
-                                            </td>
-                                        )}
-                                    </tr>
-                                </table>
                             </div>
-                            {isEditContact && (
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                    }}
-                                >
-                                    <Button
-                                        variant="contained"
-                                        style={{
-                                            backgroundColor: "red",
-                                            color: "white",
-                                        }}
-                                        onClick={() => setIsEditContact(false)}
-                                        sx={{ mt: 3, ml: 1 }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{ mt: 3, ml: 1 }}
-                                    >
-                                        Submit
-                                    </Button>
-                                </Box>
-                            )}
-                            </form>
+                            <div className="col-lg-6">
+                                <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="title d-flex justify-content-between align-items-center">
+                                        <h2>Contact</h2>
+                                        <span className="fs-3">
+                                            <i
+                                                className="bi bi-pencil-square fs-3 ju"
+                                                onClick={() =>
+                                                    setIsEditContact(!isEditContact)
+                                                }
+                                            ></i>
+                                        </span>
+                                    </div>
+
+                                    <div className="table">
+                                        <table className="w-100">
+                                            <tr>
+                                                <td>Name</td>
+                                                {!isEditContact ? (
+                                                    <td className="text-end">
+                                                        {apiData.contact}
+                                                    </td>
+                                                ) : (
+                                                    <td className="text-end">
+                                                        <TextField
+                                                            label="Edit Name"
+                                                            margin="normal"
+                                                            // fullWidth
+                                                            required
+                                                            {...register("contact", {
+                                                                maxLength: {
+                                                                    value: 200,
+                                                                    message:
+                                                                        "Contact must not more than 200 characters",
+                                                                },
+                                                            })}
+                                                        />
+                                                        {errors.contact && (
+                                                        <p className="error-message">
+                                                            {errors.contact.message}
+                                                        </p>
+                                                    )}
+                                                    </td>
+                                                )}
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+
+                                                <td className="text-end">
+                                                    {apiData.email}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Phone</td>
+                                                {!isEditContact ? (
+                                                    <td className="text-end">
+                                                        {apiData.phone}
+                                                    </td>
+                                                ) : (
+                                                    <td className="text-end">
+                                                        <TextField
+                                                            type="number"
+                                                            label="Edit Phone"
+                                                            margin="normal"
+                                                            // fullWidth
+                                                            required
+                                                            {...register("phone", {
+                                                                required:
+                                                                    "Phone is required",
+                                                                maxLength: {
+                                                                    value: 10,
+                                                                    message:
+                                                                        "Phone number must be 10 digits",
+                                                                },
+                                                                minLength: {
+                                                                    value: 10,
+                                                                    message:
+                                                                        "Phone number must be 10 digits",
+                                                                }
+                                                            })}
+                                                        />
+                                                        {errors.phone && (
+                                                        <p className="error-message">
+                                                            {errors.phone.message}
+                                                        </p>
+                                                    )}
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    {isEditContact && (
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            <Button
+                                                variant="contained"
+                                                style={{
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                }}
+                                                onClick={() => setIsEditContact(false)}
+                                                sx={{ mt: 3, ml: 1 }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                sx={{ mt: 3, ml: 1 }}
+                                            >
+                                                Submit
+                                            </Button>
+                                        </Box>
+                                    )}
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        
-                    </div>
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
                             {isMap.length > 0 && <MapEditer editMap={isEditAddress} isMap={isMap} getLocation={setLocation} getLocationLabel={setAddressLabel} />}     
