@@ -11,6 +11,7 @@ import MapEditer from "../components/MapEditer";
 import GalleryEditer from "../components/GalleryEditer";
 import moment from "moment";
 import ScheduleRequest from "../components/ScheduleRequest";
+import Overviews from "../components/Overviews";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -742,64 +743,10 @@ function EditKeeperDetail() {
                             </div>
                         </div> */}
                     </div>
-                    <div className="mt-4">
-
-                    
-                    <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
-                            <div className="title">
-                                <h2>Overviews</h2>
-                            </div>
-                            <div className="rating">
-                                <span className="fs-3 rating-score me-2">
-                                    {apiData.reviewStars}
-                                </span>
-                                <Rating
-                                    name="read-only"
-                                    value={apiData.reviewStars || 0}
-                                    precision={0.5}
-                                    readOnly
-                                />
-                                <span className="ms-1">({apiData.reviews?.length})</span>
-                            </div>
-                            <div className="row justify-content-start mt-4">
-                                <div className="col">
-                                    <div className="row">
-                                        {isReview.map((review, index) => (
-                                            <div className="d-flex align-items-center mt-4" key={index}>
-                                                {/* <div className="col-md-1">
-                                                    <img
-                                                        src={
-                                                            import.meta.env.VITE_KEEPER_IMAGE + review?.petownerImg
-                                                        }
-                                                    />
-                                                </div> */}
-                                                <div className="col-md-3">
-                                                    <span className="ps-4">
-                                                        {
-                                                            review?.petownerFirstname
-                                                        }
-                                                    </span>
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <Rating
-                                                        name=""
-                                                        value={review?.stars}
-                                                        readOnly
-                                                    />
-                                                    <div >
-                                                        {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A"  )}
-                                                    </div>
-                                                </div>  
-                                                <div className="col-md-5">
-                                                        <span>{review?.comment}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
+                    <Overviews  
+                        reviews={apiData} 
+                        isReview={isReview} 
+                        isOwnerReview={null} />
                 </div>
             </div>
         </>

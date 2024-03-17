@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Rating from "@mui/material/Rating";
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
+import StarIcon from '@mui/icons-material/Star';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
@@ -58,6 +59,7 @@ function Overviews(props) {
                         name="read-only"
                         value={reviews.reviewStars || 0}
                         precision={0.5}
+                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                         readOnly
                     />
                     <span className="ms-1">({reviews.reviews?.length})</span>
@@ -83,6 +85,7 @@ function Overviews(props) {
                                     <Rating
                                         name="read-only"
                                         value={isOwnerReview?.stars}
+                                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                         readOnly
                                     />
                                 ) : (
@@ -207,6 +210,7 @@ function Overviews(props) {
                                             <Rating
                                                 name=""
                                                 value={review?.stars}
+                                                emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                                 readOnly
                                             />
                                             <div>

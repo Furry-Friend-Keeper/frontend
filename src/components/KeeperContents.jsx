@@ -1,48 +1,57 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {Link} from 'react-router-dom'
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import {Rating, Stack, Chip} from '@mui/material/';
+import StarIcon from '@mui/icons-material/Star';
+import { Pagination, Toggle, SelectPicker, TagPicker, InputNumber } from 'rsuite';
 
 function KeeperContents(props) {
-    const { search, petCategories } = props;
+    const { search } = props;
 
-    const namesArray = petCategories.map(item => item.name) || [];
+    const [activePage, setActivePage] = useState(1);
+    const [limit, setLimit] = useState(import.meta.env.VITE_LIMIT_PAGINATION);
+    const [filteredData, setFilteredData] = useState([]);
 
-    // const displayTags = (item) => {
-    //     if(namesArray.every((arr) => item.categories.includes(arr))){
-    //           return ( 
-    //           <Chip
-    //             label="All"
-    //             size='small'
-    //              />)
-    //     }else {
-    //         // console.log(it)
-    //         return item.categories.map((category, index) => (
-    //         <Chip
-    //             key={index}
-    //             label={category}
-    //             size='small'
-    //         />
-    //         ))
-    //     }
-    // }
+    const limitOptions = [5, 10, 20];
+    const size = 'md';
+    const maxButtons= 5;
+    const total = search.length;
+    const layout = ['limit','-', 'pager', 'skip'];
+
+        // Simulate fetching or filtering data based on the search
+        useEffect(() => {
+            // In a real application, you would fetch/filter data from a server
+            const startIndex = (activePage - 1) * limit;
+            const endIndex = startIndex + limit;
+            const paginatedData = search.slice(startIndex, endIndex);
+            setFilteredData(paginatedData);
+        }, [activePage, limit, search]);
+    
+        const handlePageChange = (page) => {
+            setActivePage(page);
+        };
+    
+        const handleLimitChange = (newLimit) => {
+            setLimit(newLimit);
+            setActivePage(1); // Reset to first page when limit changes
+        };
+
   return (
     <>
-        {search.map((item, index) => {
+        {filteredData.map((item, index) => {
             return ( 
             <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 ">
                 <div className="keeper card bg-shadow text-center border-0">
                 {item.img ? <Link to={`/at3/keepers/${item.id}`}><img src={import.meta.env.VITE_KEEPER_IMAGE + item.id + "/" + item.img} alt={item.title} /></Link> 
                 : <Link to={`/at3/keepers/${item.id}`}><ImageNotSupportedIcon className="notImage" /></Link>}
                 <div className="card-body keeper-radius">
-                    <div className="d-flex justify-content-center">
-                    <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
+                    <div className="d-flex justify-content-center mb-2">
+                        <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
                     </div>
                     <div>
-                    <Rating name="half-rating-read" value={item.reviewStars} precision={1} readOnly />
+                    <Rating className='mb-2' name="half-rating-read" value={item.reviewStars} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} />
                     <Stack direction="row" spacing={1} className="justify-content-center d-block">
                             {item.categories && 
-                            // displayTags(item)
                                 item.categories.map(
                                     (category, index) => 
                                     (
@@ -61,6 +70,25 @@ function KeeperContents(props) {
                 </div>
             </div>
         )})}
+        <div className='w-100 mt-4'>
+            <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                layout={layout}
+                size={size}
+                total={total}
+                limit={limit}
+                limitOptions={limitOptions}
+                maxButtons={maxButtons}
+                activePage={activePage}
+                onChangePage={handlePageChange}
+                onChangeLimit={handleLimitChange}
+            />
+        </div>
     </>
   )
 }

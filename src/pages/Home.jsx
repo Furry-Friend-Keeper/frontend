@@ -1,26 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
-import {Link} from 'react-router-dom'
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from '@mui/icons-material/Clear';
-import Rating from '@mui/material/Rating';
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
-import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-
-import {Search, StyledInputBase,  ClearButton, SearchIconWrapper} from '../components/SearchButton';
-import TitlePage from '../components/TitlePage';
 import BannerPage from '../components/BannerPage';
-import PaginationButton from '../components/PaginationButton';
-import PetCategory from '../components/PetCategory';
 import KeeperCategory from '../components/KeeperCategory';
 import KeeperContents from '../components/KeeperContents';
 import axios from 'axios';
-import { Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { Input, InputGroup, Dropdown } from 'rsuite';
+import SearchIcon from '@rsuite/icons/Search';
+import CloseIcon from '@rsuite/icons/Close';
+import Skeleton from '@mui/material/Skeleton';
+import { Box } from '@mui/material';
 
 function Home() {  
 
   const [apiData, setApiData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     try {
       const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
@@ -38,44 +30,29 @@ function Home() {
     fetchData();
   }, []);
 
-  const [search, setSearch] = useState(apiData)
+  const [search, setSearch] = useState([])
   const [searchInput, setSearchInput] = useState('')
 
-  const handleSearchInput = (event) => {
-    setSearchInput(event.target.value);
+  const handleSearchInput = (value) => {
+    setSearchInput(value);
   }
   
   const handleClearSearch = () => {
     setSearchInput('');
   }
   const [selected, setSelected] = useState([]);
- 
-  // useEffect(() => {
-  //   const filteredBySearch = apiData.filter((item) =>
-  //     item.name?.toLowerCase().includes(searchInput?.toLowerCase())
-  //   );
-  
-  //   const filteredByCategory = filteredBySearch.filter((item) => {
-  //     if (selected.length > 0) {
-  //       if (item.categories !== null) {
-  //         return item.categories.some((category) => selected.includes(category));
-  //       }
-  //     } else {
-  //         return item
-  //       }
-  //   });
-  //   console.log(search)
-  //   setSearch(filteredByCategory);
-  // }, [searchInput, selected, apiData]);
 
   useEffect(() => {
     const filter = apiData.filter((item) => {
       if (selected.length > 0) {
         if (item.categories !== null) return item.categories.some((category) => selected.includes(category));
       } else return true;
-
+      
     });
     setSearch(filter)
+    if (filter.length > 0) {
+      setLoading(true);
+    }
   },[selected, apiData])
 
   const handleCategory = (category) => {
@@ -118,7 +95,6 @@ function Home() {
           return item
         }
     });
-    console.log(search)
     setSearch(filteredByCategory);
     }
   }
@@ -145,84 +121,77 @@ const PetKeeperCategories = async() => {
     })
 }
 
-const [sortAscending, setSortAscending] = useState(false);
-const [arrow, setArrow] = useState(false);
-const SortReviewStar = () => {
-  setArrow(!arrow)
-  setSortAscending(true)
-  const sortStar = [...search].sort((a, b) => !arrow ? b.reviewStars - a.reviewStars : a.reviewStars - b.reviewStars)
+const [sortAscending, setSortAscending] = useState("");
+const [sortTitles, setSortTitles] = useState("Sort:Rating")
+const SortReviewStar = (isSort) => {
+  setSortAscending(isSort)
+  setSortTitles(isSort === "Des" ? "High to Low" : "Low to High")
+  const sortStar = [...search].sort((a, b) => isSort==="Des" ? b.reviewStars - a.reviewStars : a.reviewStars - b.reviewStars)
   setSearch(sortStar);
+}
+
+const selectRatingRange = (range) => {
+  const ratingRange = apiData.filter((val) => val.reviewStars >= range)
+  setSearch(ratingRange)
+  setSortTitles("Sort:Rating")
+  setSortAscending("")
 }
 
   return (
     <>
     {/* title */}
-    {/* <TitlePage /> */}
     <BannerPage />
     {/* Content */}
       <div className="container-sm pt-3">
           <div className="col-sm-12 col-md-9 col-lg-9 col-xl-8">
-        {/* <div className="row ">
-            <div className="search col-sm-12 col-md-6 col-lg-6 mt-3">
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ 'aria-label': 'search' }}
-                  value={searchInput}
-                  onChange={handleSearchInput}
-                />
-                {searchInput && (
-                    <ClearButton onClick={handleClearSearch}>
-                      <ClearIcon />
-                    </ClearButton>
-                  )}
-              </Search>
-            </div>
-            <div className="col-sm-12 col-md-6 col-lg-6 col-xl-3 my-auto mt-3">
-                  <PetCategory selected={selected} setSelected={setSelected} />
-            
-            </div>
-        </div> */}
-        {/* <PaginationButton handleNextSlide={handleNextSlide} handlePrevSlide={handlePrevSlide} validateNextSlide={validateNextSlide} validatePrevSlide={validatePrevSlide} /> */}
-
         </div>
         <div className="container p-2 mb-5 mt-3">
           <div className="keeper-panel">
             {/* KeeperCategory */}
-              <KeeperCategory petCategories={petCategories} selected={selected} handleCategory={handleCategory} />
+              <KeeperCategory petCategories={petCategories} selected={selected} handleCategory={handleCategory} selectRatingRange={selectRatingRange} />
             <div className="keeper-list">
               <div className="d-flex justify-content-between mb-3">
-                  <div className="sort-list">
-                      <h4 className="m-auto">Sort</h4>
-                      <button onClick={() => SortReviewStar()} className={`btn bg-white mx-3 ${sortAscending ? "sort-active" : ""}`} >
-                        Rating 
-                        {/* {sortAscending ? arrow === true ? <ArrowDropUpIcon /> : <ArrowDropDownIcon /> : ""} */}
-                        {sortAscending ?<ArrowDropUpIcon className={`arrow-icon ${arrow ? "rotate-down" : "rotate-up"}`} /> : ""}
-                      </button>
-                  </div>
-                  <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ 'aria-label': 'search' }}
-                  value={searchInput}
-                  onChange={handleSearchInput}
-                  onKeyUp={handleSearch}
-                />
-                {searchInput && (
-                    <ClearButton onClick={handleClearSearch}>
-                      <ClearIcon />
-                    </ClearButton>
-                  )}
-              </Search>
+                <div className="keeper-list-filter d-flex">
+                  <InputGroup inside className='search-keeper'>
+                      <InputGroup.Button>
+                        <SearchIcon />
+                      </InputGroup.Button>
+                      <Input
+                        placeholder='Search by name'
+                        value={searchInput}
+                        onChange={handleSearchInput}
+                        onKeyUp={handleSearch}
+                      />
+                      {searchInput &&<InputGroup.Button>
+                        <CloseIcon onClick={handleClearSearch} />
+                      </InputGroup.Button>}
+                    </InputGroup>
+                    <div className="sort-list">
+                      <Dropdown title={sortTitles} activeKey={sortAscending}>
+                        <Dropdown.Item onClick={() => SortReviewStar("Des")} eventKey="Des">High to Low</Dropdown.Item>
+                        <Dropdown.Item onClick={() => SortReviewStar("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
+                      </Dropdown>
+                    </div>
+                </div>
+                {/* <div className='keeper-list-pagination'>
+                  page
+                </div> */}
               </div>
               <div className='row'>
-                {search.length > 0 ? <KeeperContents search={search} petCategories={petCategories} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+
+                {!loading ?
+                <div className='grid-autofill'>
+                  {Array.from(new Array(6)).map((item, index) => (
+                    <Box key={index}> {/* Add a unique key prop here */}
+                      <Skeleton variant="rectangular" width={250} height={150} />
+                      <Box sx={{ pt: 0.5 }}>
+                        <Skeleton width={250} />
+                        <Skeleton width={250} />
+                      </Box>
+                    </Box>
+                  ))}
+                </div>
+                : loading && search.length > 0 ? <KeeperContents search={search} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}
