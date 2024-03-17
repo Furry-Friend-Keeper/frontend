@@ -12,7 +12,14 @@ import { Box } from '@mui/material';
 function Home() {  
 
   const [apiData, setApiData] = useState([]);
+  const [ratingScore, setRatingScore] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState([])
+  const [searchInput, setSearchInput] = useState('')
+  const [selected, setSelected] = useState([]);
+  const [sortAscending, setSortAscending] = useState("");
+  const [sortTitles, setSortTitles] = useState("Sort:Rating")
+
   const fetchData = async () => {
     try {
       const apiUrl = import.meta.env.VITE_KEEPERS_ALL;
@@ -30,8 +37,6 @@ function Home() {
     fetchData();
   }, []);
 
-  const [search, setSearch] = useState([])
-  const [searchInput, setSearchInput] = useState('')
 
   const handleSearchInput = (value) => {
     setSearchInput(value);
@@ -40,20 +45,18 @@ function Home() {
   const handleClearSearch = () => {
     setSearchInput('');
   }
-  const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    const filter = apiData.filter((item) => {
-      if (selected.length > 0) {
-        if (item.categories !== null) return item.categories.some((category) => selected.includes(category));
-      } else return true;
-      
-    });
+    const filter = apiData.filter((item) => 
+    item.reviewStars >= ratingScore && selected.every((filter) =>  item.categories.includes(filter))
+    );
+
+    // console.log(filter)
     setSearch(filter)
     if (filter.length > 0) {
       setLoading(true);
     }
-  },[selected, apiData])
+  },[selected, apiData, ratingScore])
 
   const handleCategory = (category) => {
     setSelected((prevSelected) => {
@@ -63,15 +66,6 @@ function Home() {
         return [...prevSelected, category]
       }
     })
-    // const category = apiData.filter((item) => {
-    //   if (selected.length > 0) {
-    //     if (item.categories !== null) {
-    //       return item.categories.some((category) => selected.includes(category));
-    //     }
-    //   } else {
-    //       return item
-    //     }
-    // });
 
   }
 
@@ -106,23 +100,6 @@ function Home() {
   // } 
 
 
-  const [petCategories, setPetCategories] = useState([]);
-
-  useEffect(() => {
-    PetKeeperCategories()
-},[])
-
-const PetKeeperCategories = async() => {
-    await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
-        const response = res.data;
-        setPetCategories(response)
-    }).catch((err) => {
-        console.log(err)
-    })
-}
-
-const [sortAscending, setSortAscending] = useState("");
-const [sortTitles, setSortTitles] = useState("Sort:Rating")
 const SortReviewStar = (isSort) => {
   setSortAscending(isSort)
   setSortTitles(isSort === "Des" ? "High to Low" : "Low to High")
@@ -131,10 +108,18 @@ const SortReviewStar = (isSort) => {
 }
 
 const selectRatingRange = (range) => {
-  const ratingRange = apiData.filter((val) => val.reviewStars >= range)
+  setRatingScore(range)
+  const ratingRange = apiData.filter((val) => val.reviewStars >= range && selected.every((filter) =>  val.categories.includes(filter)))
   setSearch(ratingRange)
   setSortTitles("Sort:Rating")
   setSortAscending("")
+}
+
+const resetFilter = () => {
+  setSortAscending("")
+  setSortTitles("Sort:Rating")
+  setRatingScore(0)
+  setSelected([])
 }
 
   return (
@@ -148,7 +133,13 @@ const selectRatingRange = (range) => {
         <div className="container p-2 mb-5 mt-3">
           <div className="keeper-panel">
             {/* KeeperCategory */}
-              <KeeperCategory petCategories={petCategories} selected={selected} handleCategory={handleCategory} selectRatingRange={selectRatingRange} />
+              <KeeperCategory 
+                selected={selected} 
+                handleCategory={handleCategory} 
+                selectRatingRange={selectRatingRange} 
+                ratingScore={ratingScore} 
+                resetFilter={resetFilter} 
+              />
             <div className="keeper-list">
               <div className="d-flex justify-content-between mb-3">
                 <div className="keeper-list-filter d-flex">

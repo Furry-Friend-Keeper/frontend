@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
-
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import Favorite from '../components/Favorite';
 import TakeCareDetail from '../components/TakeCareDetail';
 
 function OwnerDetail() {
 
+    const { ownerId } = useParams();
     const [apiData, setApiData] = useState([]);
     const fetchData = async () => {
         try {
-          const apiUrl = import.meta.env.VITE_OWNER_ID + id;
+          const apiUrl = import.meta.env.VITE_OWNER_ID + ownerId;
           await axios.get(apiUrl).then(response => {
             const data = response.data;
             setApiData(data)

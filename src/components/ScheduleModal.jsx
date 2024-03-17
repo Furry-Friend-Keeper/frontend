@@ -1,22 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
 import { Modal, Button, Placeholder, DateRangePicker } from 'rsuite';
 import { Button as ButtonMui  } from "@mui/material"
 import { useSelector } from "react-redux";
 import moment from 'moment';
+import axios from 'axios';
+import { TagPicker } from 'rsuite';
+
+const Ranges = [
+  {
+    label: 'today',
+    value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
+  },
+  {
+    label: 'Next 7 Days',
+    value: [moment().startOf('day').toDate(), moment().add(6, 'days').endOf('day').toDate()]
+  }
+];
 
 function ScheduleModal() {
-  const Ranges = [
-    {
-      label: 'today',
-      value: [moment().startOf('day').toDate(), moment().endOf('day').toDate()]
-    },
-    {
-      label: 'Next 7 Days',
-      value: [moment().startOf('day').toDate(), moment().add(6, 'days').endOf('day').toDate()]
-    }
-  ];
   const { beforeToday } = DateRangePicker;
   const { loading, userInfo, error, success, accessToken } = useSelector(
     (state) => state.auth
@@ -33,6 +36,23 @@ function ScheduleModal() {
 
   const handleOpen = () => setShow(true);
   const handleClose = () => setShow(false);
+
+  const [petCategories, setPetCategories] = useState([]);
+
+  useEffect(() => {
+    PetKeeperCategories()
+},[])
+
+const PetKeeperCategories = async() => {
+    await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
+        const response = res.data;
+        const data = response.map((item) => item.name)
+        const rsite_data = data.map(item => ({ label: item, value: item }))
+        setPetCategories(rsite_data)
+    }).catch((err) => {
+        console.log(err)
+    })
+}
 
   const handleChange = (value, name) => {
     setFormData({ ...formData, [name]: value });
@@ -89,6 +109,10 @@ function ScheduleModal() {
                   <div className="mb-3">
                   <label htmlFor="message" className="form-label">Booking Period</label>
                       <DateRangePicker appearance="default" block shouldDisableDate={beforeToday()} ranges={Ranges}/>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="petName" className="form-label">Pet Category</label>
+                    <TagPicker data={petCategories} className='form-control' />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="petName" className="form-label">Pet Name (Optional)</label>
