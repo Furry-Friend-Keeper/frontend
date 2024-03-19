@@ -1054,6 +1054,10 @@ footer {
   width: 100%;
 }
 
+.leaflet-routing-alternatives-container {
+  display: none !important;
+}
+
 div.scrollmenu {
   background-color: #333;
   overflow: auto;

@@ -17,6 +17,7 @@ function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
     const [petCategories, setPetCategories] = useState([]);
     const [defaultCategories, setDefaultCategories] = useState([])
+    const [categoryId, setCategoryId] = useState([]);
     const [alertStatus, setAlertStatus] = useState("");
     const [messageLog, setMessageLog] = useState('')
     const [open, setOpen] = useState(false);
@@ -100,7 +101,7 @@ function EditKeeperDetail() {
             detail: data.detail,
             contact: data.contact,
             phone: data.phone,
-            categoryId: defaultCategories,
+            categories: categoryId,
             address: {
                 address: addressLabel,
                 district: data.district,
@@ -109,6 +110,7 @@ function EditKeeperDetail() {
                 map: getLocation,
             }
         };
+        console.log(result)
         if(!isError){
             await axios
                 .patch(import.meta.env.VITE_KEEPERS_ID + keeperId,  result, {
@@ -218,6 +220,14 @@ function EditKeeperDetail() {
           // On autofill we get a stringified value.
           typeof value === 'string' ? value.split(',') : value,
         );
+        let test = []
+        for(const category of petCategories) {
+            if(value.includes(category.name)) {
+                test.push(category.id)
+            }
+        }
+        console.log(value)
+        setCategoryId(test)
       };
 
     return (
@@ -264,14 +274,15 @@ function EditKeeperDetail() {
                                             </Stack>
                                                 :
                                             <FormControl sx={{ mb:5 ,width: "100%" }}>
-                                                <InputLabel id="demo-multiple-chip-label">Pet Category</InputLabel>
+                                                <InputLabel id="demo-multiple-chip-label">Category</InputLabel>
                                                 <Select
                                                     labelId="demo-multiple-chip-label"
                                                     id="demo-multiple-chip"
+                                                    label="Category"
                                                     multiple
                                                     value={defaultCategories}
                                                     onChange={handleChange}
-                                                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                                                    input={<OutlinedInput id="select-multiple-chip" label="Category" />}
                                                     renderValue={(selected) => (
                                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                         {selected.map((value) => (
@@ -323,7 +334,17 @@ function EditKeeperDetail() {
                                                 :
                                                 !apiData.img ?
                                                 <div>
+                                                {previewImage ? (
+                                                            <CardMedia
+                                                                className="profile"
+                                                                component="img"
+                                                                alt="profile"
+                                                                height="auto"
+                                                                src={previewImage}
+                                                            />)
+                                                :          
                                                     <ImageNotSupportedIcon className="edit-notImage" /> 
+                                                }
                                                     <Button
                                                         className="w-100 mt-2 upload-image"
                                                         component="label"

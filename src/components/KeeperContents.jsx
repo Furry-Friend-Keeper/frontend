@@ -4,6 +4,7 @@ import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import {Rating, Stack, Chip} from '@mui/material/';
 import StarIcon from '@mui/icons-material/Star';
 import { Pagination, Toggle, SelectPicker, TagPicker, InputNumber } from 'rsuite';
+import L from 'leaflet';
 
 function KeeperContents(props) {
     const { search } = props;
@@ -26,6 +27,45 @@ function KeeperContents(props) {
             const paginatedData = search.slice(startIndex, endIndex);
             setFilteredData(paginatedData);
         }, [activePage, limit, search]);
+
+        useEffect(() => {
+
+            // for(let data of search) {
+            //     console.log(data)
+            // }
+
+            // if ('geolocation' in navigator) {
+            //     navigator.geolocation.getCurrentPosition(
+            //       (position) => {
+            //         const { latitude, longitude } = position.coords;
+            //         const currentLocation = L.latLng(latitude, longitude);
+            //         console.log(currentLocation) 
+            //       },
+            //       (error) => {
+            //         console.error('Error getting current location:', error.message);
+            //       }
+            //     );
+            //   }
+            
+            // const instance = L.Routing.control({
+            //     waypoints: [
+            //       latlng,
+            //       currentLocation
+            //     ], 
+            //   })
+  
+            //   instance.on('routesfound', function(e) {
+            //     const routes = e.routes;
+            //     const summary = routes[0].summary;
+            //     // Get total distance of the route in meters
+            //     const distance = summary.totalDistance;
+            
+            //     // Optionally, convert the distance to kilometers and log it
+            //     const distanceInKm = (distance / 1000).toFixed(2);
+            //     console.log(`Distance: ${distance} meters (${distanceInKm} km)`);
+            // });
+  
+        },[search])
     
         const handlePageChange = (page) => {
             setActivePage(page);

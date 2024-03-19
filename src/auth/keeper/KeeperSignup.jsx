@@ -63,7 +63,7 @@ export default function BasicFormControl() {
   };
 
   const onSubmit = (data) => {
-    // console.log('Selected petCategories:', JSON.parse(data.petCategories));
+    console.log('Selected petCategories:', JSON.parse(data.petCategories));
     const address = {
       address: addressLabel,
       district: district,

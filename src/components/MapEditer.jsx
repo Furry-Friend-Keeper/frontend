@@ -17,8 +17,8 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
             attribution: '© OpenStreetMap contributors',
           }).addTo(map);
 
-        const currentMarker = L.marker(latlng, { draggable: editMap, icon: customIcon}).addTo(map);
-        currentMarker.bindPopup('You are here!');
+        const marker = L.marker(latlng, { draggable: editMap, icon: customIcon}).addTo(map);
+        marker.bindPopup('You are here!');
 
         const provider = new OpenStreetMapProvider();
 
@@ -27,14 +27,13 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
             if (results && results.length > 0) {
                 let label = results[0].label; 
                 getLocationLabel(label)
-                // currentMarker.getPopup().setContent("<b>Location:</b> " + label);
+                // marker.getPopup().setContent("<b>Location:</b> " + label);
                 updatePopupContent("<b>Location:</b> " + label)
             } else {
-                // currentMarker.getPopup().setContent("<b>Location:</b> Coordinates Only");
+                // marker.getPopup().setContent("<b>Location:</b> Coordinates Only");
                 updatePopupContent("<b>Location:</b> Coordinates Only")
             }
         };
-
 
         const searchControl = new GeoSearchControl({
           provider,
@@ -51,14 +50,14 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
         });
        if(editMap){
            map.addControl(searchControl);
-       } 
+       }        
 
-        currentMarker.on('dragend', (event) => {
+        marker.on('dragend', (event) => {
             const newLocation = event.target.getLatLng();
-            // currentMarker.bindPopup(`Latitude ${newLocation?.lat.toFixed(4)}, Longitude ${newLocation.lng.toFixed(4)}`)
+            // marker.bindPopup(`Latitude ${newLocation?.lat.toFixed(4)}, Longitude ${newLocation.lng.toFixed(4)}`)
             getLocation(`${newLocation.lat}, ${newLocation.lng}`)
             getLocationData(newLocation, (newContent) => {
-                currentMarker.getPopup().setContent(newContent)
+                marker.getPopup().setContent(newContent)
             })
           });
 
@@ -66,8 +65,8 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
           const { location } = event 
           getLocation(`${location.y}, ${location.x}`)
           getLocationLabel(location.label)
-        if (currentMarker) {
-            currentMarker.removeFrom(map); // Remove previous marker
+        if (marker) {
+            marker.removeFrom(map); // Remove previous marker
         }
         });
 
