@@ -88,7 +88,7 @@ function ScheduleModal() {
                 <div className="modal-body">
                   <div className="mb-3">
                   <label htmlFor="message" className="form-label">Booking Period</label>
-                      <DateRangePicker appearance="default" block shouldDisableDate={beforeToday()} ranges={Ranges}/>
+                      <DateRangePicker format="MM/dd/yyyy HH:mm" appearance="default" block shouldDisableDate={beforeToday()} ranges={Ranges}/>
                   </div>
                   <div className="mb-3">
                     <label htmlFor="petName" className="form-label">Pet Name (Optional)</label>

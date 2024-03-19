@@ -170,7 +170,7 @@ function Navbar() {
                         <Typography textAlign="left">
                           <Link
                             className="text-black"
-                            to={"/at3/owner/"}
+                            to={"/at3/owner/" + getId}
                           >
                             View profile
                           </Link>

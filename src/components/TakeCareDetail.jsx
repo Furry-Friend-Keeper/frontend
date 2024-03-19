@@ -101,13 +101,24 @@ const TakeCareDetail = () => {
               <Typography fontWeight="lg">2024-07-03</Typography>
             </div>
           </Sheet>
+
           <Box sx={{ display: 'flex', gap: 1.5, '& > button': { flex: 1 } }}>
-            <Button variant="outlined" color="neutral">
-              Cancel
-            </Button>
+            {/* {
+              getStatus === 'Cancelled' ?  ""
+              :
+              <Button variant="solid" color="neutral">
+                Cancel
+              </Button>
+            } */}
+            <Button variant="outlined" color="danger">
+                Cancel
+              </Button>
+            
             {/* {getStatus === "Pending" && <Button variant="outlined" color="primary"> Pending </Button>}
-            {getStatus === "Care" && <Button variant="soft" color="primary"> ฺBeing cared </Button>}
-            {getStatus === "Complete" && <Button variant="solid" color="primary"> Already get a pet </Button>} */}
+            {getStatus === "Cancelled" && <Button variant="solid" color="danger"> Cancelled </Button>}
+            {getStatus === "Scheduled" && <Button variant="soft" color="primary"> Being cared </Button>}
+            {getStatus === "Keeper Completed" && <Button variant="solid" color="primary"> Already get a pet </Button>}
+            {getStatus === "Completed" && <Button variant="solid" color="primary"> Completed </Button>} */}
             <Button variant="solid" color="primary"> Already get a pet </Button>
           </Box>
         </CardContent>
