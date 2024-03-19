@@ -1,9 +1,26 @@
-import React from 'react'
-import { Button, Checkbox, FormControlLabel, FormGroup, Rating, Stack, Chip  } from '@mui/material';
+import React, { useState, useEffect } from 'react'
+import { Checkbox, FormControlLabel, FormGroup, Rating, Stack, Chip  } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
+import { Button, ButtonGroup } from 'rsuite';
+import axios from 'axios';
 
 function KeeperCategory(props) {
-    const { petCategories, selected, handleCategory, selectRatingRange } = props;
+    const { selected, handleCategory, selectRatingRange, ratingScore, resetFilter } = props;
+    const [petCategories, setPetCategories] = useState([]);
+
+    useEffect(() => {
+      PetKeeperCategories()
+  },[])
+  
+  const PetKeeperCategories = async() => {
+      await axios.get(import.meta.env.VITE_KEEPER_CATEGORIES).then((res)=> {
+          const response = res.data;
+          setPetCategories(response)
+      }).catch((err) => {
+          console.log(err)
+      })
+  }
+
   return (
     <div className="filter-panel">
         <div className="pet-category">
@@ -26,28 +43,30 @@ function KeeperCategory(props) {
           <h3 className='py-4'>Points</h3>
           {/* <h3 className='mb-4'>Filter by</h3> */}
           <div className="rating-range">
-            <div className='d-flex mb-2 pointer' onClick={() => selectRatingRange(5)}>
+            <div className={`d-flex mb-2 pointer ${ratingScore === 5 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(5)}>
               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={5} size='medium' readOnly />
             </div>
-            <div className='d-flex mb-2 pointer' onClick={() => selectRatingRange(4)}>
+            <div className={`d-flex mb-2 pointer ${ratingScore === 4 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(4)}>
               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={4} size='medium' readOnly /> 
               <span className='my-auto ms-2'>more</span>
             </div>
-            <div className='d-flex mb-2 pointer' onClick={() => selectRatingRange(3)}>
+            <div className={`d-flex mb-2 pointer ${ratingScore === 3 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(3)}>
               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={3} size='medium' readOnly /> 
               <span className='my-auto ms-2'>more</span>
             </div>
-            <div className='d-flex mb-2 pointer' onClick={() => selectRatingRange(2)}>
+            <div className={`d-flex mb-2 pointer ${ratingScore === 2 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(2)}>
               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={2} size='medium' readOnly /> 
               <span className='my-auto ms-2'>more</span>
             </div>
-            <div className='d-flex mb-2 pointer' onClick={() => selectRatingRange(1)}>
+            <div className={`d-flex mb-2 pointer ${ratingScore === 1 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(1)}>
               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={1} size='medium' readOnly /> 
               <span className='my-auto ms-2'>more</span>
             </div>
           </div>
         </div>
-
+        <div className='clear-filter-button mt-4'>
+              <Button appearance="primary" className='w-100 fs-6' onClick={resetFilter} >Reset Filter</Button>
+        </div>
     </div>
   )
 }
