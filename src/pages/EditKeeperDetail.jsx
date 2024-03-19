@@ -12,6 +12,7 @@ import GalleryEditer from "../components/GalleryEditer";
 import moment from "moment";
 import ScheduleRequest from "../components/ScheduleRequest";
 import Overviews from "../components/Overviews";
+import DisableDate from "../components/DisableDate";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -254,6 +255,9 @@ function EditKeeperDetail() {
                     <div className="col-lg-12">
                         <ScheduleRequest />
                     </div>
+                    <div className="col-lg-12">
+                        <DisableDate />
+                    </div>
                         <div className="row mx-auto col-12 px-0">
                             <div className="col-lg-6">
                                 <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -273,6 +277,7 @@ function EditKeeperDetail() {
                                                             )}
                                             </Stack>
                                                 :
+                                                
                                             <FormControl sx={{ mb:5 ,width: "100%" }}>
                                                 <InputLabel id="demo-multiple-chip-label">Category</InputLabel>
                                                 <Select
@@ -296,10 +301,10 @@ function EditKeeperDetail() {
                                                         key={index}
                                                         value={category.name}
                                                         >
-                                                        {category.name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
+                                                    {category.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
                                             </FormControl>
                                             }
                                         </div>
