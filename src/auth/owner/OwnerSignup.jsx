@@ -233,7 +233,7 @@ export default function BasicFormControl() {
                             placeholder="Write your Petname here"
                             {...register("petName", { maxLength: {
                                 value: 200,
-                                message: "Contact must not more than 200 characters"
+                                message: "Pet name must not more than 200 characters"
                             }})}
                         />
                         {errors.petName && <small className="invalid-feedback">{errors.petName.message}</small>}
