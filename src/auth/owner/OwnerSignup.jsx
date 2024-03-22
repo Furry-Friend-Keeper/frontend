@@ -14,7 +14,6 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/bootstrap.css";
 import { useDispatch, useSelector } from 'react-redux'
 import { registerOwner } from "../../store/AuthAction";
 import { Visibility, VisibilityOff } from '@mui/icons-material';

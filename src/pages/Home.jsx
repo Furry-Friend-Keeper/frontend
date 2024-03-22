@@ -8,6 +8,7 @@ import SearchIcon from '@rsuite/icons/Search';
 import CloseIcon from '@rsuite/icons/Close';
 import Skeleton from '@mui/material/Skeleton';
 import { Box } from '@mui/material';
+import { Container } from "@mui/material";
 
 function Home() {  
 
@@ -127,10 +128,9 @@ const resetFilter = () => {
     {/* title */}
     <BannerPage />
     {/* Content */}
-      <div className="container-sm pt-3">
-          <div className="col-sm-12 col-md-9 col-lg-9 col-xl-8">
-        </div>
-        <div className="container p-2 mb-5 mt-3">
+    <Container maxWidth="lg" className='my-5'>
+      {/* <div className="container-sm pt-3"> */}
+        {/* <div className="container p-2 mb-5 mt-3"> */}
           <div className="keeper-panel">
             {/* KeeperCategory */}
               <KeeperCategory 
@@ -188,8 +188,10 @@ const resetFilter = () => {
                 {/* <PaginationButton /> */}
             </div>
           </div>
-        </div>
-      </div>
+        {/* </div> */}
+      {/* </div> */}
+    </Container>
+
     </>
   )
 }

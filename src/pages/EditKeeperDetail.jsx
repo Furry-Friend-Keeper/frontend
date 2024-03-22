@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { TextField, Button, styled, IconButton, Rating,Select, Chip, Stack, Card, CardMedia, Box, Snackbar, Alert, AlertTitle, OutlinedInput, MenuItem, FormControl, InputLabel  } from "@mui/material";
+import { Container, TextField, Button, styled, IconButton, Rating,Select, Chip, Stack, Card, CardMedia, Box, Snackbar, Alert, AlertTitle, OutlinedInput, MenuItem, FormControl, InputLabel  } from "@mui/material";
 // import { Select, Chip, Option } from "@mui/joy";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import { useForm } from "react-hook-form";
@@ -250,7 +250,8 @@ function EditKeeperDetail() {
                 </Alert>
             </Snackbar>
             <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData} /> 
-            <div className="container pb-lg-5">
+            {/* <div className="container pb-lg-5"> */}
+            <Container maxWidth="lg">
                 <div className="row mx-auto col-12">
                     <div className="col-lg-12">
                         <ScheduleRequest />
@@ -774,7 +775,8 @@ function EditKeeperDetail() {
                         isReview={isReview} 
                         isOwnerReview={null} />
                 </div>
-            </div>
+            </Container>
+            {/* </div> */}
         </>
     );
 }

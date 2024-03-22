@@ -64,7 +64,7 @@ function KeeperCategory(props) {
             </div>
           </div>
         </div>
-        <div className='clear-filter-button mt-4'>
+        <div className='blue-btn mt-4'>
               <Button appearance="primary" className='w-100 fs-6' onClick={resetFilter} >Reset Filter</Button>
         </div>
     </div>

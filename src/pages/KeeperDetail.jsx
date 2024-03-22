@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import { useNavigate, Navigate ,useParams } from "react-router-dom";
-import { Button, Chip, Stack, Card, CardMedia  } from "@mui/material"
+import { Button, Chip, Stack, Card, CardMedia, Container  } from "@mui/material"
 import { useForm, Controller } from "react-hook-form";
 import { Textarea } from "@mui/joy";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
@@ -114,8 +114,9 @@ function KeeperDetail() {
     return (
         <>
             <GallerySider id={id} galleryData={galleryData} />
-            <div className="container pb-lg-5">
-                <div className="row mx-auto col-11">
+            <Container maxWidth="lg">
+            {/* <div className="container pb-lg-5"> */}
+                <div className="row mx-auto col-12">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <Stack direction="row" spacing={1} className="pb-4">
@@ -246,7 +247,8 @@ function KeeperDetail() {
                     />
                     
                 </div>
-            </div>
+            {/* </div> */}
+            </Container>
         </>
     );
 }

@@ -2,7 +2,8 @@ import React from 'react'
 import Slider from "react-slick";
 import { useState, useEffect } from "react";
 import $ from "jquery";
-import axios from "axios";
+import { Container } from "@mui/material";
+
 
 function GallerySider(props) {
     const { galleryData, id } = props
@@ -90,8 +91,9 @@ function GallerySider(props) {
 
   return (
     <>
-    <div className="container pt-lg-4">
-        <div className="carousel col-md-11">
+    <Container maxWidth="lg">
+    {/* <div className="container pt-lg-4"> */}
+        <div className="carousel col-md-12">
             <div className="slider-for">
                 {galleryData.length > 0 && 
                 <Slider
@@ -117,7 +119,8 @@ function GallerySider(props) {
                 </Slider>}
             </div>
         </div>
-    </div>
+    {/* </div> */}
+    </Container>
     </>
   )
 }

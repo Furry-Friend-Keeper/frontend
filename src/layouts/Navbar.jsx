@@ -11,6 +11,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Container } from "@mui/material";
 
 function Navbar() {
   const settings = ["Profile", "Logout"];
@@ -38,7 +39,7 @@ function Navbar() {
   return (
     <>
       <nav className="navbar navbar-expand-lg">
-        <div className="container">
+          <Container maxWidth="lg">
           <Link className="navbar-brand navbar-head" to="/at3">
             <div className="d-flex align-items-center">
               <img
@@ -197,7 +198,7 @@ function Navbar() {
               )}
             </ul>
           </div>
-        </div>
+          </Container>
       </nav>
       <Outlet />
     </>

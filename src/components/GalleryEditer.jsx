@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, IconButton, styled, Snackbar, Alert, AlertTitle } from '@mui/material'
+import { Button, IconButton, styled, Snackbar, Alert, AlertTitle, Container } from '@mui/material'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -124,7 +124,9 @@ function GalleryEditer(props) {
             }
         </Alert>
     </Snackbar>
-    <div className="container pt-lg-4">
+    <Container maxWidth="lg">
+
+    {/* <div className="container pt-lg-4"> */}
         <div className="carousel col-md-12">
             <div className="m-4">
                 <div className="gallery-wrapper">
@@ -182,7 +184,8 @@ function GalleryEditer(props) {
                 </div>
             </div>
         </div>
-    </div>
+    {/* </div> */}
+    </Container>
     </>
   )
 }

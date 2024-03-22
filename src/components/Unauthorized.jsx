@@ -9,7 +9,11 @@ function Unauthorized() {
         <div className="text-center mt-5">   
             <h1>401 - Unauthorized</h1>
             <p>You do not have permission to view this page.</p>
-                <Link className='btn btn-outline-primary' to={`/at3/keeper-edit/${userInfo?.id}`}><span>BACK TO MY STORE</span></Link>
+              {userInfo.role === "PetKeeper" ?
+                <Link className='btn btn-outline-primary mt-4' to={`/at3/keeper-edit/${userInfo?.id}`}><span>BACK TO MY STORE</span></Link>
+                :
+                <Link className='btn btn-outline-primary mt-4' to={`/at3/owner/${userInfo?.id}`}><span>BACK TO MY PROFILE</span></Link>
+              }
         </div>
     </div>
   )

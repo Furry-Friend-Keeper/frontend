@@ -11,7 +11,7 @@ function ProtectedKeeperRoute({ element: Element }) {
     useEffect(() => {
       if (!accessToken) {
         // Redirect to login if not logged in
-          navigate('/at3/');
+          navigate('/at3/login');
       } else if (userInfo?.role !== "PetKeeper") { 
           navigate('/at3/')
       } else if (userInfo?.id !== parseInt(keeperId) && userInfo?.role === "PetKeeper") {
