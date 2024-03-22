@@ -6,12 +6,14 @@ import StarIcon from '@mui/icons-material/Star';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import { Rate } from "rsuite";
 
 function Overviews(props) {
     const {reviews, isOwnerReview, isReview} = props
 
     const {  userInfo, accessToken } = useSelector((state) => state.auth)  
     const [isEditComment, setIsEditComment] = useState(false);
+    const [hoverValue, setHoverValue] = useState(3);
 
     const EditOwnerComment = async (data) => {
         await axios
@@ -55,13 +57,14 @@ function Overviews(props) {
                     <span className="fs-3 rating-score me-2">
                         {reviews.reviewStars}
                     </span>
-                    <Rating
+                    <Rate value={reviews.reviewStars || 0} allowHalf size="md" color="yellow" readOnly/>
+                    {/* <Rating
                         name="read-only"
                         value={reviews.reviewStars || 0}
                         precision={0.5}
                         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                         readOnly
-                    />
+                    /> */}
                     <span className="ms-1">({reviews.reviews?.length})</span>
                 </div>
                 <div className="row justify-content-start mt-4">
@@ -82,24 +85,27 @@ function Overviews(props) {
                                 </div>
                                 <div className="col-md-4">
                                 {!isEditComment ? (
-                                    <Rating
-                                        name="read-only"
-                                        value={isOwnerReview?.stars}
-                                        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                        readOnly
-                                    />
+                                    <Rate value={isOwnerReview?.stars} allowHalf size="sm" color="yellow" readOnly/>
+                                    // <Rating
+                                    //     name="read-only"
+                                    //     value={isOwnerReview?.stars}
+                                    //     emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                    //     readOnly
+                                    // />
                                 ) : (
                                     <div className="rating">
                                         <Controller
                                             name="rating"
                                             control={control}
                                             defaultValue={isOwnerReview?.stars}
-                                            render={({ field }) => (
-                                            <Rating
-                                                {...field}
-                                                onChange={(_, value) => field.onChange(value)}
-                                            />
-                                            )}
+                                            render={({ field: { onChange, value } }) => (
+                                                <Rate
+                                                  value={value}
+                                                  onChange={(newValue) => onChange(newValue)}
+                                                  size="sm"
+                                                  color="yellow"
+                                                />
+                                              )}
                                         />
                                     </div>
                                 )}
@@ -116,6 +122,7 @@ function Overviews(props) {
                                                 <TextField
                                                     label="Edit Comment"
                                                     margin="normal"
+                                                    defaultValue={isOwnerReview?.comment}
                                                     fullWidth
                                                     {...register("comment", {
                                                         maxLength: {
@@ -207,12 +214,13 @@ function Overviews(props) {
                                             </span>
                                         </div>
                                         <div className="col-md-4">
-                                            <Rating
+                                            <Rate value={review?.stars} allowHalf size="sm" color="yellow" readOnly/>
+                                            {/* <Rating
                                                 name=""
                                                 value={review?.stars}
                                                 emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                                 readOnly
-                                            />
+                                            /> */}
                                             <div>
                                                 {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A")}
                                             </div>

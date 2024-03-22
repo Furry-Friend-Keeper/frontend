@@ -12,6 +12,7 @@ import { Modal, ButtonToolbar, Button, RadioGroup, Radio, Placeholder,  Form, In
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
+import { Rate } from "rsuite";
 
 function OwnerDetail() {
 
@@ -21,6 +22,7 @@ function OwnerDetail() {
     const [backdrop, setBackdrop] = useState('true');
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [hoverValue, setHoverValue] = useState();
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
         )
@@ -73,7 +75,7 @@ function OwnerDetail() {
                             <div className="profile-info-container">
                                 <div className="profile-info-title">
                                         <div className="row profile-info-image">
-                                            <SizedAvatar size="8" alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                            <SizedAvatar size="8" alt="Remy Sharp" src="/assets/banner_cat.jpg"/>
                                         </div>
                                     <div className="profile-info-title-detail">
                                         <h5>Ryan Reynolds</h5>
@@ -118,7 +120,8 @@ function OwnerDetail() {
                                         <div className="profile-favorite-content">
                                             <div className="favorite-name"><h5>Paws & Claws Veterinary Clinic</h5></div>
                                             <div className="favorite-star">
-                                                <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} />
+                                                <Rate defaultValue={3.5} allowHalf size="sm" color="yellow" readOnly/>
+                                                {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                                             </div>
                                             <div className="favorite-tags">
                                             <Stack direction="row" spacing={1} className="justify-content-center d-block">
@@ -161,7 +164,8 @@ function OwnerDetail() {
                                         <div className="profile-favorite-content">
                                             <div className="favorite-name"><h5>Paws & Claws Veterinary Clinic</h5></div>
                                             <div className="favorite-star">
-                                                <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} />
+                                                <Rate defaultValue={4} allowHalf size="sm" color="yellow" readOnly/>
+                                                {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                                             </div>
                                             <div className="favorite-tags">
                                             <Stack direction="row" spacing={1} className="justify-content-center d-block">

@@ -3,6 +3,7 @@ import { Checkbox, FormControlLabel, FormGroup, Rating, Stack, Chip  } from '@mu
 import StarIcon from '@mui/icons-material/Star';
 import { Button, ButtonGroup } from 'rsuite';
 import axios from 'axios';
+import { Rate } from "rsuite";
 
 function KeeperCategory(props) {
     const { selected, handleCategory, selectRatingRange, ratingScore, resetFilter } = props;
@@ -44,22 +45,27 @@ function KeeperCategory(props) {
           {/* <h3 className='mb-4'>Filter by</h3> */}
           <div className="rating-range">
             <div className={`d-flex mb-2 pointer ${ratingScore === 5 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(5)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={5} size='medium' readOnly />
+              <Rate defaultValue={5} size="sm" color="yellow" readOnly/>
+              {/* <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={5} size='medium' readOnly /> */}
             </div>
             <div className={`d-flex mb-2 pointer ${ratingScore === 4 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(4)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={4} size='medium' readOnly /> 
+              <Rate defaultValue={4} size="sm" color="yellow" readOnly/>
+              {/* <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={4} size='medium' readOnly />  */}
               <span className='my-auto ms-2'>more</span>
             </div>
             <div className={`d-flex mb-2 pointer ${ratingScore === 3 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(3)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={3} size='medium' readOnly /> 
+              <Rate defaultValue={3} size="sm" color="yellow" readOnly/>
+              {/* <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={3} size='medium' readOnly />  */}
               <span className='my-auto ms-2'>more</span>
             </div>
             <div className={`d-flex mb-2 pointer ${ratingScore === 2 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(2)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={2} size='medium' readOnly /> 
+              <Rate defaultValue={2} size="sm" color="yellow" readOnly/>
+              {/* <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={2} size='medium' readOnly />  */}
               <span className='my-auto ms-2'>more</span>
             </div>
             <div className={`d-flex mb-2 pointer ${ratingScore === 1 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(1)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={1} size='medium' readOnly /> 
+              <Rate defaultValue={1} size="sm" color="yellow" readOnly/>
+              {/* <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={1} size='medium' readOnly />  */}
               <span className='my-auto ms-2'>more</span>
             </div>
           </div>
