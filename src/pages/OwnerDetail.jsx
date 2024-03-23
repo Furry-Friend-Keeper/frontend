@@ -112,7 +112,8 @@ function OwnerDetail() {
                         <div className="bg-shadow rounded p-sm-3 p-lg-4 p-md-4 bg-white mt-4">
                             <div className="profile-favorite">
                                 <h4>My Favorite Keeper</h4>
-                                <div className="profile-favorite-list-all">
+                                {/* {keeperfavorite ? <keeperFavorite/> : <div className='text-center mt-3 fs-4'>DON'T HAVE FAVORITE KEEPER</div>} */}
+                                <div className="profile-favorite-list-all movedown-transition">
                                     <div className="profile-favorite-list">
                                         <div className="profile-favorite-imge">
                                             <img src="/assets/dog.jpg" alt="" />
@@ -121,6 +122,50 @@ function OwnerDetail() {
                                             <div className="favorite-name"><h5>Paws & Claws Veterinary Clinic</h5></div>
                                             <div className="favorite-star">
                                                 <Rate defaultValue={3.5} allowHalf size="sm" color="yellow" readOnly/>
+                                                {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
+                                            </div>
+                                            <div className="favorite-tags">
+                                            <Stack direction="row" spacing={1} className="justify-content-center d-block">
+                                                {/* {item.categories && 
+                                                    item.categories.map(
+                                                        (category, index) => 
+                                                        (
+                                                            <Chip
+                                                                className="keeper-tag"
+                                                                key={index}
+                                                                label={category}
+                                                                size='small'
+                                                            />
+                                                        )
+                                                    )
+                                                    } */}
+                                                    <Chip
+                                                                className="keeper-tag"
+                                                                label="Dog"
+                                                                size='small'
+                                                            />
+                                                    <Chip
+                                                                className="keeper-tag"
+                                                                label="Cat"
+                                                                size='small'
+                                                            />
+                                                    <Chip
+                                                                className="keeper-tag"
+                                                                label="Batman"
+                                                                size='small'
+                                                            />
+                                            </Stack>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="profile-favorite-list">
+                                        <div className="profile-favorite-imge">
+                                            <img src="/assets/dog.jpg" alt="" />
+                                        </div>
+                                        <div className="profile-favorite-content">
+                                            <div className="favorite-name"><h5>Paws & Claws Veterinary Clinic</h5></div>
+                                            <div className="favorite-star">
+                                                <Rate defaultValue={4} allowHalf size="sm" color="yellow" readOnly/>
                                                 {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                                             </div>
                                             <div className="favorite-tags">
@@ -211,7 +256,7 @@ function OwnerDetail() {
                 <div className=" mx-auto col-12 px-0">
                     <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                         <h3>Taking care of my pet</h3>
-                        <div className="p-4">
+                        <div className="p-4 movedown-transition">
                         {/* { Keeper ? <TakeCareDetail/> : <div className='text-center mt-3 fs-4'>DON'T HAVE AT THIS TIME</div>} */}
                         <TakeCareDetail/>
                         </div>
@@ -277,7 +322,7 @@ function OwnerDetail() {
                 </div>
             </div> */}
         </Container>
-        <Modal backdrop={backdrop} keyboard={false} open={open} size="sm" onClose={handleClose}>
+        <Modal className="position-absolute top-50 start-50 translate-middle mt-0" backdrop={backdrop} keyboard={false} open={open} size="sm" onClose={handleClose}>
         <Modal.Header>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>

@@ -1,72 +1,71 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
-import { MenuItem, InputLabel } from "@mui/material";
-import Stack from "@mui/material/Stack";
+import { Tooltip } from "@mui/material";
+import { styled } from "@mui/system";
+// import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";
-import moment from "moment";
-import { DateRangePicker } from "rsuite";
+// import moment from "moment";
+import { DateRangePicker, CheckPicker, Stack, Whisper } from "rsuite";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const DisableDate = () => {
     const days = [
-        { value: "sunday", label: "Sunday" },
-        { value: "monday", label: "Monday" },
-        { value: "tuesday", label: "Tuesday" },
-        { value: "wednesday", label: "Wednesday" },
-        { value: "thursday", label: "Thursday" },
-        { value: "friday", label: "Friday" },
-        { value: "saturday", label: "Saturday" },
-    ];
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ].map((item) => ({ label: item, value: item }));
 
     const [selectedDays, setSelectedDays] = useState([]);
 
-    const handleDaySelect = (event) => {
-        const {
-            target: { value },
-        } = event;
+    const handleDaySelect = (value) => {
         setSelectedDays(value);
-        value.forEach((selectedDay) => {
-            const selectedDate = moment().day(selectedDay).startOf("day");
-            console.log(selectedDate.format("YYYY-MM-DD HH:mm:ss"));
-        });
+        console.log(value);
     };
+
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
             <h3>Disable Date</h3>
             <form className="mt-3">
                 <div className="row">
                     <div className="col-6">
-                        <p className="pb-3">Permanently close</p>
-                        <Stack spacing={2} alignItems="flex-start">
-                            <Select
-                                placeholder="Select days"
-                                multiple
-                                value={selectedDays}
-                                onChange={handleDaySelect}
-                                sx={{ minWidth: 200 }}
+                        <Label className="pb-3">Permanently close</Label>
+                        <Tooltip title="วันที่ร้านปิดเป็นประจำ">
+                            <HelpOutlineIcon fontSize="small"/>
+                        </Tooltip>
+                        <div className="mt-2">
+                            <Stack
+                                spacing={10}
+                                direction="column"
+                                alignItems="flex-start"
                             >
-                                {days.map((day) => (
-                                    <MenuItem key={day.value} value={day.label}>
-                                        {day.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </Stack>
+                                <CheckPicker
+                                    data={days}
+                                    value={selectedDays}
+                                    onChange={handleDaySelect}
+                                    searchable={false}
+                                    style={{ width: 300 }}
+                                    placeholder="Select days"
+                                />
+                            </Stack>
+                        </div>
                     </div>
                     <div className="col-6">
-                        <div className="mt-3">
-                            <p className="pb-3">Temporary Close</p>
+                        <Label className="pb-3">Temporary Close</Label>
+                        <Tooltip title="วันและเวลาปิดร้านชั่วคราว">
+                            <HelpOutlineIcon fontSize="small"/>
+                        </Tooltip>
+                        <div className="mt-2">
                             <DateRangePicker format="MM/dd/yyyy HH:mm" />
                         </div>
                     </div>
                 </div>
                 <div className="d-flex justify-content-end ">
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        sx={{ mt: 3 }}
-                        
-                    >
+                    <Button type="submit" variant="contained" sx={{ mt: 3 }}>
                         Submit
                     </Button>
                 </div>
@@ -74,5 +73,16 @@ const DisableDate = () => {
         </div>
     );
 };
+const Label = styled(({ children, className }) => {
+    return <label className="mb-2">{children}</label>;
+})`
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+
+    &.invalid {
+        color: red;
+    }
+`;
 
 export default DisableDate;
