@@ -14,6 +14,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Map from "./Map.jsx"
 import { useDispatch, useSelector } from 'react-redux'
 import { registerKeeper } from "../../store/AuthAction";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 export default function BasicFormControl() {
   const [subdistrict, setSubdistrict] = useState("");
@@ -145,7 +146,7 @@ export default function BasicFormControl() {
             <Label>
               Keeper Name
               <Tooltip title="Name of store">
-                <span> (?)</span>
+                <HelpOutlineIcon fontSize="small"/>
               </Tooltip>
             </Label>
             <input

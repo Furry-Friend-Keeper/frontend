@@ -496,6 +496,8 @@ input[type=number] {
 
 .rating-active {
   background-color: var(--c-blue-white);
+  padding: 5px 2px;
+  /* transition: all 0.2s ease; */
 }
 
 .blue-btn button{
@@ -1196,3 +1198,19 @@ div.scrollmenu a:hover {
 .favorite-keeper {
   width: 300px;
 }
+
+.movedown-transition {
+  animation: transitionIn 0.6s;
+}
+
+@keyframes transitionIn {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0deg);
+  }
+}
+

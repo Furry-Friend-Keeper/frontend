@@ -19,7 +19,7 @@ function Home() {
   const [searchInput, setSearchInput] = useState('')
   const [selected, setSelected] = useState([]);
   const [sortAscending, setSortAscending] = useState("");
-  const [sortTitles, setSortTitles] = useState("Sort:Rating")
+  const [sortTitles, setSortTitles] = useState("Rating")
 
   const fetchData = async () => {
     try {
@@ -112,13 +112,13 @@ const selectRatingRange = (range) => {
   setRatingScore(range)
   const ratingRange = apiData.filter((val) => val.reviewStars >= range && selected.every((filter) =>  val.categories.includes(filter)))
   setSearch(ratingRange)
-  setSortTitles("Sort:Rating")
+  setSortTitles("Rating")
   setSortAscending("")
 }
 
 const resetFilter = () => {
   setSortAscending("")
-  setSortTitles("Sort:Rating")
+  setSortTitles("Rating")
   setRatingScore(0)
   setSelected([])
 }
