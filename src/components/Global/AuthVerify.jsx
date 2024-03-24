@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { refreshToken } from "../store/AuthAction";
-import { logout } from '../store/AuthSlice';
+import { refreshToken } from "../../store/AuthAction";
+import { logout } from '../../store/AuthSlice';
 
 const parseJwt = (token) => {
   try {

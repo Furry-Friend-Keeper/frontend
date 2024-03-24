@@ -3,15 +3,16 @@ import Avatar from '@mui/material/Avatar';
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Favorite from '../components/Favorite';
-import TakeCareDetail from '../components/TakeCareDetail';
+import Favorite from '../components/OwnerPage/Favorite';
+import TakeCareDetail from '../components/OwnerPage/TakeCareDetail';
 import { Container } from "@mui/material";
 import {Rating, Stack, Chip} from '@mui/material/';
 import StarIcon from '@mui/icons-material/Star';
-import { Modal, ButtonToolbar, Button, RadioGroup, Radio, Placeholder,  Form, Input } from 'rsuite';
+import { Modal, Button, RadioGroup, Radio, Placeholder,  Form, Input, Uploader, Message, Loader, useToaster } from 'rsuite';
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
+import AvatarIcon from '@rsuite/icons/legacy/Avatar';
 import { Rate } from "rsuite";
 
 function OwnerDetail() {
@@ -27,6 +28,9 @@ function OwnerDetail() {
         (state) => state.auth
         )
     const navigate = useNavigate();
+    const toaster = useToaster();
+    const [uploading, setUploading] = useState(false);
+    const [fileInfo, setFileInfo] = useState(null);
 
     const fetchData = async () => {
         try {
@@ -56,6 +60,14 @@ function OwnerDetail() {
       useEffect(() => {
         fetchData();
       }, []);
+
+    const previewFile = (file, callback) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          callback(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
 
 
     const SizedAvatar = styled(Avatar)`
@@ -87,22 +99,24 @@ function OwnerDetail() {
                                 <div className="profile-infomation">
                                     <h5>Information</h5>
                                     <div className="profile-infomation-detail">
-                                        <div className="profile-warpper">
-                                            <p>Email</p>
-                                            <p className="info">Test@gmail.com</p>
-                                        </div>   
-                                        <div className="profile-warpper">
-                                            <p>Phone</p>
-                                            <p className="info">0629999999</p>
-                                        </div>   
-                                        <div className="profile-warpper">
-                                            <p>Password</p>
-                                            <Button color="blue" appearance="ghost">Change Password</Button>
-                                        </div>   
-                                        <div className="profile-warpper">
-                                            <p>Pet Name</p>
-                                            <p className="info">Tong</p>
-                                        </div>   
+                                        <table>
+                                            <tr className="profile-warpper">
+                                                <td><p>Email</p></td>
+                                                <td><p className="info">Test@gmail.com</p></td>
+                                            </tr>
+                                            <tr className="profile-warpper">
+                                                <td><p>Phone</p></td>
+                                                <td><p className="info">0629999999</p></td>
+                                            </tr>
+                                            <tr className="profile-warpper">
+                                                <td><p>Password</p></td>
+                                                <td className="info"><Button color="blue" appearance="ghost">Change Password</Button></td>
+                                            </tr>
+                                            <tr className="profile-warpper">
+                                                <td><p>Pet Name</p></td>
+                                                <td><p className="info">Tong</p></td>
+                                            </tr>
+                                        </table>
                                     </div> 
                                 </div>
                             </div>
@@ -213,36 +227,36 @@ function OwnerDetail() {
                                                 {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                                             </div>
                                             <div className="favorite-tags">
-                                            <Stack direction="row" spacing={1} className="justify-content-center d-block">
-                                                {/* {item.categories && 
-                                                    item.categories.map(
-                                                        (category, index) => 
-                                                        (
-                                                            <Chip
-                                                                className="keeper-tag"
-                                                                key={index}
-                                                                label={category}
-                                                                size='small'
-                                                            />
+                                                <Stack direction="row" spacing={1} className="justify-content-center d-block">
+                                                    {/* {item.categories && 
+                                                        item.categories.map(
+                                                            (category, index) => 
+                                                            (
+                                                                <Chip
+                                                                    className="keeper-tag"
+                                                                    key={index}
+                                                                    label={category}
+                                                                    size='small'
+                                                                />
+                                                            )
                                                         )
-                                                    )
-                                                    } */}
-                                                    <Chip
-                                                                className="keeper-tag"
-                                                                label="Dog"
-                                                                size='small'
-                                                            />
-                                                    <Chip
-                                                                className="keeper-tag"
-                                                                label="Cat"
-                                                                size='small'
-                                                            />
-                                                    <Chip
-                                                                className="keeper-tag"
-                                                                label="Batman"
-                                                                size='small'
-                                                            />
-                                            </Stack>
+                                                        } */}
+                                                        <Chip
+                                                                    className="keeper-tag"
+                                                                    label="Dog"
+                                                                    size='small'
+                                                                />
+                                                        <Chip
+                                                                    className="keeper-tag"
+                                                                    label="Cat"
+                                                                    size='small'
+                                                                />
+                                                        <Chip
+                                                                    className="keeper-tag"
+                                                                    label="Batman"
+                                                                    size='small'
+                                                                />
+                                                </Stack>
                                             </div>
                                         </div>
                                     </div>
@@ -331,12 +345,44 @@ function OwnerDetail() {
           {/* <Placeholder.Paragraph /> */}
             <div className="modal-body">
                 <div className="mb-3">
-                <label htmlFor="firtName" className="form-label">First Name</label>
-                <input type="text" className="form-control" id="firtName" name="firtName" />
+                    <Uploader
+                        fileListVisible={false}
+                        listType="picture"
+                        // action="//jsonplaceholder.typicode.com/posts/"
+                        onUpload={file => {
+                            setUploading(true);
+                            previewFile(file.blobFile, value => {
+                            setFileInfo(value);
+                            });
+                        }}
+                        onSuccess={(response, file) => {
+                            setUploading(false);
+                            toaster.push(<Message type="success">Uploaded successfully</Message>);
+                            console.log(response);
+                        }}
+                        onError={() => {
+                            setFileInfo(null);
+                            setUploading(false);
+                            toaster.push(<Message type="error">Upload failed</Message>);
+                        }}
+                        >
+                        <button style={{ width: 150, height: 150 }}>
+                            {uploading && <Loader backdrop center />}
+                            {fileInfo ? (
+                            <img src={fileInfo} width="100%" height="100%" />
+                            ) : (
+                            <AvatarIcon style={{ fontSize: 80 }} />
+                            )}
+                        </button>
+                    </Uploader>
                 </div>
                 <div className="mb-3">
-                <label htmlFor="lastName" className="form-label">Last Name</label>
-                <input type="text" className="form-control" id="lastName" name="lastName" />
+                    <label htmlFor="firtName" className="form-label">First Name</label>
+                    <input type="text" className="form-control" id="firtName" name="firtName" />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="lastName" className="form-label">Last Name</label>
+                    <input type="text" className="form-control" id="lastName" name="lastName" />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="phone" className="form-label">Phone</label>
@@ -356,8 +402,8 @@ function OwnerDetail() {
                         />
                 </div>
                 <div className="mb-3">
-                <label htmlFor="petName" className="form-label">Pet Name</label>
-                <input type="text" className="form-control" id="petName" name="petName" />
+                    <label htmlFor="petName" className="form-label">Pet Name</label>
+                    <input type="text" className="form-control" id="petName" name="petName" />
                 </div>
             </div>
         </Modal.Body>

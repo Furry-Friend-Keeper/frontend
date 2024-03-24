@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import { useNavigate ,Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Unauthorized from "../components/Unauthorized.jsx"
+import Unauthorized from "../Global/Unauthorized.jsx"
 
 function ProtectedKeeperRoute({ element: Element }) {
     const { loading, userInfo, error, success, accessToken } = useSelector((state) => state.auth)  
