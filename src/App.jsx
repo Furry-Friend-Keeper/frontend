@@ -11,12 +11,12 @@ import Navbar from './layouts/Navbar.jsx';
 import OwnerDetail from './pages/OwnerDetail.jsx';
 import EditKeeperDetail from './pages/EditKeeperDetail.jsx';
 import About from './pages/About.jsx';
-import ProtectedKeeperRoute from './components/ProtectedKeeperRoute.jsx';
-import AuthVerify from './components/AuthVerify.jsx';
+import ProtectedKeeperRoute from './components/EditKeeperPage/ProtectedKeeperRoute';
+import AuthVerify from './components/Global/AuthVerify.jsx';
 import Footer from './layouts/Footer.jsx';
-import Unauthorized from './components/Unauthorized.jsx';
-import NotFound from './components/NotFound.jsx';
-import ScrollTop from './components/ScrollTop.jsx';
+import Unauthorized from './components/Global/Unauthorized.jsx';
+import NotFound from './components/Global/NotFound.jsx';
+import ScrollTop from './components/Global/ScrollTop.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",

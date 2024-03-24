@@ -7,11 +7,11 @@ import { useForm, Controller } from "react-hook-form";
 import { Textarea } from "@mui/joy";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
-import MapContainer from "../components/MapContainer";
-import GallerySider from "../components/GallerySider";
+import MapContainer from "../components/KeeperPage/MapContainer";
+import GallerySider from "../components/KeeperPage/GallerySider";
 import { useSelector } from "react-redux";
-import Overviews from "../components/Overviews";
-import ScheduleModal from "../components/ScheduleModal";
+import Overviews from "../components/Global/Overviews";
+import ScheduleModal from "../components/KeeperPage/ScheduleModal";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});

@@ -139,7 +139,7 @@ p {
 
 } */
 
-@media (max-width: 1550px) {
+@media (max-width: 600px) {
 
   .rs-picker-popup .rs-calendar:first-child {
     border-right: none !important;
@@ -148,7 +148,6 @@ p {
     margin: 0 !important;
   }
 
-  /* Custom CSS to force the DateRangePicker popup into a column layout */
   .rs-picker-daterange-calendar-group {
     display: flex;
     flex-direction: column;
@@ -159,6 +158,10 @@ p {
   .rs-picker-daterange-panel {
     min-width: 0 !important;
   }
+}
+
+.css-1pqm26d-MuiAvatar-img {
+  width: auto !important;
 }
 
 
@@ -484,11 +487,15 @@ input[type=number] {
   color : white !important;
 }
 
+
+.rating-icon {
+  background-color: inherit;
+  padding: 5px 2px;
+  transition: background-color 0.3s ease-in;
+}
+
 .rating-active {
   background-color: var(--c-blue-white);
-  border-radius: 10px;
-  padding: 5px 2px;
-  transition: all 0.2s ease;
 }
 
 .blue-btn button{
@@ -625,7 +632,29 @@ input[type=number] {
   & h5 {
     margin: 20px 0 15px 0;
   }
-  & .profile-infomation-detail > .profile-warpper{
+
+  & .profile-infomation-detail table{
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0 15px; /* horizontal and vertical spacing */
+    border-collapse: separate;
+
+    & td {
+      max-width: 200px; /* adjust as needed */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    & p {
+      margin: 0;
+    }
+
+    & .info {
+      color: #141b22;
+      text-align: right;
+    }
+  }
+  /* & .profile-infomation-detail > .profile-warpper{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -638,7 +667,7 @@ input[type=number] {
     & .info {
       color: #141b22;
     }
-  }
+  } */
 }
 
 .profile-favorite {

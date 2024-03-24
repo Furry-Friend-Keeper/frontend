@@ -55,6 +55,8 @@ function MapContainer(props) {
               }       
             })
 
+          //   console.log(instance)
+
           //   instance.on('routesfound', function(e) {
           //     const routes = e.routes;
           //     const summary = routes[0].summary;
@@ -63,7 +65,7 @@ function MapContainer(props) {
           
           //     // Optionally, convert the distance to kilometers and log it
           //     const distanceInKm = (distance / 1000).toFixed(2);
-          //     console.log(`Distance: ${distance} meters (${distanceInKm} km)`);
+          //     console.log(`Distance: ${distance} meters (${distance} km)`);
           // });
 
           instance.addTo(map)

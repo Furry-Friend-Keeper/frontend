@@ -1,29 +1,30 @@
 import { useState, useEffect } from "react";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AddIcon from "@mui/icons-material/Add";
-import { Modal, Button, Placeholder, DateRangePicker } from "rsuite";
+import { Modal, Button, Placeholder, DateRangePicker, Form } from "rsuite";
 import { Button as ButtonMui } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import axios from "axios";
-import { TagPicker } from "rsuite";
+import { TagPicker, SelectPicker } from "rsuite";
 import PhoneInput from "react-phone-input-2";
 
-function ScheduleModal(keeperId) {
+function ScheduleModal(props) {
+    const { keeperId } = props
     const { beforeToday } = DateRangePicker;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
     const [show, setShow] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
-    const [formData, setFormData] = useState({
-        message: "",
-        startdate: new Date(),
-        enddate: new Date(),
-        ownerPhone: "",
-        petName: "",
-    });
+    // const [formData, setFormData] = useState({
+    //     message: "",
+    //     startdate: new Date(),
+    //     enddate: new Date(),
+    //     ownerPhone: "",
+    //     petName: "",
+    // });
 
     const {
       register,
@@ -37,6 +38,7 @@ function ScheduleModal(keeperId) {
     const handleClose = () => setShow(false);
 
     const [petCategories, setPetCategories] = useState([]);
+    const [petCategoriesRaw, setPetCategoriesRaw] = useState([]);
 
     const Ranges = [
       {
@@ -59,24 +61,37 @@ function ScheduleModal(keeperId) {
         PetKeeperCategories();
     }, []);
 
-    const onSubmit = (data) => {
-      const phoneNumber = (data.phone).replace(/^66/, "0") 
-      if (data.petCategories !== "") {
-        data.petCategories = JSON.parse(data.petCategories);
-      }
-      const result = {
-        startDate: data.startDate,
-        endDate: data.endDate,
-        phone: phoneNumber,
-        categoryId: data.petCategories,
-        message: data.message,
-        petName: data.petName,
-        statusId: "1",
-        petKeeperId: keeperId,
-        petOwnerId: userInfo.id,
-      };
-  
-      dispatch(registerKeeper(result))
+    const onSubmit = async (data) => {
+        const phoneNumber = (data.phone).replace(/^66/, "0").trim()
+
+        for(const category of petCategoriesRaw) {
+            if(data.tags === category.name) {
+                data.tags = category.id
+            }
+        }
+
+        console.log(data)
+        
+        const result = {
+            startDate: moment(data.dateRange[0]).format(),
+            endDate: moment(data.dateRange[1]).format(),
+            ownerPhone: phoneNumber,
+            categoryId: data.tags,
+            message: data.message,
+            petName: data.petName,
+            statusId: "1",
+            petKeeperId: parseInt(keeperId),
+            petOwnerId: userInfo?.id,
+        };
+        
+        console.log(result)
+      await axios.post(import.meta.env.VITE_APPOINTMENT_CREATE, result, {
+        headers: { 'Authorization': 'Bearer ' + accessToken}
+        }).then((res) => {
+            handleClose()
+        })
+
+      
       // SignUpForm(data);
     };
 
@@ -91,15 +106,16 @@ function ScheduleModal(keeperId) {
                     value: item,
                 }));
                 setPetCategories(rsite_data);
+                setPetCategoriesRaw(response)
             })
             .catch((err) => {
                 console.log(err);
             });
     };
 
-    const handleChange = (value, name) => {
-        setFormData({ ...formData, [name]: value });
-    };
+    // const handleChange = (value, name) => {
+    //     setFormData({ ...formData, [name]: value });
+    // };
 
     // const handleSubmit = async () => {
     //     // Here, send the formData to your backend
@@ -161,7 +177,7 @@ function ScheduleModal(keeperId) {
                     <Modal.Title className="fs-3 fw-bold">Schedule</Modal.Title>
                 </Modal.Header>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                     <Modal.Body>
                         {/* <Placeholder.Paragraph /> */}
                         <div className="modal-body">
@@ -169,22 +185,49 @@ function ScheduleModal(keeperId) {
                                 <label htmlFor="message" className="form-label">
                                     Booking Period
                                 </label>
-                                <DateRangePicker
-                                    format="MM/dd/yyyy HH:mm"
-                                    appearance="default"
-                                    block
-                                    shouldDisableDate={beforeToday()}
-                                    ranges={Ranges}
+                                <Controller
+                                    name="dateRange"
+                                    control={control}
+                                    render={({ field }) => (
+                                    <DateRangePicker
+                                        {...field}
+                                        format="MM/dd/yyyy HH:mm"
+                                        appearance="default"
+                                        block
+                                        shouldDisableDate={beforeToday()}
+                                        ranges={Ranges}
+                                        onChange={(value) => {
+                                        field.onChange(value);
+                                        }}
+                                    />
+                                    )}
                                 />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="petName" className="form-label">
+                                <label htmlFor="petCategory" className="form-label">
                                     Pet Category
                                 </label>
-                                <TagPicker
-                                    data={petCategories}
-                                    className="form-control"
-                                    {...register("petCategories")}
+                                <Controller
+                                    name="tags"
+                                    control={control}
+                                    render={({ field }) => (
+                                    <SelectPicker
+                                        {...field}
+                                        data={petCategories}
+                                        searchable={false}
+                                        onChange={(value) => {
+                                            field.onChange(value);
+                                            }}
+                                        placeholder="Select pet category..."
+                                        block
+                                    />
+                                    // <TagPicker
+                                    //     {...field}
+                                    //     data={petCategories}
+                                    //     className="form-control"
+                                    //     onChange={field.onChange}
+                                    // />
+                                    )}
                                 />
                             </div>
                             <div className="mb-3">
@@ -196,8 +239,8 @@ function ScheduleModal(keeperId) {
                                     className="form-control"
                                     id="petName"
                                     name="petName"
-                                    value={formData.petName}
-                                    onChange={handleChange}
+                                    // value={formData.petName}
+                                    // onChange={handleChange}
                                     {...register("petName", { maxLength: {
                                       value: 200,
                                       message: "Pet name must not more than 200 characters"
@@ -212,8 +255,8 @@ function ScheduleModal(keeperId) {
                                     className="form-control"
                                     id="message"
                                     name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
+                                    // value={formData.message}
+                                    // onChange={handleChange}
                                     {...register("message", { maxLength: {
                                       value: 200,
                                       message: "Message must not more than 200 characters"
@@ -265,6 +308,7 @@ function ScheduleModal(keeperId) {
                                     inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
                                     inputStyle={{ width: "100%"}}
                                     specialLabel={""}
+                                    disableDropdown={true}
                                     country={"th"}
                                     countryCodeEditable={false}
                                     placeholder="Enter phone number"
@@ -275,14 +319,14 @@ function ScheduleModal(keeperId) {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={handleClose} type="submit" appearance="primary">
+                        <Button type="submit" appearance="primary">
                             Ok
                         </Button>
                         <Button onClick={handleClose} appearance="subtle">
                             Cancel
                         </Button>
                     </Modal.Footer>
-                </form>
+                </Form>
             </Modal>
             {/* <Modal show={show} onHide={handleClose}>
         <Modal.Header>

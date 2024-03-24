@@ -10,6 +10,8 @@ import { logout, resetStore } from "../store/AuthSlice";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from '@mui/icons-material/Login';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Container } from "@mui/material";
 
@@ -77,7 +79,7 @@ function Navbar() {
               }
               aria-labelledby="dropdownMenuButton"
             >
-              {isLogin && getRole === "PetKeeper" && (
+              {isLogin && getRole === "PetKeeper" ? (
                 <li>
                   <a
                     className="dropdown-item"
@@ -85,6 +87,25 @@ function Navbar() {
                   >
                     <StoreOutlinedIcon className="profile-icon" />
                     My Shop
+                  </a>
+                </li>
+              ): 
+              isLogin && getRole === "Owner" && 
+                <li>
+                  <a
+                    className="dropdown-item"
+                    href={`/at3/owner/${getId}`}
+                  >
+                    <PersonIcon className="profile-icon" />
+                    View profile
+                  </a>
+                </li>
+              }
+              {!isLogin && (
+                <li>
+                  <a className="dropdown-item" href="/at3/login">
+                    <LoginIcon className="profile-icon" />
+                    Login
                   </a>
                 </li>
               )}
@@ -99,14 +120,8 @@ function Navbar() {
               )}
               {!isLogin && (
                 <li>
-                  <a className="dropdown-item" href="/at3/login">
-                    Login
-                  </a>
-                </li>
-              )}
-              {!isLogin && (
-                <li>
-                  <a className="dropdown-item" href="/at3/signup">
+                  <a className="dropdown-item border-1 border-top" href="/at3/signup">
+                    <SubscriptionsIcon className="profile-icon"  />
                     Sign up
                   </a>
                 </li>

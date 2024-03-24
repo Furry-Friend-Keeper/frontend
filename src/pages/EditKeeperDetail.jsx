@@ -7,12 +7,12 @@ import { useForm } from "react-hook-form";
 import ImageIcon from '@mui/icons-material/Image';
 import { useSelector } from "react-redux";
 import { Navigate ,useParams } from "react-router-dom";
-import MapEditer from "../components/MapEditer";
-import GalleryEditer from "../components/GalleryEditer";
+import MapEditer from "../components/EditKeeperPage/MapEditer";
+import GalleryEditer from "../components/EditKeeperPage/GalleryEditer";
 import moment from "moment";
-import ScheduleRequest from "../components/ScheduleRequest";
-import Overviews from "../components/Overviews";
-import DisableDate from "../components/DisableDate";
+import ScheduleRequest from "../components/EditKeeperPage/ScheduleRequest";
+import Overviews from "../components/Global/Overviews";
+import DisableDate from "../components/EditKeeperPage/DisableDate";
 
 function EditKeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -72,6 +72,7 @@ function EditKeeperDetail() {
             console.error("Error fetching data:", error);
         }
     };
+    
     const PetKeeperCategories = async () => {
         await axios
           .get(import.meta.env.VITE_KEEPER_CATEGORIES)
@@ -254,7 +255,7 @@ function EditKeeperDetail() {
             <Container maxWidth="lg">
                 <div className="row mx-auto col-12">
                     <div className="col-lg-12">
-                        <ScheduleRequest />
+                        <ScheduleRequest keeperId={keeperId} />
                     </div>
                     <div className="col-lg-12">
                         <DisableDate />
@@ -286,6 +287,7 @@ function EditKeeperDetail() {
                                                     id="demo-multiple-chip"
                                                     label="Category"
                                                     multiple
+                                                    required
                                                     value={defaultCategories}
                                                     onChange={handleChange}
                                                     input={<OutlinedInput id="select-multiple-chip" label="Category" />}
@@ -773,7 +775,8 @@ function EditKeeperDetail() {
                     <Overviews  
                         reviews={apiData} 
                         isReview={isReview} 
-                        isOwnerReview={null} />
+                        isOwnerReview={null}
+                        />
                 </div>
             </Container>
             {/* </div> */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Rating from "@mui/material/Rating";
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Button, Box } from "@mui/material";
@@ -8,7 +8,13 @@ import axios from "axios";
 import moment from "moment";
 
 function Overviews(props) {
-    const {reviews, isOwnerReview, isReview} = props
+    const {reviews, isOwnerReview, isReview } = props
+    const [reviewsData, setReviewsData] = useState(isOwnerReview)
+
+    useEffect(() => {
+        setReviewsData(isOwnerReview)
+        console.log("test")
+    },[isOwnerReview])
 
     const {  userInfo, accessToken } = useSelector((state) => state.auth)  
     const [isEditComment, setIsEditComment] = useState(false);
@@ -18,11 +24,12 @@ function Overviews(props) {
         .patch(import.meta.env.VITE_OWNER_REVIEWS_EDIT + data.reviewId, data, {
             headers: { 'Authorization': 'Bearer ' + accessToken}
         })
-        .then((res) => {
-            const response = res.data;
-            setApiData({ ...apiData, ...data });
+        .then(() => {
+            // console.log(reviewsData)
+            // console.log({...reviewsData, ...data})
+            data.date = moment(data.date).unix();
+            setReviewsData({...reviewsData, ...data})
             setIsEditComment(false);
-            fetchData()
         })
         .catch((err) => {
             console.log(err);
@@ -30,12 +37,11 @@ function Overviews(props) {
     }
     const onEditSubmit = (data) => {
         const result = {
-            reviewId: data.reviewId,
+            reviewId: parseInt(data.reviewId),
             comment: data.comment,
             star: data.rating,
             date: moment().format()
         };
-        console.log(result)
         EditOwnerComment(result)
     }
 
@@ -65,18 +71,18 @@ function Overviews(props) {
                     <span className="ms-1">({reviews.reviews?.length})</span>
                 </div>
                 <div className="row justify-content-start mt-4">
-                    { isOwnerReview !== null &&
+                    { reviewsData !== null &&
                     <div className="mb-3">
                         <p>
                             My Review
                         </p>
                     <form onSubmit={handleSubmit(onEditSubmit)}>
-                        <input type="hidden" {...register("reviewId")}/>
+                        <input type="hidden" {...register("reviewId")} defaultValue={reviewsData?.reviewId}/>
                         <div className="d-flex align-items-center mt-4">
                                 <div className="col-md-3">
                                     <span className="ps-4">
                                         {
-                                            isOwnerReview?.petownerFirstname
+                                            reviewsData?.petownerFirstname
                                         }
                                     </span>
                                 </div>
@@ -84,7 +90,7 @@ function Overviews(props) {
                                 {!isEditComment ? (
                                     <Rating
                                         name="read-only"
-                                        value={isOwnerReview?.stars}
+                                        value={reviewsData?.stars}
                                         emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                                         readOnly
                                     />
@@ -93,7 +99,7 @@ function Overviews(props) {
                                         <Controller
                                             name="rating"
                                             control={control}
-                                            defaultValue={isOwnerReview?.stars}
+                                            defaultValue={reviewsData?.stars}
                                             render={({ field }) => (
                                             <Rating
                                                 {...field}
@@ -104,18 +110,19 @@ function Overviews(props) {
                                     </div>
                                 )}
                                     <div>
-                                        {moment.unix(isOwnerReview?.date).format("DD/MM/YYYY, h:mm:ss A")}
+                                        {moment.unix(reviewsData?.date).format("DD/MM/YYYY, h:mm:ss A")}
                                     </div>
                                 </div>
                                 <div className="col-md-4 text-break">
                                             {!isEditComment ? (
                                                 <div>
-                                                    <span>{isOwnerReview?.comment}</span>
+                                                    <span>{reviewsData?.comment}</span>
                                                 </div>
                                             ) : (
                                                 <TextField
                                                     label="Edit Comment"
                                                     margin="normal"
+                                                    defaultValue={reviewsData?.comment}
                                                     fullWidth
                                                     {...register("comment", {
                                                         maxLength: {
@@ -167,7 +174,7 @@ function Overviews(props) {
                                             )}
                                         </div>
                                         <div className="col-md-1">
-                                            {userInfo.id === isOwnerReview?.petownerId &&
+                                            {userInfo.id === reviewsData?.petownerId &&
                                                 <span className="fs-3 flex">
                                                     <i
                                                         className="bi bi-pencil-square fs-3 ju"

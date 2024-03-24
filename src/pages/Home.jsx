@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import BannerPage from '../components/BannerPage';
-import KeeperCategory from '../components/KeeperCategory';
-import KeeperContents from '../components/KeeperContents';
+import BannerPage from '../components/HomePage/BannerPage';
+import KeeperCategory from '../components/HomePage/KeeperCategory';
+import KeeperContents from '../components/HomePage/KeeperContents';
 import axios from 'axios';
 import { Input, InputGroup, Dropdown } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';

@@ -41,27 +41,13 @@ function KeeperCategory(props) {
         </div>  
         <div className="pet-rating">
           <h3 className='py-4'>Points</h3>
-          {/* <h3 className='mb-4'>Filter by</h3> */}
           <div className="rating-range">
-            <div className={`d-flex mb-2 pointer ${ratingScore === 5 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(5)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={5} size='medium' readOnly />
-            </div>
-            <div className={`d-flex mb-2 pointer ${ratingScore === 4 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(4)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={4} size='medium' readOnly /> 
-              <span className='my-auto ms-2'>more</span>
-            </div>
-            <div className={`d-flex mb-2 pointer ${ratingScore === 3 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(3)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={3} size='medium' readOnly /> 
-              <span className='my-auto ms-2'>more</span>
-            </div>
-            <div className={`d-flex mb-2 pointer ${ratingScore === 2 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(2)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={2} size='medium' readOnly /> 
-              <span className='my-auto ms-2'>more</span>
-            </div>
-            <div className={`d-flex mb-2 pointer ${ratingScore === 1 ? 'rating-active' : ""}`} onClick={() => selectRatingRange(1)}>
-              <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={1} size='medium' readOnly /> 
-              <span className='my-auto ms-2'>more</span>
-            </div>
+            {Array.from({ length: 5}, (_, i) => 5 - i).map(value => (
+               <div key={value} className={`d-flex mb-2 rating-icon pointer ${ratingScore === value ? 'rating-active' : ""}`} onClick={() => selectRatingRange(value)}>
+               <Rating emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} defaultValue={value} size='medium' readOnly />
+               {value !== 5 && <span className='my-auto ms-2'>more</span>}
+             </div>
+            ))}
           </div>
         </div>
         <div className='blue-btn mt-4'>

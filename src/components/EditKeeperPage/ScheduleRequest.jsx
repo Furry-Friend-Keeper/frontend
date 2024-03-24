@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Table, Button, IconButton } from 'rsuite';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 const { Column, HeaderCell, Cell } = Table;
 
 const data = [
@@ -116,8 +118,25 @@ const renderRowExpanded = rowData => {
 };
 
 
-function ScheduleRequest() {
+function ScheduleRequest(props) {
+  const { keeperId } = props;
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [Requests, setRequests] = useState([])
+  const { loading, userInfo, error, success, accessToken } = useSelector(
+    (state) => state.auth
+  )  
+
+  const fetchRequests = async () => {
+    await axios.get(import.meta.env.VITE_APPOINTMENT_KEEPER_ID + "/" + keeperId, {
+      headers: { 'Authorization' : 'Bearer ' + accessToken}
+    }).then((response) => {
+      setRequests(response.data)
+    })
+  }
+
+  useEffect(() => {
+    fetchRequests()
+  },[])
 
   const handleExpanded = (rowData, dataKey) => {
     let open = false;
