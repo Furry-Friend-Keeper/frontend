@@ -16,10 +16,10 @@ import { Rate } from "rsuite";
 function KeeperCategory(props) {
     const {
         selected,
-        handleCategory,
-        selectRatingRange,
-        ratingScore,
-        resetFilter,
+        handlecategory,
+        selectratingrange,
+        ratingscore,
+        resetfilter,
     } = props;
     const [petCategories, setPetCategories] = useState([]);
 
@@ -61,12 +61,11 @@ function KeeperCategory(props) {
                                             color="default"
                                             checkedIcon={<BpCheckedIcon />}
                                             icon={<BpIcon />}
-                                            {...props}
                                             checked={selected.includes(
                                                 category.name
                                             )}
                                             onChange={() =>
-                                                handleCategory(category.name)
+                                                handlecategory(category.name)
                                             }
                                         />
                                     }
@@ -83,9 +82,9 @@ function KeeperCategory(props) {
                 <div className="rating-range">
                     <div
                         className={`d-flex mb-2 pointer ${
-                            ratingScore === 5 ? "rating-active" : ""
+                            ratingscore === 5 ? "rating-active" : ""
                         }`}
-                        onClick={() => selectRatingRange(5)}
+                        onClick={() => selectratingrange(5)}
                     >
                         <Rate
                             defaultValue={5}
@@ -97,9 +96,9 @@ function KeeperCategory(props) {
                     </div>
                     <div
                         className={`d-flex mb-2 pointer ${
-                            ratingScore === 4 ? "rating-active" : ""
+                            ratingscore === 4 ? "rating-active" : ""
                         }`}
-                        onClick={() => selectRatingRange(4)}
+                        onClick={() => selectratingrange(4)}
                     >
                         <Rate
                             defaultValue={4}
@@ -112,9 +111,9 @@ function KeeperCategory(props) {
                     </div>
                     <div
                         className={`d-flex mb-2 pointer ${
-                            ratingScore === 3 ? "rating-active" : ""
+                            ratingscore === 3 ? "rating-active" : ""
                         }`}
-                        onClick={() => selectRatingRange(3)}
+                        onClick={() => selectratingrange(3)}
                     >
                         <Rate
                             defaultValue={3}
@@ -127,9 +126,9 @@ function KeeperCategory(props) {
                     </div>
                     <div
                         className={`d-flex mb-2 pointer ${
-                            ratingScore === 2 ? "rating-active" : ""
+                            ratingscore === 2 ? "rating-active" : ""
                         }`}
-                        onClick={() => selectRatingRange(2)}
+                        onClick={() => selectratingrange(2)}
                     >
                         <Rate
                             defaultValue={2}
@@ -142,9 +141,9 @@ function KeeperCategory(props) {
                     </div>
                     <div
                         className={`d-flex mb-2 pointer ${
-                            ratingScore === 1 ? "rating-active" : ""
+                            ratingscore === 1 ? "rating-active" : ""
                         }`}
-                        onClick={() => selectRatingRange(1)}
+                        onClick={() => selectratingrange(1)}
                     >
                         <Rate
                             defaultValue={1}
@@ -161,7 +160,7 @@ function KeeperCategory(props) {
                 <Button
                     appearance="primary"
                     className="w-100 fs-6"
-                    onClick={resetFilter}
+                    onClick={resetfilter}
                 >
                     Reset Filter
                 </Button>

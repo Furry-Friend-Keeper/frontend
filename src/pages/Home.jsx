@@ -135,10 +135,10 @@ const resetFilter = () => {
             {/* KeeperCategory */}
               <KeeperCategory 
                 selected={selected} 
-                handleCategory={handleCategory} 
-                selectRatingRange={selectRatingRange} 
-                ratingScore={ratingScore} 
-                resetFilter={resetFilter} 
+                handlecategory={handleCategory} 
+                selectratingrange={selectRatingRange} 
+                ratingscore={ratingScore} 
+                resetfilter={resetFilter} 
               />
             <div className="keeper-list">
               <div className="d-flex justify-content-between mb-3">
