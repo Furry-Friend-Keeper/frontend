@@ -78,7 +78,7 @@ function OwnerDetail() {
                                             <SizedAvatar size="8" alt="Remy Sharp" src="/assets/banner_cat.jpg"/>
                                         </div>
                                     <div className="profile-info-title-detail">
-                                        <h5>Ryan Reynolds</h5>
+                                        <h5>{apiData.firstName} {apiData.lastName}</h5>
                                         <div className="blue-btn">
                                             <Button onClick={handleOpen} color="blue" appearance="primary">Edit Profile</Button>
                                         </div>
