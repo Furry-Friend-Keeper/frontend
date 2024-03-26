@@ -172,7 +172,7 @@ function KeeperContents(props) {
              const distance = distanceLookup[item.id]
             return ( 
             <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 ">
-                <div className="keeper card bg-shadow text-center border-0">
+                <div className="keeper card bg-shadow text-center border-0 movedown-transition">
                 {item.img ? <Link to={`/at3/keepers/${item.id}`}><img src={import.meta.env.VITE_KEEPER_IMAGE + item.id + "/" + item.img} alt={item.title} /></Link> 
                 : <Link to={`/at3/keepers/${item.id}`}><ImageNotSupportedIcon className="notImage" /></Link>}
                 <div className="card-body keeper-radius keeeper-container">

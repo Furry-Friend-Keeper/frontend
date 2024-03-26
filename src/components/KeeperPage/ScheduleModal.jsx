@@ -18,13 +18,11 @@ function ScheduleModal(props) {
     );
     const [show, setShow] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
-    // const [formData, setFormData] = useState({
-    //     message: "",
-    //     startdate: new Date(),
-    //     enddate: new Date(),
-    //     ownerPhone: "",
-    //     petName: "",
-    // });
+    
+    const date = '2024-03-31'
+    const isSunday = moment(date).day() === 0
+
+    console.log(isSunday);
 
     const {
       register,
@@ -194,7 +192,7 @@ function ScheduleModal(props) {
                                         format="MM/dd/yyyy HH:mm"
                                         appearance="default"
                                         block
-                                        shouldDisableDate={beforeToday()}
+                                        shouldDisableDate={date}
                                         ranges={Ranges}
                                         onChange={(value) => {
                                         field.onChange(value);

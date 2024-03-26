@@ -116,7 +116,7 @@ function Overviews(props) {
                                     </div>
                                 )}
                                     <div>
-                                        {moment.unix(reviewsData?.date).format("DD/MM/YYYY, h:mm:ss A")}
+                                        {moment.unix(reviewsData?.date).format("DD/MM/YYYY, HH:mm:ss")}
                                     </div>
                                 </div>
                                 <div className="col-md-4 text-break">
@@ -228,7 +228,7 @@ function Overviews(props) {
                                                 readOnly
                                             /> */}
                                             <div>
-                                                {moment.unix(review?.date).format("DD/MM/YYYY, h:mm:ss A")}
+                                                {moment.unix(review?.date).format("DD/MM/YYYY, HH:mm:ss")}
                                             </div>
                                         </div>
                                         <div className="col-md-5 text-break">

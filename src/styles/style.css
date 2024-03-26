@@ -1236,5 +1236,8 @@ div.scrollmenu a:hover {
     opacity: 1;
     transform: translateY(0deg);
   }
-}
+} 
 
+.request-size p {
+  font-size: 15px !important;
+}

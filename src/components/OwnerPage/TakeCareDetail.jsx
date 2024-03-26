@@ -10,17 +10,22 @@ import { Modal, Button, Placeholder, DateRangePicker } from "rsuite";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import { Rate } from "rsuite";
+import moment from "moment";
 // import { useSelector, useDispatch } from 'react-redux'
 
-const TakeCareDetail = () => {
+const TakeCareDetail = ( { requests } ) => {
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [hoverValue, setHoverValue] = useState();
+    console.log(requests);
     // const getStatus = useSelector();
     return (
         <>
+        {requests.map((item, index) => {
+           return (
+            <div key={index}>
             <Box
                 sx={{
                     width: "100%",
@@ -67,7 +72,7 @@ const TakeCareDetail = () => {
                     </AspectRatio>
                     <CardContent>
                         <Typography fontSize="xl" fontWeight="lg">
-                            Keeper Name
+                            {item.petKeeper}
                         </Typography>
                         <Typography
                             level="body-sm"
@@ -95,12 +100,6 @@ const TakeCareDetail = () => {
                                     082xxxxxxxx
                                 </Typography>
                             </div>
-                            {/* <div>
-              <Typography level="body-xs" fontWeight="lg">
-                Followers
-              </Typography>
-              <Typography fontWeight="lg">980</Typography>
-            </div> */}
                             <div>
                                 <Typography level="body-xs" fontWeight="lg">
                                     Rating
@@ -112,7 +111,7 @@ const TakeCareDetail = () => {
                                     Start Date
                                 </Typography>
                                 <Typography fontWeight="lg">
-                                    2024-06-15
+                                    {moment.unix(item.startDate).format("DD/MM/YYYY, HH:mm:ss")}
                                 </Typography>
                             </div>
                             <div>
@@ -120,7 +119,7 @@ const TakeCareDetail = () => {
                                     End Date
                                 </Typography>
                                 <Typography fontWeight="lg">
-                                    2024-07-03
+                                    {moment.unix(item.endDate).format("DD/MM/YYYY, HH:mm:ss")}
                                 </Typography>
                             </div>
                         </Sheet>
@@ -218,6 +217,8 @@ const TakeCareDetail = () => {
                     </CardContent>
                 </Card>
             </Box>
+            </div>
+            )})}
         </>
     );
 };
