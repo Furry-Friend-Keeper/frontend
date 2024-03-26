@@ -20,6 +20,17 @@ function Home() {
   const [selected, setSelected] = useState([]);
   const [sortAscending, setSortAscending] = useState("");
   const [sortTitles, setSortTitles] = useState("Rating")
+  const [distanceTitle, setDistanceTitle] = useState("Distance")
+  const [sortOrder, setSortOrder] = useState('');
+  const [sortedDistances, setSortedDistances] = useState([]);
+
+  const handleSortOrderToggle = () => {
+    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+};
+
+const handleSortedDistances = (distances) => {
+    setSortedDistances(distances);
+};
 
   const fetchData = async () => {
     try {
@@ -163,6 +174,12 @@ const resetFilter = () => {
                         <Dropdown.Item onClick={() => SortReviewStar("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
                       </Dropdown>
                     </div>
+                    <div className="distance-list">
+                      <Dropdown title={distanceTitle} activeKey={sortAscending}>
+                        <Dropdown.Item onClick={() => SortReviewStar("Des")} eventKey="Des">High to Low</Dropdown.Item>
+                        <Dropdown.Item onClick={() => SortReviewStar("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
+                      </Dropdown>
+                    </div>
                 </div>
                 {/* <div className='keeper-list-pagination'>
                   page
@@ -182,7 +199,7 @@ const resetFilter = () => {
                     </Box>
                   ))}
                 </div>
-                : loading && search.length > 0 ? <KeeperContents search={search} /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                : loading && search.length > 0 ? <KeeperContents search={search} onSortedDistances={handleSortedDistances} sortOrder={sortOrder}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}

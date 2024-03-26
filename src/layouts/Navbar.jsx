@@ -75,7 +75,7 @@ function Navbar() {
             </button>
             <ul
               className={
-                isDropdownOpen ? "dropdown-menu show" : "dropdown-menu"
+                isDropdownOpen ? "profile-menu dropdown-menu show" : "profile-menu dropdown-menu"
               }
               aria-labelledby="dropdownMenuButton"
             >
@@ -104,15 +104,15 @@ function Navbar() {
               {!isLogin && (
                 <li>
                   <a className="dropdown-item" href="/at3/login">
-                    <LoginIcon className="profile-icon" />
                     Login
                   </a>
                 </li>
               )}
-              <br />
+              {/* <br /> */}
+              <li className=" border-1 border my-2"></li>
               {isLogin && (
                 <li onClick={() => dispatch(logout())}>
-                  <a className="dropdown-item border-1 border-top" href="/at3">
+                  <a className="dropdown-item" href="/at3">
                     <LogoutIcon className="profile-icon" />
                     Logout
                   </a>
@@ -120,8 +120,7 @@ function Navbar() {
               )}
               {!isLogin && (
                 <li>
-                  <a className="dropdown-item border-1 border-top" href="/at3/signup">
-                    <SubscriptionsIcon className="profile-icon"  />
+                  <a className="dropdown-item" href="/at3/signup">
                     Sign up
                   </a>
                 </li>
@@ -167,6 +166,7 @@ function Navbar() {
                     }}
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
+                    className="profile-menu"
                   >
                     {getRole === "PetKeeper" ? (
                       <MenuItem onClick={handleCloseUserMenu}>
@@ -193,10 +193,11 @@ function Navbar() {
                         </Typography>
                       </MenuItem>
                     )}
-                    <br />
+                    {/* <br /> */}
+                    <li className=" border-1 border my-2"></li>
+
                     <MenuItem
                       onClick={handleCloseUserMenu}
-                      className="border-1 border-top"
                     >
                       <LogoutIcon className="profile-icon" />
                       <Typography
