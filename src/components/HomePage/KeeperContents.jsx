@@ -78,7 +78,6 @@ function KeeperContents(props) {
                             if (data.map && data.map.length > 0) {
                                 const [lat, lng] = data.map[0].split(',').map(Number);
                                 const latlng = L.latLng(lat, lng);
-        
                                 try {
                                     const distance = await calculateDistance(latlng, currentLocation);
                                     const distanceKm = (distance / 1000).toFixed(2);
@@ -128,7 +127,7 @@ function KeeperContents(props) {
         {filteredData.map((item, index) => {
             return ( 
             <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 ">
-                <div className="keeper card bg-shadow text-center border-0">
+                <div className="keeper card bg-shadow text-center border-0 movedown-transition">
                 {item.img ? <Link to={`/at3/keepers/${item.id}`}><img src={import.meta.env.VITE_KEEPER_IMAGE + item.id + "/" + item.img} alt={item.title} /></Link> 
                 : <Link to={`/at3/keepers/${item.id}`}><ImageNotSupportedIcon className="notImage" /></Link>}
                 <div className="card-body keeper-radius">

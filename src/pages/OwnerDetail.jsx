@@ -8,12 +8,11 @@ import TakeCareDetail from '../components/OwnerPage/TakeCareDetail';
 import { Container } from "@mui/material";
 import {Rating, Stack, Chip} from '@mui/material/';
 import StarIcon from '@mui/icons-material/Star';
-import { Modal, Button, RadioGroup, Radio, Placeholder,  Form, Input, Uploader, Message, Loader, useToaster } from 'rsuite';
+import { Modal, Button, RadioGroup, Radio, Placeholder,  Form, Input, Uploader, Message, Loader, useToaster, Rate } from 'rsuite';
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import AvatarIcon from '@rsuite/icons/legacy/Avatar';
-import { Rate } from "rsuite";
 
 function OwnerDetail() {
 
@@ -31,19 +30,24 @@ function OwnerDetail() {
     const toaster = useToaster();
     const [uploading, setUploading] = useState(false);
     const [fileInfo, setFileInfo] = useState(null);
+    const [requests, setRequests] = useState([]);
 
-    const fetchData = async () => {
-        try {
-          const apiUrl = import.meta.env.VITE_OWNER_ID + ownerId;
-          await axios.get(apiUrl).then(response => {
-            const data = response.data;
-            setApiData(data)
-          });
-          
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
+
+      const fetchData = async () => {
+            await axios
+                .get(import.meta.env.VITE_OWNER_ID + ownerId, {
+                    headers: { Authorization: "Bearer " + accessToken },
+                })
+                .then((response) => {
+                    setApiData(response.data);
+                    console.log(apiData);
+                });
+        };
+
+      useEffect(() => {
+        fetchData();
+    }, []);
+
       useEffect(() => {
         if (!accessToken) {
           // Redirect to login if not logged in
@@ -57,9 +61,22 @@ function OwnerDetail() {
         // the effect runs again if any of these values change.
       } },  [navigate, accessToken, userInfo, ownerId]);
     
-      useEffect(() => {
-        fetchData();
-      }, []);
+
+      const fetchRequests = async () => {
+        await axios
+            .get(import.meta.env.VITE_OWNER_APPOINTMENT_ID + ownerId, {
+                headers: { Authorization: "Bearer " + accessToken },
+            })
+            .then((response) => {
+                setRequests(response.data);
+                console.log(response.data);
+            });
+    };
+
+    useEffect(() => {
+        fetchRequests();
+    }, []);
+
 
     const previewFile = (file, callback) => {
         const reader = new FileReader();
@@ -102,11 +119,11 @@ function OwnerDetail() {
                                         <table>
                                             <tr className="profile-warpper">
                                                 <td><p>Email</p></td>
-                                                <td><p className="info">Test@gmail.com</p></td>
+                                                <td><p className="info">{apiData.email}</p></td>
                                             </tr>
                                             <tr className="profile-warpper">
                                                 <td><p>Phone</p></td>
-                                                <td><p className="info">0629999999</p></td>
+                                                <td><p className="info">{apiData.phone}</p></td>
                                             </tr>
                                             <tr className="profile-warpper">
                                                 <td><p>Password</p></td>
@@ -114,7 +131,7 @@ function OwnerDetail() {
                                             </tr>
                                             <tr className="profile-warpper">
                                                 <td><p>Pet Name</p></td>
-                                                <td><p className="info">Tong</p></td>
+                                                <td><p className="info">{apiData.petName}</p></td>
                                             </tr>
                                         </table>
                                     </div> 
@@ -137,6 +154,7 @@ function OwnerDetail() {
                                             <div className="favorite-star">
                                                 <Rate defaultValue={3.5} allowHalf size="sm" color="yellow" readOnly/>
                                                 {/* <Rating className='mb-2' name="half-rating-read" value={4} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
+
                                             </div>
                                             <div className="favorite-tags">
                                             <Stack direction="row" spacing={1} className="justify-content-center d-block">
@@ -271,70 +289,11 @@ function OwnerDetail() {
                     <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                         <h3>Taking care of my pet</h3>
                         <div className="p-4 movedown-transition">
-                        {/* { Keeper ? <TakeCareDetail/> : <div className='text-center mt-3 fs-4'>DON'T HAVE AT THIS TIME</div>} */}
-                        <TakeCareDetail/>
+                        { requests.length > 0 ? <TakeCareDetail requests={requests} /> : <div className='text-center mt-3 fs-4'>DON'T HAVE AT THIS TIME</div>}
                         </div>
                     </div>
                 </div>
             </div>
-            {/* <div className="col-md-11">
-                <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                    <div className="row">
-                        <div className="col-sm-12 col-md-6 col-lg-4 m-auto">
-                            <div className="d-flex justify-content-center">
-                                <SizedAvatar size="12" alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </div>
-                        </div>
-                        <div className="col-sm-12 col-md-6 col-lg-8 personal-info">
-                            <h3>Personal info</h3>
-                            <form className="form p-3" role="form">
-                                <div className="mb-3 row">
-                                    <label className="col-lg-3 control-label">Name</label>
-                                    <div className="col-lg-8">
-                                        <p>test</p>
-                                    </div>
-                                </div>
-                                <div className="mb-3 row">
-                                    <label className="col-lg-3 control-label">Email</label>
-                                    <div className="col-lg-8">
-                                        <p>test@mail.com</p>
-                                    </div>
-                                </div>
-                                <div className="mb-3 row">
-                                    <label className="col-lg-3 control-label">Phone</label>
-                                    <div className="col-lg-8">
-                                        <p>083xxxxxxx</p>
-                                    </div>
-                                </div>
-                                <div className="mb-3 row">
-                                    <label className="col-md-3 control-label">Pet Name</label>
-                                    <div className="col-md-8">
-                                        <p>john</p>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                    <h3>My Favorite Keeper</h3> */}
-                    {/* { Keeper ? <div className="scrollmenu bg-white p-3">
-                        <Favorite/>
-                    </div> 
-                    : 
-                    <div className='text-center mt-3 fs-4'>NO FAVORITE PET KEEPER</div>} */}
-                    {/* <div className="scrollmenu bg-white p-3">
-                        <Favorite/>
-                    </div>
-                </div>
-                <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                    <h3>Taking care of my pet</h3>
-                    <div className="p-4"> */}
-                    {/* { Keeper ? <TakeCareDetail/> : <div className='text-center mt-3 fs-4'>DON'T HAVE AT THIS TIME</div>} */}
-                    {/* <TakeCareDetail/>
-                    </div>
-                </div>
-            </div> */}
         </Container>
         <Modal className="position-absolute top-50 start-50 translate-middle mt-0" backdrop={backdrop} keyboard={false} open={open} size="sm" onClose={handleClose}>
         <Modal.Header>

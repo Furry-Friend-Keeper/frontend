@@ -31,6 +31,7 @@ function EditKeeperDetail() {
     const [addressLabel, setAddressLabel] = useState("")
     const [isImg, setImg] = useState();
     const { keeperId } = useParams();
+    const [ permanentDisable, setPersistentDisable ] = useState("")
     // const [isError, setIsError] = useState(false);
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
@@ -176,6 +177,8 @@ function EditKeeperDetail() {
         // EditKeeper(data);
     };
 
+    
+
     const [previewImage, setPreviewImage] = useState(null);
 
     const handleFileChange = (event) => {
@@ -258,7 +261,7 @@ function EditKeeperDetail() {
                         <ScheduleRequest keeperId={keeperId} />
                     </div>
                     <div className="col-lg-12">
-                        <DisableDate />
+                        <DisableDate/>
                     </div>
                         <div className="row mx-auto col-12 px-0">
                             <div className="col-lg-6">
@@ -279,7 +282,6 @@ function EditKeeperDetail() {
                                                             )}
                                             </Stack>
                                                 :
-                                                
                                             <FormControl sx={{ mb:5 ,width: "100%" }}>
                                                 <InputLabel id="demo-multiple-chip-label">Category</InputLabel>
                                                 <Select
