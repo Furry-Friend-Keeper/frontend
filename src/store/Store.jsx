@@ -5,10 +5,12 @@ import {
 } from './LoginMiddleware';
 // import AuthReducer from './AuthReducer'
 import AuthReducer from './AuthSlice';
+import LocationSlice from './LocationSlice';
 
 const store = configureStore({
     reducer : {
-        auth : AuthReducer
+        auth : AuthReducer,
+        location : LocationSlice
     },
     middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware().concat(localStorageMiddleware),

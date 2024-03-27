@@ -10,11 +10,12 @@ import L from 'leaflet';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useSelector } from 'react-redux';
 
 function KeeperContents(props) {
-    const { search, onSortedDistances, sortOrder } = props;
-    const [distanceAll, setDistanceAll] = useState([])
-
+    const { search, distanceLookup } = props;
+    // const [distanceAll, setDistanceAll] = useState([])
+    const currentLocation = useSelector((state) => state?.location?.currentLocation);
     const [activePage, setActivePage] = useState(1);
     const [limit, setLimit] = useState(parseInt(import.meta.env.VITE_LIMIT_PAGINATION));
     const [filteredData, setFilteredData] = useState([]);
@@ -34,92 +35,93 @@ function KeeperContents(props) {
         //     setFilteredData(paginatedData);
         // }, [activePage, limit, search]);
 
-        useEffect(() => {
-            let isMounted = true; // For avoiding state update on unmounted component
+        // useEffect(() => {
+        //     let isMounted = true; // For avoiding state update on unmounted component
         
-            async function fetchCurrentLocation() {
-                if (!('geolocation' in navigator)) return null;
+        //     // async function fetchCurrentLocation() {
+        //     //     if (!('geolocation' in navigator)) return null;
         
-                return new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(
-                        position => {
-                            const location = L.latLng(
-                                position.coords.latitude.toFixed(3),
-                                position.coords.longitude.toFixed(3)
-                            );
-                            resolve(location);
-                        },
-                        error => {
-                            console.error('Error getting current location:', error);
-                            reject(error);
-                        }
-                    );
-                });
-            }
+        //     //     return new Promise((resolve, reject) => {
+        //     //         navigator.geolocation.getCurrentPosition(
+        //     //             position => {
+        //     //                 const location = L.latLng(
+        //     //                     position.coords.latitude.toFixed(3),
+        //     //                     position.coords.longitude.toFixed(3)
+        //     //                 );
+        //     //                 resolve(location);
+        //     //             },
+        //     //             error => {
+        //     //                 console.error('Error getting current location:', error);
+        //     //                 reject(error);
+        //     //             }
+        //     //         );
+        //     //     });
+        //     // }
         
-            async function calculateDistance(start, end) {
-                const cacheKey = `${start.lat.toFixed(4)},${start.lng.toFixed(4)}-${end.lat},${end.lng}`;
-                const cachedDistance = sessionStorage.getItem(cacheKey);
-                if (cachedDistance) return parseFloat(cachedDistance);
+        //     async function calculateDistance(start, end) {
+        //         const cacheKey = `${start.lat.toFixed(4)},${start.lng.toFixed(4)}-${end.lat},${end.lng}`;
+        //         const cachedDistance = sessionStorage.getItem(cacheKey);
+        //         if (cachedDistance) return parseFloat(cachedDistance);
         
-                const apiUrl = `http://router.project-osrm.org/route/v1/driving/${start.lng.toFixed(4)},${start.lat.toFixed(4)};${end.lng},${end.lat}?overview=false`;
-                try {
-                    const response = await axios.get(apiUrl);
-                    const distance = response.data.routes[0].distance;
-                    sessionStorage.setItem(cacheKey, distance);
-                    return distance;
-                } catch (error) {
-                    console.error('Error fetching data from OSRM:', error);
-                    throw error;
-                }
-            }
+        //         const apiUrl = `http://router.project-osrm.org/route/v1/driving/${start.lng.toFixed(4)},${start.lat.toFixed(4)};${end.lng},${end.lat}?overview=false`;
+        //         try {
+        //             const response = await axios.get(apiUrl);
+        //             const distance = response.data.routes[0].distance;
+        //             sessionStorage.setItem(cacheKey, distance);
+        //             return distance;
+        //         } catch (error) {
+        //             console.error('Error fetching data from OSRM:', error);
+        //             throw error;
+        //         }
+        //     }
         
-            async function updateSearchWithDistances() {
-                const currentLocation = await fetchCurrentLocation();
-                if (!currentLocation) return;
+        //     async function updateSearchWithDistances() {
+        //         // const currentLocation = await fetchCurrentLocation();
+        //         if (!currentLocation) return;
         
-                let batchDistances = [];
-                for (const data of search) {
-                    if (data.map && data.map.length > 0) {
-                        const [lat, lng] = data.map[0].split(',').map(Number);
-                        const latlng = L.latLng(lat, lng);
-                        try {
-                            const distance = await calculateDistance(latlng, currentLocation);
-                            const distanceKm = (distance / 1000).toFixed(2);
-                            batchDistances.push({ id: data.id, distance: distanceKm });
+        //         let batchDistances = [];
+        //         for (const data of search) {
+        //             if (data.map && data.map.length > 0) {
+        //                 const [lat, lng] = data.map[0].split(',').map(Number);
+        //                 const latlng = L.latLng(lat, lng);
+        //                 const current = L.latLng(currentLocation.latitude, currentLocation.longitude);
+        //                 try {
+        //                     const distance = await calculateDistance(latlng, current);
+        //                     const distanceKm = (distance / 1000).toFixed(2);
+        //                     batchDistances.push({ id: data.id, distance: distanceKm });
         
-                            if (batchDistances.length % 3 === 0) {
-                                if (isMounted) {
-                                    setDistanceAll(prevDistances => [...prevDistances, ...batchDistances]);
-                                }
-                                // batchDistances = []; // Reset after updating
-                            }
-                        } catch (error) {
-                            console.error('Error calculating distance for:', data, error);
-                        }
-                    }
-                }
+        //                     if (batchDistances.length % 3 === 0) {
+        //                         if (isMounted) {
+        //                             setDistanceAll(prevDistances => [...prevDistances, ...batchDistances]);
+        //                         }
+        //                         // batchDistances = []; // Reset after updating
+        //                     }
+        //                 } catch (error) {
+        //                     console.error('Error calculating distance for:', data, error);
+        //                 }
+        //             }
+        //         }
         
-                // For any remaining distances not yet pushed
-                if (batchDistances.length > 0 && isMounted) {
-                    setDistanceAll(prevDistances => [...prevDistances, ...batchDistances]);
-                }
-            }
+        //         // For any remaining distances not yet pushed
+        //         if (batchDistances.length > 0 && isMounted) {
+        //             setDistanceAll(prevDistances => [...prevDistances, ...batchDistances]);
+        //         }
+        //     }
         
-            updateSearchWithDistances();
+        //     updateSearchWithDistances();
         
-            return () => {
-                isMounted = false;
-            };
-        }, []);
+        //     return () => {
+        //         isMounted = false;
+        //     };
+        // }, [search]);
         
-            // Pre-process distance data for quick lookup
-        const distanceLookup = useMemo(() => {
-            return distanceAll.reduce((acc, distance) => {
-                acc[distance.id] = distance.distance;
-                return acc;
-            }, {});
-        }, [distanceAll]);
+        //     // Pre-process distance data for quick lookup
+        // const distanceLookup = useMemo(() => {
+        //     return distanceAll.reduce((acc, distance) => {
+        //         acc[distance.id] = distance.distance;
+        //         return acc;
+        //     }, {});
+        // }, [distanceAll]);
 
         // Calculate the current page's items
         const paginatedItems = useMemo(() => {
@@ -150,22 +152,6 @@ function KeeperContents(props) {
         //     return sorted;
         // }, [distanceAll, sortOrder]);
 
-        useEffect(() => {
-            const sorted = [...distanceAll];
-            sorted.sort((a, b) => {
-                const distanceA = parseFloat(a.distance);
-                const distanceB = parseFloat(b.distance);
-                return sortOrder === 'asc' ? distanceA - distanceB : distanceB - distanceA;
-            });
-            onSortedDistances(sorted); // Pass the sorted data to the parent
-        },[distanceAll, sortOrder, onSortedDistances])
-
-
-        // Handler to change sort order, e.g., called on a button click
-        function toggleSortOrder() {
-            setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
-        }
-
   return (
     <>
         {paginatedItems.map((item, index) => {
@@ -177,7 +163,7 @@ function KeeperContents(props) {
                 : <Link to={`/at3/keepers/${item.id}`}><ImageNotSupportedIcon className="notImage" /></Link>}
                 <div className="card-body keeper-radius keeeper-container">
                     <div className='keeeper-warpper'>
-                    <div className='border-2 border-bottom-0 mb-2   '>
+                    <div className='border-2 border-bottom-0 mb-2 '>
                         {distance ? 
                         <div className='distance-keeper d-flex justify-content-between align-items-center mb-2'>
                             <div className='d-flex align-items-end'>
@@ -196,7 +182,7 @@ function KeeperContents(props) {
                             <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
                         </div>
                         <div>
-                        <Rate className='mb-2' defaultValue={item.reviewStars} size="xs" color="yellow" readOnly />
+                        <Rate className='mb-2' value={item.reviewStars} size="xs" color="yellow" readOnly />
                         {/* <Rating className='mb-2' name="half-rating-read" value={item.reviewStars} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                         <Stack direction="row" spacing={1} className="justify-content-center d-block">
                                 {item.categories && 

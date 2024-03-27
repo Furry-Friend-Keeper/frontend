@@ -1,36 +1,34 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import BannerPage from '../components/HomePage/BannerPage';
 import KeeperCategory from '../components/HomePage/KeeperCategory';
 import KeeperContents from '../components/HomePage/KeeperContents';
 import axios from 'axios';
+import L from 'leaflet';
 import { Input, InputGroup, Dropdown } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
 import CloseIcon from '@rsuite/icons/Close';
 import Skeleton from '@mui/material/Skeleton';
 import { Box } from '@mui/material';
 import { Container } from "@mui/material";
+import { useDispatch, useSelector } from 'react-redux';
+import { setLocation } from '../store/LocationSlice';
+import { Tag, TagGroup } from 'rsuite';
 
 function Home() {  
 
   const [apiData, setApiData] = useState([]);
+  const [distanceAll, setDistanceAll] = useState([])
   const [ratingScore, setRatingScore] = useState(0);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState([])
   const [searchInput, setSearchInput] = useState('')
   const [selected, setSelected] = useState([]);
   const [sortAscending, setSortAscending] = useState("");
-  const [sortTitles, setSortTitles] = useState("Rating")
-  const [distanceTitle, setDistanceTitle] = useState("Distance")
-  const [sortOrder, setSortOrder] = useState('');
-  const [sortedDistances, setSortedDistances] = useState([]);
-
-  const handleSortOrderToggle = () => {
-    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
-};
-
-const handleSortedDistances = (distances) => {
-    setSortedDistances(distances);
-};
+  const [sortDistanceAsc, setSortDistanceAsc] = useState("");
+  const [sortTitles, setSortTitles] = useState("")
+  const [distanceTitle, setDistanceTitle] = useState("")
+  const dispatch = useDispatch();
+  const currentLocation = useSelector((state) => state?.location?.currentLocation);
 
   const fetchData = async () => {
     try {
@@ -47,7 +45,89 @@ const handleSortedDistances = (distances) => {
 
   useEffect(() => {
     fetchData();
+
+      if (!currentLocation && 'geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const location = { latitude, longitude };
+            dispatch(setLocation(location));
+            
+          },
+          (error) => {
+            console.error('Error getting current location:', error.message);
+          }
+        );
+      }
+
   }, []);
+
+  useEffect(() => {
+    let isMounted = true; // For avoiding state update on unmounted component
+
+    async function calculateDistance(start, end) {
+        const cacheKey = `${start.lat},${start.lng}-${end.lat},${end.lng}`;
+        const cachedDistance = sessionStorage.getItem(cacheKey);
+        if (cachedDistance) return parseFloat(cachedDistance);
+
+        const apiUrl = `http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
+        try {
+            const response = await axios.get(apiUrl);
+            const distance = response.data.routes[0].distance;
+            sessionStorage.setItem(cacheKey, distance);
+            return distance;
+        } catch (error) {
+            console.error('Error fetching data from OSRM:', error);
+            throw error;
+        }
+    }
+
+    async function updateSearchWithDistances() {
+        if (!currentLocation) return;
+
+        let batchDistances = [];
+        for (const data of search) {
+            if (data.map && data.map.length > 0) {
+                const [lat, lng] = data.map[0].split(',').map(Number);
+                const latlng = L.latLng(lat, lng);
+                const current = L.latLng(currentLocation.latitude, currentLocation.longitude);
+                try {
+                    const distance = await calculateDistance(latlng, current);
+                    const distanceKm = (distance / 1000).toFixed(2);
+                    batchDistances.push({ id: data.id, distance: distanceKm });
+
+                    if (batchDistances.length % 3 === 0) {
+                        if (isMounted) {
+                            setDistanceAll(prevDistances => [...prevDistances, ...batchDistances]);
+                        }
+                        // batchDistances = []; // Reset after updating
+                    }
+                } catch (error) {
+                    console.error('Error calculating distance for:', data, error);
+                }
+            }
+        }
+
+        // For any remaining distances not yet pushed
+        if (batchDistances.length > 0 && isMounted) {
+            setDistanceAll(batchDistances);
+        }
+    }
+
+    updateSearchWithDistances();
+
+    return () => {
+        isMounted = false;
+    };
+}, [search]);
+
+    // Pre-process distance data for quick lookup
+const distanceLookup = useMemo(() => {
+    return distanceAll.reduce((acc, distance) => {
+        acc[distance.id] = distance.distance;
+        return acc;
+    }, {});
+}, [distanceAll]);
 
 
   const handleSearchInput = (value) => {
@@ -111,26 +191,59 @@ const handleSortedDistances = (distances) => {
   //   setApiData(updateContents);
   // } 
 
+  const RatingTitle = () => (
+    <div>
+      Rating  
+      {sortTitles !== "" && <span>: <Tag color="blue" >{sortTitles}</Tag></span>}
+    </div>
+  );
+  const DistanceTitle = () => (
+    <div>
+      Distance  
+      {distanceTitle !== "" && <span>: <Tag color="blue" >{distanceTitle}</Tag></span>}
+    </div>
+  );
 
 const SortReviewStar = (isSort) => {
   setSortAscending(isSort)
   setSortTitles(isSort === "Des" ? "High to Low" : "Low to High")
+  setDistanceTitle("")
+  setSortDistanceAsc("")
   const sortStar = [...search].sort((a, b) => isSort==="Des" ? b.reviewStars - a.reviewStars : a.reviewStars - b.reviewStars)
   setSearch(sortStar);
+}
+
+const SortDistance = (isSort) => {
+  const distanceSort = distanceAll.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+  const distanceMap = new Map(distanceSort.map(item => [item.id, parseFloat(item.distance)]));
+
+  setSortDistanceAsc(isSort)
+  setDistanceTitle(isSort === "Des" ? "High to Low" : "Low to High")
+  setSortTitles("")
+  setSortAscending("")
+  const sortData = [...search].sort((a, b) => isSort==="Des" ?  distanceMap.get(b.id) - distanceMap.get(a.id) : distanceMap.get(a.id) - distanceMap.get(b.id) );
+  setSearch(sortData)
+
 }
 
 const selectRatingRange = (range) => {
   setRatingScore(range)
   const ratingRange = apiData.filter((val) => val.reviewStars >= range && selected.every((filter) =>  val.categories.includes(filter)))
   setSearch(ratingRange)
-  setSortTitles("Rating")
+  setSortTitles("")
   setSortAscending("")
 }
 
 const resetFilter = () => {
+  // reset sort rating
   setSortAscending("")
-  setSortTitles("Rating")
+  setSortTitles("")
+  // reset sort distance
+  setSortDistanceAsc("")
+  setDistanceTitle("")
+  // reset filter rating
   setRatingScore(0)
+  //reset filter categories
   setSelected([])
 }
 
@@ -164,20 +277,20 @@ const resetFilter = () => {
                         onChange={handleSearchInput}
                         onKeyUp={handleSearch}
                       />
-                      {searchInput &&<InputGroup.Button>
-                        <CloseIcon onClick={handleClearSearch} />
+                      {searchInput &&<InputGroup.Button onClick={handleClearSearch}>
+                        <CloseIcon />
                       </InputGroup.Button>}
                     </InputGroup>
                     <div className="sort-list">
-                      <Dropdown title={sortTitles} activeKey={sortAscending}>
+                      <Dropdown title={<RatingTitle />} activeKey={sortAscending}>
                         <Dropdown.Item onClick={() => SortReviewStar("Des")} eventKey="Des">High to Low</Dropdown.Item>
                         <Dropdown.Item onClick={() => SortReviewStar("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
                       </Dropdown>
                     </div>
                     <div className="distance-list">
-                      <Dropdown title={distanceTitle} activeKey={sortAscending}>
-                        <Dropdown.Item onClick={() => SortReviewStar("Des")} eventKey="Des">High to Low</Dropdown.Item>
-                        <Dropdown.Item onClick={() => SortReviewStar("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
+                      <Dropdown title={<DistanceTitle />} activeKey={sortDistanceAsc}>
+                        <Dropdown.Item onClick={() => SortDistance("Des")} eventKey="Des">High to Low</Dropdown.Item>
+                        <Dropdown.Item onClick={() => SortDistance("Asc")} eventKey="Asc">Low to High</Dropdown.Item>
                       </Dropdown>
                     </div>
                 </div>
@@ -199,7 +312,7 @@ const resetFilter = () => {
                     </Box>
                   ))}
                 </div>
-                : loading && search.length > 0 ? <KeeperContents search={search} onSortedDistances={handleSortedDistances} sortOrder={sortOrder}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                : loading && search.length > 0 ? <KeeperContents search={search} distanceLookup={distanceLookup}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}
