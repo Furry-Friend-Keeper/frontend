@@ -238,7 +238,7 @@ function KeeperDetail() {
                                 </div>
                             </div>
                         </div>
-                            <ScheduleModal keeperId={id} />
+                            <ScheduleModal keeperId={id} closedDays={apiData.closedDay} />
                     </div>
                     <Overviews 
                         reviews={apiData} 

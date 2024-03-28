@@ -38,8 +38,8 @@ const ExpandCell = ({
 const renderRowExpanded = (rowData) => {
     return (
         <div className="request-size">
-            <p>Start Date: {moment.unix(rowData.startDate).format("YYYY-MM-DD HH:mm:ss")}</p>
-            <p>End Date: {moment.unix(rowData.endDate).format("YYYY-MM-DD HH:mm:ss")}</p>
+            <p>Start Date: {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}</p>
+            <p>End Date: {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm" )}</p>
             <p>Owner Phone: {rowData.ownerPhone}</p>
             <p>Pet Name: {rowData.petName}</p>
             <p>Category: {rowData.category}</p>
@@ -151,7 +151,7 @@ function ScheduleRequest(props) {
                     <Cell>
                         {(rowData) => (
                             <span>
-                                {moment.unix(rowData.startDate).format("YYYY-MM-DD HH:mm:ss")}
+                                {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}
                             </span>
                         )}
                     </Cell>
@@ -161,7 +161,7 @@ function ScheduleRequest(props) {
                     <Cell>
                         {(rowData) => (
                             <span>
-                                {moment.unix(rowData.endDate).format("YYYY-MM-DD HH:mm:ss")}
+                                {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm")}
                             </span>
                         )}
                     </Cell>

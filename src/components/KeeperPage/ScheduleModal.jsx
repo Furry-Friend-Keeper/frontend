@@ -11,26 +11,22 @@ import { TagPicker, SelectPicker } from "rsuite";
 import PhoneInput from "react-phone-input-2";
 
 function ScheduleModal(props) {
-    const { keeperId } = props
+    const { keeperId, closedDays } = props;
     const { beforeToday } = DateRangePicker;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
     const [show, setShow] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
-    
-    const date = '2024-03-31'
-    const isSunday = moment(date).day() === 0
-
-    console.log(isSunday);
+    const [selectedRange, setSelectedRange] = useState([null, null]);
 
     const {
-      register,
-      watch,
-      control,
-      handleSubmit,
-      formState: { errors },
-  } = useForm();
+        register,
+        watch,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
     const handleOpen = () => setShow(true);
     const handleClose = () => setShow(false);
@@ -39,37 +35,37 @@ function ScheduleModal(props) {
     const [petCategoriesRaw, setPetCategoriesRaw] = useState([]);
 
     const Ranges = [
-      {
-          label: "today",
-          value: [
-              moment().startOf("day").toDate(),
-              moment().endOf("day").toDate(),
-          ],
-      },
-      {
-          label: "Next 7 Days",
-          value: [
-              moment().startOf("day").toDate(),
-              moment().add(6, "days").endOf("day").toDate(),
-          ],
-      },
-  ];
+        {
+            label: "today",
+            value: [
+                moment().startOf("day").toDate(),
+                moment().endOf("day").toDate(),
+            ],
+        },
+        {
+            label: "Next 7 Days",
+            value: [
+                moment().startOf("day").toDate(),
+                moment().add(6, "days").endOf("day").toDate(),
+            ],
+        },
+    ];
 
     useEffect(() => {
         PetKeeperCategories();
     }, []);
 
     const onSubmit = async (data) => {
-        const phoneNumber = (data.phone).replace(/^66/, "0").trim()
+        const phoneNumber = data.phone.replace(/^66/, "0").trim();
 
-        for(const category of petCategoriesRaw) {
-            if(data.tags === category.name) {
-                data.tags = category.id
+        for (const category of petCategoriesRaw) {
+            if (data.tags === category.name) {
+                data.tags = category.id;
             }
         }
 
-        console.log(data)
-        
+        console.log(data);
+
         const result = {
             startDate: moment(data.dateRange[0]).format(),
             endDate: moment(data.dateRange[1]).format(),
@@ -81,16 +77,17 @@ function ScheduleModal(props) {
             petKeeperId: parseInt(keeperId),
             petOwnerId: userInfo?.id,
         };
-        
-        console.log(result)
-      await axios.post(import.meta.env.VITE_APPOINTMENT_CREATE, result, {
-        headers: { 'Authorization': 'Bearer ' + accessToken}
-        }).then((res) => {
-            handleClose()
-        })
 
-      
-      // SignUpForm(data);
+        console.log(result);
+        await axios
+            .post(import.meta.env.VITE_APPOINTMENT_CREATE, result, {
+                headers: { Authorization: "Bearer " + accessToken },
+            })
+            .then((res) => {
+                handleClose();
+            });
+
+        // SignUpForm(data);
     };
 
     const PetKeeperCategories = async () => {
@@ -104,7 +101,7 @@ function ScheduleModal(props) {
                     value: item,
                 }));
                 setPetCategories(rsite_data);
-                setPetCategoriesRaw(response)
+                setPetCategoriesRaw(response);
             })
             .catch((err) => {
                 console.log(err);
@@ -120,6 +117,41 @@ function ScheduleModal(props) {
     //     console.log(formData);
     //     handleClose();
     // };
+
+    const disabledDaysArray = closedDays?.split(',')?.map(day => day.trim())?.filter(day => day !== "") || [];
+    console.log(closedDays)
+    console.log(disabledDaysArray)
+
+    // const disabledDaysArray = ["Sunday", "Monday", "Tuesday"];
+
+    const disabledWeekdays = disabledDaysArray.map(day =>
+        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day)
+    );
+    
+    const disableDateRange = {
+        startDate: moment("2024-04-17T12:30:00+07:00"),
+        endDate: moment("2024-04-27T16:30:00+07:00")
+    };
+
+    const disableSundays = (date) => {
+        const momentDate = moment(date);
+
+        console.log(selectedRange[0])
+
+        // Enable date if within selected range
+        if (selectedRange[0] && selectedRange[1] && momentDate.isBetween(selectedRange[0], selectedRange[1], 'day', '[]')) {
+            return false;
+        }
+        // Check if the date is a disabled weekday
+        if (disabledWeekdays.includes(momentDate.day())) {
+            return true;
+        }
+        // Check if the date is within the disabled date range
+        if (momentDate.isBetween(disableDateRange.startDate, disableDateRange.endDate, 'day', '[]')) {
+            return true;
+        }
+        return false;
+    };
 
     return (
         <>
@@ -187,44 +219,56 @@ function ScheduleModal(props) {
                                     name="dateRange"
                                     control={control}
                                     render={({ field }) => (
-                                    <DateRangePicker
-                                        {...field}
-                                        format="MM/dd/yyyy HH:mm"
-                                        appearance="default"
-                                        block
-                                        shouldDisableDate={date}
-                                        ranges={Ranges}
-                                        onChange={(value) => {
-                                        field.onChange(value);
-                                        }}
-                                    />
+                                        <DateRangePicker
+                                            {...field}
+                                            format="dd MMMM yyyy HH:mm"
+                                            appearance="default"
+                                            block
+                                            onSelect={(value) => {
+                                                setSelectedRange(value);
+                                            }}
+                                            // shouldDisableDate={date}
+                                            shouldDisableDate={disableSundays}
+                                            ranges={Ranges}
+                                            onOk={(value) => {
+                                                setSelectedRange(value);
+                                                field.onChange(value);
+                                            }}
+                                            // onChange={(value) => {
+                                            //     setSelectedRange(value);
+                                            //     field.onChange(value);
+                                            // }}
+                                        />
                                     )}
                                 />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="petCategory" className="form-label">
+                                <label
+                                    htmlFor="petCategory"
+                                    className="form-label"
+                                >
                                     Pet Category
                                 </label>
                                 <Controller
                                     name="tags"
                                     control={control}
                                     render={({ field }) => (
-                                    <SelectPicker
-                                        {...field}
-                                        data={petCategories}
-                                        searchable={false}
-                                        onChange={(value) => {
-                                            field.onChange(value);
+                                        <SelectPicker
+                                            {...field}
+                                            data={petCategories}
+                                            searchable={false}
+                                            onChange={(value) => {
+                                                field.onChange(value);
                                             }}
-                                        placeholder="Select pet category..."
-                                        block
-                                    />
-                                    // <TagPicker
-                                    //     {...field}
-                                    //     data={petCategories}
-                                    //     className="form-control"
-                                    //     onChange={field.onChange}
-                                    // />
+                                            placeholder="Select pet category..."
+                                            block
+                                        />
+                                        // <TagPicker
+                                        //     {...field}
+                                        //     data={petCategories}
+                                        //     className="form-control"
+                                        //     onChange={field.onChange}
+                                        // />
                                     )}
                                 />
                             </div>
@@ -239,10 +283,13 @@ function ScheduleModal(props) {
                                     name="petName"
                                     // value={formData.petName}
                                     // onChange={handleChange}
-                                    {...register("petName", { maxLength: {
-                                      value: 200,
-                                      message: "Pet name must not more than 200 characters"
-                                  }})}
+                                    {...register("petName", {
+                                        maxLength: {
+                                            value: 200,
+                                            message:
+                                                "Pet name must not more than 200 characters",
+                                        },
+                                    })}
                                 />
                             </div>
                             <div className="mb-3">
@@ -255,10 +302,13 @@ function ScheduleModal(props) {
                                     name="message"
                                     // value={formData.message}
                                     // onChange={handleChange}
-                                    {...register("message", { maxLength: {
-                                      value: 200,
-                                      message: "Message must not more than 200 characters"
-                                  }})}
+                                    {...register("message", {
+                                        maxLength: {
+                                            value: 200,
+                                            message:
+                                                "Message must not more than 200 characters",
+                                        },
+                                    })}
                                 ></textarea>
                             </div>
                             {/* <div className="mb-3">
@@ -285,33 +335,44 @@ function ScheduleModal(props) {
                                     onChange={handleChange}
                                 /> */}
                                 <Controller
-                                control={control}
-                                name="phone"
-                                rules={{ required: "Please enter your phone number.",
-                                        maxLength: { value:11, message: "Phone number must be 10 digits"},
-                                        minLength : { value:11, message: "Phone number must be 10 digits"}
-
+                                    control={control}
+                                    name="phone"
+                                    rules={{
+                                        required:
+                                            "Please enter your phone number.",
+                                        maxLength: {
+                                            value: 11,
+                                            message:
+                                                "Phone number must be 10 digits",
+                                        },
+                                        minLength: {
+                                            value: 11,
+                                            message:
+                                                "Phone number must be 10 digits",
+                                        },
                                     }}
-                                // className="form-control"
-                                render={({ field: { ref, ...field } }) => (
-                                    <PhoneInput
-                                    {...field}
-                                    inputProps={{
-                                        ref,
-                                        required: true,
-                                        autoFocus: true,
-                                        // className: "form-control py-2"
-                                    }}
-                                    masks={{th: '.. ... ....', }}
-                                    inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
-                                    inputStyle={{ width: "100%"}}
-                                    specialLabel={""}
-                                    disableDropdown={true}
-                                    country={"th"}
-                                    countryCodeEditable={false}
-                                    placeholder="Enter phone number"
-                                    />
-                                )}
+                                    // className="form-control"
+                                    render={({ field: { ref, ...field } }) => (
+                                        <PhoneInput
+                                            {...field}
+                                            inputProps={{
+                                                ref,
+                                                required: true,
+                                                autoFocus: true,
+                                                // className: "form-control py-2"
+                                            }}
+                                            masks={{ th: ".. ... ...." }}
+                                            inputClass={`${
+                                                errors.phone ? "is-invalid" : ""
+                                            } py-2`}
+                                            inputStyle={{ width: "100%" }}
+                                            specialLabel={""}
+                                            disableDropdown={true}
+                                            country={"th"}
+                                            countryCodeEditable={false}
+                                            placeholder="Enter phone number"
+                                        />
+                                    )}
                                 />
                             </div>
                         </div>

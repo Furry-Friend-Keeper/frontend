@@ -101,7 +101,7 @@ const DisableDate = () => {
                             <HelpOutlineIcon fontSize="small"/>
                         </Tooltip>
                         <div className="mt-2">
-                            <DateRangePicker format="MM/dd/yyyy HH:mm" />
+                            <DateRangePicker format="dd MMMM yyyy HH:mm"/>
                         </div>
                     </div>
                 </div>
