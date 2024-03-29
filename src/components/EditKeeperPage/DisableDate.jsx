@@ -18,10 +18,8 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import CheckIcon from "@rsuite/icons/Check";
-import CloseIcon from "@rsuite/icons/Close";
 
-const DisableDate = () => {
+const DisableDate = (apiData) => {
     const days = [
         "Sunday",
         "Monday",
@@ -73,6 +71,8 @@ const DisableDate = () => {
         EditDisbleDate(data);
         console.log(data);
     };
+
+    console.log(apiData.closedDay);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
