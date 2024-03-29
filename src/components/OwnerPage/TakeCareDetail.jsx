@@ -26,6 +26,7 @@ const TakeCareDetail = ({ requests }) => {
     console.log(requests);
 
        const {
+        control,
         register,
         handleSubmit,
     } = useForm();
@@ -268,11 +269,19 @@ const TakeCareDetail = ({ requests }) => {
                                                 {/* <Placeholder.Paragraph /> */}
                                                 <div className="modal-body">
                                                     <div className="mb-3">
-                                                        <Rate
-                                                            size="lg"
-                                                            color="yellow"
-                                                            {...register("star")}
-                                                        />
+                                                        
+                                                    <Controller
+                                            name="rating"
+                                            control={control}
+                                            render={({ field: { onChange, value } }) => (
+                                                <Rate
+                                                  value={value}
+                                                  onChange={(newValue) => onChange(newValue)}
+                                                  size="sm"
+                                                  color="yellow"
+                                                />
+                                              )}
+                                        />
                                                     </div>
                                                     <div className="mb-3">
                                                         <textarea

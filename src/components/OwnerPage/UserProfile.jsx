@@ -27,6 +27,7 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    ownerDocument,
 } from "@mui/material";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
@@ -35,7 +36,7 @@ import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import CameraRetroIcon from '@rsuite/icons/legacy/CameraRetro';
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 const SizedAvatar = styled(Avatar)`
   ${({ size, theme }) => `
@@ -61,7 +62,7 @@ function UserProfile(props) {
     const [alertStatus, setAlertStatus] = useState("");
     const [isImg, setImg] = useState();
 
-    const { register, handleSubmit, control } = useForm();
+    const { register, handleSubmit, control, formState: { errors } } = useForm();
 
     const fetchData = async () => {
         try {
@@ -83,11 +84,12 @@ function UserProfile(props) {
     };
 
     const EditOwner = async (data, isError) => {
+        const phoneNumber = (data.phone).replace(/^66/, "0").trim()
         const result = {
             firstName: data.firstName,
             lastName: data.lastName,
             petName: data.petName,
-            phone: data.phone,
+            phone: phoneNumber,
             email: data.email,
         };
         console.log(result);
@@ -97,14 +99,8 @@ function UserProfile(props) {
                     headers: { Authorization: "Bearer " + accessToken },
                 })
                 .then((res) => {
-                    fetchData();
-                    setApiData({ ...apiData, ...result });
-                    setAlertStatus("success");
                 })
                 .catch((err) => {
-                    console.log(err);
-                    setMessageLog(err.message);
-                    setAlertStatus("error");
                 });
         }
     };
@@ -114,12 +110,12 @@ function UserProfile(props) {
         if(isImg !== undefined) {
             const formData = new FormData();
             formData.append("file", isImg)
-            await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img", formData, {
+            await axios.patch(import.meta.env.VITE_OWNER_IMAGE + ownerId + "/profile-img", formData, {
                 headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
             }).then((res) => {
                 fetchData()
-                setOpen(true)
-                setAlertStatus('success')
+                // setOpen(true)
+                // setAlertStatus('success')
                 // setIsError(false)
                 isError = false
             }).catch((error) => {
@@ -132,9 +128,9 @@ function UserProfile(props) {
                     setMessageLog(error.message)
                 }
                 // setIsError(true)
-                setOpen(true)
+                // setOpen(true)
+                // setAlertStatus('error')
                 isError = true
-                setAlertStatus('error')
             })
         }
 
@@ -380,59 +376,38 @@ function UserProfile(props) {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label
-                                    htmlFor="lastName"
-                                    className="form-label"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    {...register("email", {
-                                        required:
-                                            "Email is required",
-                                        maxLength: {
-                                            value: 100,
-                                            message:
-                                                "Email must not more than 100 characters",
-                                        },
-                                    })}
-                                />
-                            </div>
-                            <div className="mb-3">
                                 <label htmlFor="phone" className="form-label">
                                     Phone
                                 </label>
-                                <PhoneInput
-                                    inputProps={{
-                                        required: true,
-                                        autoFocus: true,
-                                        className: "form-control py-2",
-                                    }}
-                                    masks={{ th: ".. ... ...." }}
-                                    inputStyle={{ width: "100%" }}
-                                    specialLabel={""}
-                                    country={"th"}
-                                    countryCodeEditable={false}
-                                    placeholder="Enter phone number"
-                                    {...register("phone", {
-                                        required:
-                                            "Phone is required",
-                                        maxLength: {
-                                            value: 10,
-                                            message:
-                                                "Phone number must be 10 digits",
-                                        },
-                                        minLength: {
-                                            value: 10,
-                                            message:
-                                                "Phone number must be 10 digits",
-                                        }
-                                    })}
-                                />
+                                <Controller
+                                    control={control}
+                                    name="phone"
+                                    rules={{ required: "Please enter your phone number.",
+                                            maxLength: { value:11, message: "Phone number must be 10 digits"},
+                                            minLength : { value:11, message: "Phone number must be 10 digits"}
+
+                                        }}
+                                    // className="form-control"
+                                    render={({ field: { ref, ...field } }) => (
+                                        <PhoneInput
+                                        {...field}
+                                        inputProps={{
+                                            ref,
+                                            required: true,
+                                            autoFocus: true,
+                                            // className: "form-control py-2"
+                                        }}
+                                        masks={{th: '.. ... ....', }}
+                                        inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                                        inputStyle={{ width: "100%"}}
+                                        specialLabel={""}
+                                        disableDropdown={true}
+                                        country={"th"}
+                                        countryCodeEditable={false}
+                                        placeholder="Enter phone number"
+                                        />
+                                    )}
+                                    ></Controller>
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="petName" className="form-label">
