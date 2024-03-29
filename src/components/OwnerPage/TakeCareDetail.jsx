@@ -21,12 +21,13 @@ const TakeCareDetail = ({ requests }) => {
         (state) => state.auth
     );
 
+    console.log(requests)
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    console.log(requests);
 
        const {
         register,
+        control,
         handleSubmit,
     } = useForm();
 
@@ -45,22 +46,31 @@ const TakeCareDetail = ({ requests }) => {
 
     const OwnerCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + id,
+            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id, { id : 6 },
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
         );
     };
 
-    const onSubmitOwnerCompleted = (data) => {
-        OwnerCompleted(data);
-    };
+    const OwnerCancelled = async (value) => {
+        console.log(value)
+        await axios.patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, { id : 3 },
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    }
+
+    // const onSubmitOwnerCompleted = (data) => {
+    //     OwnerCompleted(data);
+    // };
 
     const onSubmit = (data) => {
         const result = {
             comment: data.comment,
             petownerId: userInfo.id,
-            petkeeperId: data.keeperId,
+            petkeeperId: parseInt(data.keeperId, 10),
             star: data.star,
             date: moment().format(),
         };
@@ -73,6 +83,7 @@ const TakeCareDetail = ({ requests }) => {
             return (
                 <ButtonGroup className="w-100">
                     <Button
+                        onClick={() => OwnerCancelled(data)}
                         className="col-12 col-md-6"
                         appearance="primary"
                         color="red"
@@ -102,12 +113,12 @@ const TakeCareDetail = ({ requests }) => {
             );
         } else if (data.status === "Keeper Completed") {
             return (
-                <Form onSubmit={handleSubmit(onSubmitOwnerCompleted)}>
-                <Button appearance="primary" color="blue" type="submit">
+                // <Form onSubmit={handleSubmit(onSubmitOwnerCompleted)}>
+                <Button onClick={() => OwnerCompleted(data)} appearance="primary" color="blue" type="submit">
                     {" "}
                     Already get a pet{" "}
                 </Button>
-                </Form>
+                // </Form>
             );
         } else if (data.status === "Cancelled") {
             return (
@@ -266,13 +277,21 @@ const TakeCareDetail = ({ requests }) => {
                                             
                                             <Modal.Body>
                                                 {/* <Placeholder.Paragraph /> */}
+                                                <input type="hidden" {...register("keeperId")} defaultValue={item?.keeperId}/>
                                                 <div className="modal-body">
                                                     <div className="mb-3">
-                                                        <Rate
-                                                            size="lg"
+                                                    <Controller
+                                                        name="star"
+                                                        control={control}
+                                                        render={({ field: { onChange, value } }) => (
+                                                            <Rate
+                                                            value={value}
+                                                            onChange={(newValue) => onChange(newValue)}
+                                                            size="md"
                                                             color="yellow"
-                                                            {...register("star")}
-                                                        />
+                                                            />
+                                                        )}
+                                                    />
                                                     </div>
                                                     <div className="mb-3">
                                                         <textarea
