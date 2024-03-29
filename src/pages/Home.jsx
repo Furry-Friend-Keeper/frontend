@@ -62,15 +62,20 @@ function Home() {
 
   }, []);
 
+  function getURL(start, end) {
+    return `http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`
+  }
+
   useEffect(() => {
     let isMounted = true; // For avoiding state update on unmounted component
+
 
     async function calculateDistance(start, end) {
         const cacheKey = `${start.lat},${start.lng}-${end.lat},${end.lng}`;
         const cachedDistance = sessionStorage.getItem(cacheKey);
         if (cachedDistance) return parseFloat(cachedDistance);
 
-        const apiUrl = `http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
+        const apiUrl = getURL(start, end) //`http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
         try {
             const response = await axios.get(apiUrl);
             const distance = response.data.routes[0].distance;
