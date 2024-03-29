@@ -136,7 +136,7 @@ function ScheduleModal(props) {
     const disableSundays = (date) => {
         const momentDate = moment(date);
 
-        console.log(selectedRange[0])
+        // console.log(selectedRange[0])
 
         // Enable date if within selected range
         if (selectedRange[0] && selectedRange[1] && momentDate.isBetween(selectedRange[0], selectedRange[1], 'day', '[]')) {
@@ -230,14 +230,10 @@ function ScheduleModal(props) {
                                             // shouldDisableDate={date}
                                             shouldDisableDate={disableSundays}
                                             ranges={Ranges}
-                                            onOk={(value) => {
+                                            onChange={(value) => {
                                                 setSelectedRange(value);
                                                 field.onChange(value);
                                             }}
-                                            // onChange={(value) => {
-                                            //     setSelectedRange(value);
-                                            //     field.onChange(value);
-                                            // }}
                                         />
                                     )}
                                 />
