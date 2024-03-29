@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 
 const { Column, HeaderCell, Cell } = Table;
 
-
 const rowKey = "id";
 
 const ExpandCell = ({
@@ -39,8 +38,14 @@ const ExpandCell = ({
 const renderRowExpanded = (rowData) => {
     return (
         <div className="request-size">
-            <p>Start Date: {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}</p>
-            <p>End Date: {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm" )}</p>
+            <p>
+                Start Date:{" "}
+                {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}
+            </p>
+            <p>
+                End Date:{" "}
+                {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm")}
+            </p>
             <p>Owner Phone: {rowData.ownerPhone}</p>
             <p>Pet Name: {rowData.petName}</p>
             <p>Category: {rowData.category}</p>
@@ -60,11 +65,7 @@ function ScheduleRequest(props) {
     const [radioChange, setRadioChange] = useState("Pending");
     const [loading, setLoading] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        control,
-    } = useForm();
+    const { register, handleSubmit, control } = useForm();
 
     const fetchRequests = async () => {
         await axios
@@ -72,18 +73,19 @@ function ScheduleRequest(props) {
                 headers: { Authorization: "Bearer " + accessToken },
             })
             .then((res) => {
-                const response = res.data
+                const response = res.data;
                 const responseFilter = response.map((item, index) => {
                     item.id = index + 1;
                     return item;
-                })
+                });
                 setRequests(responseFilter);
             });
     };
 
     const PendingCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + 2, 2,
+            import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + value.id,
+            { id: 2 },
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -92,7 +94,8 @@ function ScheduleRequest(props) {
 
     const CancelCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + id,
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id,
+            { id: 3 },
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -101,16 +104,18 @@ function ScheduleRequest(props) {
 
     const InCareCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + id,
+            import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + value.id,
+            { id: 4 },
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
         );
     };
-    
+
     const KeeperCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + id,
+            import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + value.id,
+            { id: 5 },
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -192,7 +197,9 @@ function ScheduleRequest(props) {
                     <Cell>
                         {(rowData) => (
                             <span>
-                                {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}
+                                {moment
+                                    .unix(rowData.startDate)
+                                    .format("DD MMMM YYYY HH:mm")}
                             </span>
                         )}
                     </Cell>
@@ -202,7 +209,9 @@ function ScheduleRequest(props) {
                     <Cell>
                         {(rowData) => (
                             <span>
-                                {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm")}
+                                {moment
+                                    .unix(rowData.endDate)
+                                    .format("DD MMMM YYYY HH:mm")}
                             </span>
                         )}
                     </Cell>
@@ -222,52 +231,58 @@ function ScheduleRequest(props) {
                     <HeaderCell>Message</HeaderCell>
                     <Cell dataKey="message" />
                 </Column>
-                
-                { radioChange === "Pending" &&
+
+                {radioChange === "Pending" && (
+                    <Column width={80} fixed="right">
+                        <HeaderCell>...</HeaderCell>
+
+                        <Cell style={{ padding: "6px" }}>
+                                <Button
+                                appearance="link"
+                                onClick={() => {
+                                    CancelCompleted(data);
+                                }}
+                            >
+                                    Cancel
+                                </Button>
+                        </Cell>
+                    </Column>
+                )}
                 <Column width={80} fixed="right">
                     <HeaderCell>...</HeaderCell>
-
                     <Cell style={{ padding: "6px" }}>
-                        {(rowData) => (
+                        
+                            <div>
+                                {radioChange === "Pending" ? (
+                                    <Button
+                                    appearance="link"
+                                    onClick={() => {
+                                        PendingCompleted(data);
+                                    }}
+                                >
+                                        Confirm
+                                    </Button>
+                                ) : radioChange === "In Care" ? (
                                     <Button
                                         appearance="link"
-                                        onClick={() => alert(`id:${rowData.id}`)}
+                                        onClick={() => {
+                                            InCareCompleted(data);
+                                        }}
                                     >
-                                        Cancel
+                                        Accept
                                     </Button>
-                        )}
-                    </Cell>
-                </Column>
-                }
-                <Column width={80} fixed="right">
-                    <HeaderCell>...</HeaderCell>
-                    <Cell style={{ padding: "6px" }}>
-                        {(rowData) => (
-                            <div>
-                                { radioChange === "Pending" ?
-                                <Button
-                                    appearance="link"
-                                    onClick={() => alert(`id:${rowData.id}`)}
-                                >
-                                    Confirm
-                                </Button>
-                                : radioChange === "In Care" ?
-                                <Button
-                                    appearance="link"
-                                    onClick={() => alert(`id:${rowData.id}`)}
-                                >
-                                    Accept
-                                </Button>
-                                :
-                                <Button
-                                    appearance="link"
-                                    onClick={() => alert(`id:${rowData.id}`)}
-                                >
-                                    Completed
-                                </Button>
-                                }
+                                ) : (
+                                    <Button
+                                        appearance="link"
+                                        onClick={() => {
+                                            KeeperCompleted(data);
+                                        }}
+                                    >
+                                        Completed
+                                    </Button>
+                                )}
                             </div>
-                        )}
+                        
                     </Cell>
                 </Column>
             </Table>
