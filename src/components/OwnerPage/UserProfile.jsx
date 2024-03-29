@@ -62,7 +62,7 @@ function UserProfile(props) {
     const [alertStatus, setAlertStatus] = useState("");
     const [isImg, setImg] = useState();
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm();
+    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
 
     const fetchData = async () => {
         try {
@@ -76,7 +76,12 @@ function UserProfile(props) {
                 .then((response) => {
                     const data = response.data;
                     setOwnerData(data);
-                    console.log(data);
+                    const dataPhone = data.phone.replace(/^0/, "66").trim()
+                    setValue("firstName",data.firstName)
+                    setValue("lastName", data.lastName);
+                    setValue("petName", data.petName)
+                    setValue("phone", dataPhone)
+                    setValue("email", data.email)
                 });
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -110,7 +115,7 @@ function UserProfile(props) {
         if(isImg !== undefined) {
             const formData = new FormData();
             formData.append("file", isImg)
-            await axios.patch(import.meta.env.VITE_OWNER_IMAGE + ownerId + "/profile-img", formData, {
+            await axios.patch(import.meta.env.VITE_OWNER_ID + ownerId + "/profile-img", formData, {
                 headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
             }).then((res) => {
                 fetchData()
@@ -134,10 +139,12 @@ function UserProfile(props) {
             })
         }
 
+        console.log("test")
         EditOwner(data, isError)
     };
 
     const onSubmit = (data) => {
+        console.log(data)
         EditOwnerProfileImg(data);
     };
 
@@ -390,24 +397,24 @@ function UserProfile(props) {
                                     // className="form-control"
                                     render={({ field: { ref, ...field } }) => (
                                         <PhoneInput
-                                        {...field}
-                                        inputProps={{
-                                            ref,
-                                            required: true,
-                                            autoFocus: true,
-                                            // className: "form-control py-2"
-                                        }}
-                                        masks={{th: '.. ... ....', }}
-                                        inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
-                                        inputStyle={{ width: "100%"}}
-                                        specialLabel={""}
-                                        disableDropdown={true}
-                                        country={"th"}
-                                        countryCodeEditable={false}
-                                        placeholder="Enter phone number"
+                                            {...field}
+                                            inputProps={{
+                                                ref,
+                                                required: true,
+                                                autoFocus: true,
+                                                // className: "form-control py-2"
+                                            }}
+                                            masks={{th: '.. ... ....', }}
+                                            inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                                            inputStyle={{ width: "100%"}}
+                                            specialLabel={""}
+                                            disableDropdown={true}
+                                            country={"th"}
+                                            countryCodeEditable={false}
+                                            placeholder="Enter phone number"
                                         />
                                     )}
-                                    ></Controller>
+                                    />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="petName" className="form-label">
@@ -430,7 +437,7 @@ function UserProfile(props) {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={handleClose} appearance="primary" type="submit">
+                        <Button appearance="primary" type="submit">
                             Ok
                         </Button>
                         <Button onClick={handleClose} appearance="subtle">

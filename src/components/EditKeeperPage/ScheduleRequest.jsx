@@ -222,31 +222,51 @@ function ScheduleRequest(props) {
                     <HeaderCell>Message</HeaderCell>
                     <Cell dataKey="message" />
                 </Column>
-                {}
+                
+                { radioChange === "Pending" &&
                 <Column width={80} fixed="right">
                     <HeaderCell>...</HeaderCell>
 
                     <Cell style={{ padding: "6px" }}>
                         {(rowData) => (
-                            <Button
-                                appearance="link"
-                                onClick={() => alert(`id:${rowData.id}`)}
-                            >
-                                Cancel
-                            </Button>
+                                    <Button
+                                        appearance="link"
+                                        onClick={() => alert(`id:${rowData.id}`)}
+                                    >
+                                        Cancel
+                                    </Button>
                         )}
                     </Cell>
                 </Column>
+                }
                 <Column width={80} fixed="right">
                     <HeaderCell>...</HeaderCell>
                     <Cell style={{ padding: "6px" }}>
                         {(rowData) => (
-                            <Button
-                                appearance="link"
-                                onClick={() => alert(`id:${rowData.id}`)}
-                            >
-                                Confirm
-                            </Button>
+                            <div>
+                                { radioChange === "Pending" ?
+                                <Button
+                                    appearance="link"
+                                    onClick={() => alert(`id:${rowData.id}`)}
+                                >
+                                    Confirm
+                                </Button>
+                                : radioChange === "In Care" ?
+                                <Button
+                                    appearance="link"
+                                    onClick={() => alert(`id:${rowData.id}`)}
+                                >
+                                    Accept
+                                </Button>
+                                :
+                                <Button
+                                    appearance="link"
+                                    onClick={() => alert(`id:${rowData.id}`)}
+                                >
+                                    Completed
+                                </Button>
+                                }
+                            </div>
                         )}
                     </Cell>
                 </Column>
