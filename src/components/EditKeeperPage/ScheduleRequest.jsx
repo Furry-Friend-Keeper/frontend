@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, IconButton, Radio, RadioGroup } from "rsuite";
+import { Table, Button, IconButton, Radio, RadioGroup, Form } from "rsuite";
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { useForm } from "react-hook-form";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -59,6 +60,12 @@ function ScheduleRequest(props) {
     const [radioChange, setRadioChange] = useState("Pending");
     const [loading, setLoading] = useState(false);
 
+    const {
+        register,
+        handleSubmit,
+        control,
+    } = useForm();
+
     const fetchRequests = async () => {
         await axios
             .get(import.meta.env.VITE_KEEPER_APPOINTMENT_ID + keeperId, {
@@ -74,6 +81,42 @@ function ScheduleRequest(props) {
             });
     };
 
+    const PendingCompleted = async (value) => {
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + 2, 2,
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    };
+
+    const CancelCompleted = async (value) => {
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + id,
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    };
+
+    const InCareCompleted = async (value) => {
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + id,
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    };
+    
+    const KeeperCompleted = async (value) => {
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + id,
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    };
+
     useEffect(() => {
         fetchRequests();
     }, []);
@@ -81,7 +124,6 @@ function ScheduleRequest(props) {
     useEffect(() => {
         setLoading(true);
         const filter = requests.filter((item) => item.status === radioChange);
-        // console.log(filter)
         setStatusRequests(filter);
         setTimeout(() => {
             setLoading(false);
@@ -106,7 +148,6 @@ function ScheduleRequest(props) {
 
         setExpandedRowKeys(nextExpandedRowKeys);
     };
-    // console.log(radioChange);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -176,16 +217,12 @@ function ScheduleRequest(props) {
                     <HeaderCell>Pet Name</HeaderCell>
                     <Cell dataKey="petName" />
                 </Column>
-                {/* <Column width={100}>
-                    <HeaderCell>Category</HeaderCell>
-                    <Cell dataKey="category" />
-                </Column> */}
-
 
                 <Column width={200}>
                     <HeaderCell>Message</HeaderCell>
                     <Cell dataKey="message" />
                 </Column>
+                {}
                 <Column width={80} fixed="right">
                     <HeaderCell>...</HeaderCell>
 
@@ -202,7 +239,6 @@ function ScheduleRequest(props) {
                 </Column>
                 <Column width={80} fixed="right">
                     <HeaderCell>...</HeaderCell>
-
                     <Cell style={{ padding: "6px" }}>
                         {(rowData) => (
                             <Button

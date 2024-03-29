@@ -34,7 +34,6 @@ const DisableDate = (apiData) => {
         register,
         handleSubmit,
         control,
-        formState: { errors },
     } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
@@ -93,7 +92,7 @@ const DisableDate = (apiData) => {
             <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
                     <div className="col-6">
-                        <Label className="pb-3">Permanently close</Label>
+                        <Label className="pb-3">Close Days</Label>
                         <Form.HelpText tooltip>
                             วันที่ร้านปิดเป็นประจำ
                         </Form.HelpText>
@@ -123,7 +122,7 @@ const DisableDate = (apiData) => {
                         </div>
                     </div>
                     <div className="col-6">
-                        <Label className="pb-3">Temporary Close</Label>
+                        <Label className="pb-3">Temporary Close Days</Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
                         </Form.HelpText>

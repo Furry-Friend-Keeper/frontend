@@ -12,7 +12,7 @@ import StarIcon from "@mui/icons-material/Star";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
-// import { useSelector, useDispatch } from 'react-redux'
+import axios from "axios";
 
 const TakeCareDetail = ({ requests }) => {
     const [open, setOpen] = useState(false);
@@ -28,7 +28,6 @@ const TakeCareDetail = ({ requests }) => {
        const {
         register,
         handleSubmit,
-        formState: { errors },
     } = useForm();
 
     const SaveOwnerComment = async (data) => {
@@ -44,11 +43,24 @@ const TakeCareDetail = ({ requests }) => {
             });
     };
 
+    const OwnerCompleted = async (value) => {
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + id,
+            {
+                headers: { Authorization: "Bearer " + accessToken },
+            }
+        );
+    };
+
+    const onSubmitOwnerCompleted = (data) => {
+        OwnerCompleted(data);
+    };
+
     const onSubmit = (data) => {
         const result = {
             comment: data.comment,
             petownerId: userInfo.id,
-            petkeeperId: parseInt(id, 10),
+            petkeeperId: data.keeperId,
             star: data.star,
             date: moment().format(),
         };
@@ -90,10 +102,12 @@ const TakeCareDetail = ({ requests }) => {
             );
         } else if (data.status === "Keeper Completed") {
             return (
-                <Button appearance="primary" color="blue">
+                <Form onSubmit={handleSubmit(onSubmitOwnerCompleted)}>
+                <Button appearance="primary" color="blue" type="submit">
                     {" "}
                     Already get a pet{" "}
                 </Button>
+                </Form>
             );
         } else if (data.status === "Cancelled") {
             return (
@@ -155,8 +169,10 @@ const TakeCareDetail = ({ requests }) => {
                                     sx={{ minWidth: 182 }}
                                 >
                                     <img
-                                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                                        srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+                                        // src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+                                        // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
+                                        // src={item.keeperImg}
+                                        src={item.keeperImg ? import.meta.env.VITE_KEEPER_IMAGE + item.keeperId + "/" + item.keeperImg : null}
                                         loading="lazy"
                                     />
                                 </AspectRatio>
@@ -169,7 +185,7 @@ const TakeCareDetail = ({ requests }) => {
                                         fontWeight="lg"
                                         textColor="text.tertiary"
                                     >
-                                        Categories
+                                        Category : {item.category}
                                     </Typography>
                                     <Sheet
                                         sx={{
@@ -190,18 +206,7 @@ const TakeCareDetail = ({ requests }) => {
                                                 Phone
                                             </Typography>
                                             <Typography fontWeight="lg">
-                                                082xxxxxxxx
-                                            </Typography>
-                                        </div>
-                                        <div>
-                                            <Typography
-                                                level="body-xs"
-                                                fontWeight="lg"
-                                            >
-                                                Rating
-                                            </Typography>
-                                            <Typography fontWeight="lg">
-                                                3.2
+                                                {item.keeperPhone}
                                             </Typography>
                                         </div>
                                         <div>
@@ -252,12 +257,13 @@ const TakeCareDetail = ({ requests }) => {
                                             open={open}
                                             onClose={handleClose}
                                         >
+                                            <Form onSubmit={handleSubmit(onSubmit)}>
                                             <Modal.Header>
                                                 <Modal.Title>
                                                     Review
                                                 </Modal.Title>
                                             </Modal.Header>
-                                            <Form onSubmit={handleSubmit(SaveOwnerComment)}>
+                                            
                                             <Modal.Body>
                                                 {/* <Placeholder.Paragraph /> */}
                                                 <div className="modal-body">
@@ -283,7 +289,7 @@ const TakeCareDetail = ({ requests }) => {
                                                     </div>
                                                 </div>
                                             </Modal.Body>
-                                            </Form>
+                                            
                                             <Modal.Footer>
                                                 <Button
                                                     onClick={handleClose}
@@ -300,6 +306,7 @@ const TakeCareDetail = ({ requests }) => {
                                                     Cancel
                                                 </Button>
                                             </Modal.Footer>
+                                            </Form>
                                         </Modal>
                                     </Box>
                                 </CardContent>
