@@ -168,7 +168,7 @@ function KeeperContents(props) {
                         <div className='distance-keeper d-flex justify-content-between align-items-center mb-2'>
                             <div className='d-flex align-items-end'>
                                 <PlaceOutlinedIcon />
-                                <p className='mt-0 fs-6'>{distance} Km.</p>
+                                <p className='mt-0 fs-6'>{distance} km</p>
                             </div>
                             <div>
                                 <FavoriteBorderIcon />
