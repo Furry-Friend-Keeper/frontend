@@ -12,16 +12,6 @@ const Favorite = () => {
     const { ownerId } = useParams();
     const [favorite, setFavorite] = useState([]);
 
-    const fetchFavorite = async () => {
-        await axios
-            .get(import.meta.env.VITE_OWNER_FAVORITE_ID + ownerId, {
-                headers: { Authorization: "Bearer " + accessToken },
-            })
-            .then((response) => {
-                setFavorite(response.data);
-                console.log(response.data);
-            });
-    };
 
     useEffect(() => {
         fetchFavorite();
