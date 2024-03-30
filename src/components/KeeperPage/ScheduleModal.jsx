@@ -11,8 +11,7 @@ import { TagPicker, SelectPicker } from "rsuite";
 import PhoneInput from "react-phone-input-2";
 
 function ScheduleModal(props) {
-    const { keeperId, closedDays } = props;
-    // const { beforeToday } = DateRangePicker;
+    const { keeperId, closedDays , availableStore } = props;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
@@ -95,6 +94,7 @@ function ScheduleModal(props) {
 
         // SignUpForm(data);
     };
+    console.log(availableStore);
 
     const PetKeeperCategories = async () => {
         await axios
@@ -187,6 +187,12 @@ function ScheduleModal(props) {
                                 Login
                             </a>{" "}
                             First
+                        </p>
+                    </div>
+                ) : availableStore === false ? (
+                    <div className="mt-3 d-flex justify-content-center align-items-center">
+                        <p className="fw-bold ">
+                            Store has close
                         </p>
                     </div>
                 ) : userInfo.role === "Owner" ? (

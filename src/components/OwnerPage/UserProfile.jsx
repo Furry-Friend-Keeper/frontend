@@ -27,6 +27,7 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    ownerDocument,
 } from "@mui/material";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
@@ -89,7 +90,6 @@ function UserProfile(props) {
 
     const EditOwner = async (data, isError) => {
         const phoneNumber = (data.phone).replace(/^66/, "0").trim()
-
         const result = {
             firstName: data.firstName,
             lastName: data.lastName,
@@ -104,14 +104,8 @@ function UserProfile(props) {
                     headers: { Authorization: "Bearer " + accessToken },
                 })
                 .then((res) => {
-                    fetchData();
-                    setApiData({ ...apiData, ...result });
-                    setAlertStatus("success");
                 })
                 .catch((err) => {
-                    console.log(err);
-                    setMessageLog(err.message);
-                    setAlertStatus("error");
                 });
         }
     };
@@ -125,8 +119,8 @@ function UserProfile(props) {
                 headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
             }).then((res) => {
                 fetchData()
-                setOpen(true)
-                setAlertStatus('success')
+                // setOpen(true)
+                // setAlertStatus('success')
                 // setIsError(false)
                 isError = false
             }).catch((error) => {
@@ -139,9 +133,9 @@ function UserProfile(props) {
                     setMessageLog(error.message)
                 }
                 // setIsError(true)
-                setOpen(true)
+                // setOpen(true)
+                // setAlertStatus('error')
                 isError = true
-                setAlertStatus('error')
             })
         }
 
@@ -384,29 +378,6 @@ function UserProfile(props) {
                                             value: 200,
                                             message:
                                                 "Lastname must not more than 200 characters",
-                                        },
-                                    })}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label
-                                    htmlFor="lastName"
-                                    className="form-label"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    {...register("email", {
-                                        required:
-                                            "Email is required",
-                                        maxLength: {
-                                            value: 100,
-                                            message:
-                                                "Email must not more than 100 characters",
                                         },
                                     })}
                                 />
