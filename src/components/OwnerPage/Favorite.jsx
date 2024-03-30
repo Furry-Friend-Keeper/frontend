@@ -13,10 +13,6 @@ const Favorite = () => {
     const [favorite, setFavorite] = useState([]);
 
 
-    useEffect(() => {
-        fetchFavorite();
-    }, []);
-
     return (
         <>
             <div className="col-md-8 pe-0">
