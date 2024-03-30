@@ -9,26 +9,6 @@ import {
     useToaster,
     Form,
 } from "rsuite";
-import {
-    Container,
-    TextField,
-    IconButton,
-    Rating,
-    Select,
-    Chip,
-    Stack,
-    Card,
-    CardMedia,
-    Box,
-    Snackbar,
-    Alert,
-    AlertTitle,
-    OutlinedInput,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    ownerDocument,
-} from "@mui/material";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
@@ -46,11 +26,11 @@ const SizedAvatar = styled(Avatar)`
 `;
 
 function UserProfile(props) {
-    const { ownerId } = props;
+    const { ownerId, ownerData } = props;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
-    const [ownerData, setOwnerData] = useState([]);
+    // const [ownerData, setOwnerData] = useState([]);
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("true");
     const handleOpen = () => setOpen(true);
@@ -64,29 +44,16 @@ function UserProfile(props) {
 
     const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
 
-    const fetchData = async () => {
-        try {
-            const apiUrl = import.meta.env.VITE_OWNER_ID + ownerId;
-            await axios
-                .get(apiUrl, {
-                    headers: {
-                        Authorization: "Bearer " + accessToken,
-                    },
-                })
-                .then((response) => {
-                    const data = response.data;
-                    setOwnerData(data);
-                    const dataPhone = data.phone.replace(/^0/, "66").trim()
-                    setValue("firstName",data.firstName)
-                    setValue("lastName", data.lastName);
-                    setValue("petName", data.petName)
-                    setValue("phone", dataPhone)
-                    setValue("email", data.email)
-                });
-        } catch (error) {
-            console.error("Error fetching data:", error);
+    useEffect(() => {
+        if(Object.keys(ownerData).length !== 0) {
+            const dataPhone = ownerData?.phone.replace(/^0/, "66").trim()
+            setValue("firstName",ownerData?.firstName)
+            setValue("lastName", ownerData?.lastName);
+            setValue("petName", ownerData?.petName)
+            setValue("phone", dataPhone)
+            setValue("email", ownerData?.email)
         }
-    };
+    },[ownerData]);
 
     const EditOwner = async (data, isError) => {
         const phoneNumber = (data.phone).replace(/^66/, "0").trim()
@@ -147,10 +114,6 @@ function UserProfile(props) {
         console.log(data)
         EditOwnerProfileImg(data);
     };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     const previewFile = (file, callback) => {
         const reader = new FileReader();
