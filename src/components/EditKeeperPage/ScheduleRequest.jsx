@@ -73,11 +73,11 @@ function ScheduleRequest(props) {
             })
             .then((res) => {
                 const response = res.data
-                const responseFilter = response.map((item, index) => {
-                    item.id = index + 1;
-                    return item;
-                })
-                setRequests(responseFilter);
+                // const responseFilter = response.map((item, index) => {
+                //     item.id = index + 1;
+                //     return item;
+                // })   
+                setRequests(response);
             });
     };
 

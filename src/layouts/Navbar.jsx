@@ -10,10 +10,19 @@ import { logout, resetStore } from "../store/AuthSlice";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from '@mui/icons-material/Login';
-import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import LoginIcon from "@mui/icons-material/Login";
+import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Container } from "@mui/material";
+import {
+  Button,
+  AvatarGroup,
+  Avatar,
+  Dropdown,
+  Popover,
+  Whisper,
+  ButtonToolbar,
+} from "rsuite";
 
 function Navbar() {
   const settings = ["Profile", "Logout"];
@@ -22,6 +31,7 @@ function Navbar() {
   const isLogin = useSelector((state) => state.auth.accessToken);
   const getRole = useSelector((state) => state.auth.userInfo.role);
   const getId = useSelector((state) => state.auth.userInfo.id);
+  const getName = useSelector((state) => state.auth.userInfo.name) || "";
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -38,10 +48,27 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  const renderToggle = (props) => (
+    <Button
+      {...props}
+      appearance="subtle"
+      // onClick={handleOpenUserMenu}
+      sx={{ p: 0 }}
+    >
+      <Avatar
+        circle
+        src="https://avatars.githubusercontent.com/u/8225666"
+        alt="@SevenOutman"
+      />
+      {/* <span className="person-navbar">{getName.charAt(0).toUpperCase() + getName.slice(1)}</span> */}
+      <KeyboardArrowDownIcon />
+    </Button>
+  );
+
   return (
     <>
       <nav className="navbar navbar-expand-lg">
-          <Container maxWidth="lg">
+        <Container maxWidth="lg">
           <Link className="navbar-brand navbar-head" to="/at3">
             <div className="d-flex align-items-center">
               <img
@@ -75,10 +102,19 @@ function Navbar() {
             </button>
             <ul
               className={
-                isDropdownOpen ? "profile-menu dropdown-menu show" : "profile-menu dropdown-menu"
+                isDropdownOpen
+                  ? "profile-menu dropdown-menu show"
+                  : "profile-menu dropdown-menu"
               }
               aria-labelledby="dropdownMenuButton"
             >
+              <li style={{ padding: 10, width: 160 }}>
+                <p>Signed in as</p>
+                <strong>
+                  {getName?.charAt(0)?.toUpperCase() + getName?.slice(1)}
+                </strong>
+              </li>
+              <li className=" border-1 border my-2"></li>
               {isLogin && getRole === "PetKeeper" ? (
                 <li>
                   <a
@@ -89,18 +125,17 @@ function Navbar() {
                     My Shop
                   </a>
                 </li>
-              ): 
-              isLogin && getRole === "Owner" && 
-                <li>
-                  <a
-                    className="dropdown-item"
-                    href={`/at3/owner/${getId}`}
-                  >
-                    <PersonIcon className="profile-icon" />
-                    View profile
-                  </a>
-                </li>
-              }
+              ) : (
+                isLogin &&
+                getRole === "Owner" && (
+                  <li>
+                    <a className="dropdown-item" href={`/at3/owner/${getId}`}>
+                      <PersonIcon className="profile-icon" />
+                      View profile
+                    </a>
+                  </li>
+                )
+              )}
               {!isLogin && (
                 <li>
                   <a className="dropdown-item" href="/at3/login">
@@ -145,76 +180,47 @@ function Navbar() {
               )}
               {isLogin && (
                 <li className="nav-item ">
-                  <Tooltip title="Open settings" className="ms-3">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <PersonIcon className="person-icon" />
-                      <KeyboardArrowDownIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Menu
-                    sx={{ mt: "45px" }}
-                    id="menu-appbar"
-                    anchorEl={anchorElUser}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
-                    className="profile-menu"
-                  >
+                  <Dropdown renderToggle={renderToggle} placement="bottomEnd">
+                    <Dropdown.Item panel style={{ padding: 10, width: 160 }}>
+                      <p>Signed in as</p>
+                      <strong>
+                        {getName.charAt(0).toUpperCase() + getName.slice(1)}
+                      </strong>
+                    </Dropdown.Item>
+                    <Dropdown.Separator />
                     {getRole === "PetKeeper" ? (
-                      <MenuItem onClick={handleCloseUserMenu}>
+                      <Dropdown.Item>
                         <StoreOutlinedIcon className="profile-icon" />
-                        <Typography textAlign="left">
-                          <Link
-                            className="text-black"
-                            to={"/at3/keeper-edit/" + getId}
-                          >
-                            My Shop
-                          </Link>
-                        </Typography>
-                      </MenuItem>
+                        <Link
+                          className="text-black"
+                          to={"/at3/keeper-edit/" + getId}
+                        >
+                          My Shop
+                        </Link>
+                      </Dropdown.Item>
                     ) : (
-                      <MenuItem onClick={handleCloseUserMenu}>
+                      <Dropdown.Item>
                         <PersonIcon className="profile-icon" />
-                        <Typography textAlign="left">
-                          <Link
-                            className="text-black"
-                            to={`/at3/owner/${getId}`}
-                          >
-                            View profile
-                          </Link>
-                        </Typography>
-                      </MenuItem>
+                        <Link className="text-black" to={`/at3/owner/${getId}`}>
+                          View profile
+                        </Link>
+                      </Dropdown.Item>
                     )}
-                    {/* <br /> */}
-                    <li className=" border-1 border my-2"></li>
-
-                    <MenuItem
-                      onClick={handleCloseUserMenu}
-                    >
+                    <Dropdown.Separator />
+                    <Dropdown.Item>
                       <LogoutIcon className="profile-icon" />
-                      <Typography
-                        onClick={() => dispatch(logout())}
-                        textAlign="left"
-                      >
+                      <span onClick={() => dispatch(logout())}>
                         <a className="text-black" href="/at3">
                           Logout
                         </a>
-                      </Typography>
-                    </MenuItem>
-                  </Menu>
+                      </span>
+                    </Dropdown.Item>
+                  </Dropdown>
                 </li>
               )}
             </ul>
           </div>
-          </Container>
+        </Container>
       </nav>
       <Outlet />
     </>

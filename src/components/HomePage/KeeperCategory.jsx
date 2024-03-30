@@ -12,6 +12,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { Button, ButtonGroup } from "rsuite";
 import axios from "axios";
 import { Rate } from "rsuite";
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
 function KeeperCategory(props) {
   const {
@@ -85,7 +86,7 @@ function KeeperCategory(props) {
               onClick={() => selectratingrange(value)}
             >
               <Rate defaultValue={value} size="xs" color="yellow" readOnly />
-              {value !== 5 && <span className="my-auto">more</span>}
+              {value !== 5 && <KeyboardDoubleArrowUpIcon />}
             </div>
           ))}
         </div>

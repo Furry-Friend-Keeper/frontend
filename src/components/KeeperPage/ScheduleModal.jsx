@@ -12,17 +12,17 @@ import PhoneInput from "react-phone-input-2";
 
 function ScheduleModal(props) {
     const { keeperId, closedDays } = props;
-    const { beforeToday } = DateRangePicker;
+    // const { beforeToday } = DateRangePicker;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
     const [show, setShow] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
-    const [selectedRange, setSelectedRange] = useState([null, null]);
+    const [dateRange, setDateRange] = useState([null,null]);
 
     const {
         register,
-        watch,
+        setValue,
         control,
         handleSubmit,
         formState: { errors },
@@ -85,6 +85,12 @@ function ScheduleModal(props) {
             })
             .then((res) => {
                 handleClose();
+                setValue("dateRange","")
+                setValue("message","")
+                setValue("petName","")
+                setValue("phone","")
+                setValue("tags","")
+                setDateRange([null, null])
             });
 
         // SignUpForm(data);
@@ -119,8 +125,8 @@ function ScheduleModal(props) {
     // };
 
     const disabledDaysArray = closedDays?.split(',')?.map(day => day.trim())?.filter(day => day !== "") || [];
-    console.log(closedDays)
-    console.log(disabledDaysArray)
+    // console.log(closedDays)
+    // console.log(disabledDaysArray)
 
     // const disabledDaysArray = ["Sunday", "Monday", "Tuesday"];
 
@@ -133,14 +139,24 @@ function ScheduleModal(props) {
         endDate: moment("2024-04-27T16:30:00+07:00")
     };
 
+    const handleSelect = (value) => {
+        let range = dateRange
+        if(dateRange.length >= 2) range = [value]
+        else range = [...dateRange, value];
+        setDateRange(range)
+      };
+
     const disableSundays = (date) => {
         const momentDate = moment(date);
+    const today = moment().startOf('day'); // Get today's date at the start of the day for comparison
 
-        // console.log(selectedRange[0])
-
-        // Enable date if within selected range
-        if (selectedRange[0] && selectedRange[1] && momentDate.isBetween(selectedRange[0], selectedRange[1], 'day', '[]')) {
-            return false;
+        // Disable dates before today
+        if (momentDate.isBefore(today)) {
+            return true;
+        }
+    //    console.log(dateRange)
+       if (dateRange[0] && dateRange[1] && moment(date).isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
+        return false;
         }
         // Check if the date is a disabled weekday
         if (disabledWeekdays.includes(momentDate.day())) {
@@ -224,16 +240,15 @@ function ScheduleModal(props) {
                                             format="dd MMMM yyyy HH:mm"
                                             appearance="default"
                                             block
-                                            onSelect={(value) => {
-                                                setSelectedRange(value);
-                                            }}
-                                            // shouldDisableDate={date}
+                                            showHeader={false}
+                                            onSelect={handleSelect}
                                             shouldDisableDate={disableSundays}
                                             ranges={Ranges}
                                             onChange={(value) => {
-                                                setSelectedRange(value);
+                                                setDateRange(value);
                                                 field.onChange(value);
                                             }}
+                                            onClean={(event) => setDateRange([null, null])}
                                         />
                                     )}
                                 />

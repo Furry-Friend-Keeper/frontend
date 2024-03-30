@@ -182,7 +182,7 @@ function KeeperContents(props) {
                             <h5><Link to={`/at3/keepers/${item.id}`} className="text-black" >{item.name}</Link></h5>
                         </div>
                         <div>
-                        <Rate className='mb-2' value={item.reviewStars} size="xs" color="yellow" readOnly />
+                        <Rate className='mb-2' value={item.reviewStars} size="xs" color="yellow" readOnly allowHalf />
                         {/* <Rating className='mb-2' name="half-rating-read" value={item.reviewStars} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
                         <Stack direction="row" spacing={1} className="justify-content-center d-block">
                                 {item.categories && 

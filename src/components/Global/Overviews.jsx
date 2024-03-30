@@ -14,7 +14,6 @@ function Overviews(props) {
 
     useEffect(() => {
         setReviewsData(isOwnerReview)
-        console.log("test")
     },[isOwnerReview])
 
     const {  userInfo, accessToken } = useSelector((state) => state.auth)  
