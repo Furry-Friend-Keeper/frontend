@@ -1241,3 +1241,24 @@ div.scrollmenu a:hover {
 .request-size p {
   font-size: 15px !important;
 }
+
+.status-open {
+  color: #57BF00;
+}
+
+.status-close {
+  color: #FEBC25;
+}
+
+.image-status {
+  position: relative;
+  & .status-close, .status-open {
+    position: absolute;
+    font-size: 12px;
+    top: 8px;
+    left: 8px;
+    background-color: white;
+    padding: 4px 8px;
+    border-radius: 20px;
+  }
+}

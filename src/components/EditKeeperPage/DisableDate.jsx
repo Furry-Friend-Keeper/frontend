@@ -3,9 +3,14 @@ import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import { Tooltip } from "@mui/material";
 import { styled } from "@mui/system";
-// import Stack from "@mui/material/Stack";
 import { useForm, Controller } from "react-hook-form";
-// import moment from "moment";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import ListSubheader from "@mui/joy/ListSubheader";
+import ListItemButton from "@mui/joy/ListItemButton";
+import Sheet from "@mui/joy/Sheet";
+import Delete from "@mui/icons-material/Delete";
+import IconButton from "@mui/joy/IconButton";
 import {
     DateRangePicker,
     CheckPicker,
@@ -30,11 +35,7 @@ const DisableDate = (apiData) => {
         "Saturday",
     ].map((item) => ({ label: item, value: item }));
 
-    const {
-        register,
-        handleSubmit,
-        control,
-    } = useForm();
+    const { register, handleSubmit, control } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
@@ -52,13 +53,14 @@ const DisableDate = (apiData) => {
         );
     };
 
-    const CloseStore = async (value) => {
+    const CloseStore = async () => {
         await axios.patch(
-            import.meta.env.VITE_KEEPERS_ID + keeperId,
+            import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
+            {},
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
-            );
+        );
     };
 
     const handleDaySelect = (value) => {
@@ -71,22 +73,11 @@ const DisableDate = (apiData) => {
         console.log(data);
     };
 
-    console.log(apiData.closedDay);
-
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
             <div className="row">
                 <div className="col-6">
                     <h3>Store Close</h3>
-                </div>
-                <div className="col-6">
-                    <Toggle
-                        className="mt-3"
-                        size="md"
-                        checkedChildren="Open"
-                        unCheckedChildren="Close"
-                        onChange={handleSubmit(CloseStore)}
-                    />
                 </div>
             </div>
             <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
@@ -122,6 +113,25 @@ const DisableDate = (apiData) => {
                         </div>
                     </div>
                     <div className="col-6">
+                        <Label className="pb-3">Store Close</Label>
+                        <div>
+                            <Toggle
+                                className="mt-3"
+                                size="lg"
+                                // defaultChecked={test.available}
+                                checkedChildren="Open"
+                                unCheckedChildren="Close"
+                                onChange={() => CloseStore()}
+                            />
+                        </div>
+                    </div>
+                    <div></div>
+                    <div className="col-6">
+                        <div className="mt-2"></div>
+                    </div>
+                </div>
+                <div className="row mt-3">
+                    <div className="col-6">
                         <Label className="pb-3">Temporary Close Days</Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
@@ -129,6 +139,45 @@ const DisableDate = (apiData) => {
                         <div className="mt-2">
                             <DateRangePicker format="dd MMMM yyyy HH:mm" />
                         </div>
+                    </div>
+                    <div className="col-6">
+                        <Sheet
+                            variant="outlined"
+                            sx={{
+                                width: 320,
+                                maxHeight: 300,
+                                overflow: "auto",
+                                borderRadius: "sm",
+                            }}
+                        >
+                            <List>
+                                <ListItem nested>
+                                    <ListSubheader sticky>
+                                        Data Range
+                                    </ListSubheader>
+                                    <List>
+                                        {[...Array(10)].map((__, index) => (
+                                            <ListItem
+                                                key={index}
+                                                endAction={
+                                                    <IconButton
+                                                        aria-label="Delete"
+                                                        size="sm"
+                                                        color="danger"
+                                                    >
+                                                        <Delete />
+                                                    </IconButton>
+                                                }
+                                            >
+                                                <ListItemButton>
+                                                    Date Range {index + 1}
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </ListItem>
+                            </List>
+                        </Sheet>
                     </div>
                 </div>
                 <div className="d-flex justify-content-end ">

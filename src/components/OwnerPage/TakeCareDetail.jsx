@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import AspectRatio from "@mui/joy/AspectRatio";
 import Box from "@mui/joy/Box";
-// import { Button as ButtonMui } from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
 import Sheet from "@mui/joy/Sheet";
-import { Modal, Button, Placeholder, Rate, ButtonGroup, Form } from "rsuite";
-import Rating from "@mui/material/Rating";
-import StarIcon from "@mui/icons-material/Star";
+import {
+    Modal,
+    Button,
+    Placeholder,
+    Rate,
+    ButtonGroup,
+    Form,
+    Radio,
+    RadioGroup,
+} from "rsuite";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
@@ -17,19 +23,18 @@ import axios from "axios";
 const TakeCareDetail = ({ requests }) => {
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
-    const { loading, userInfo, error, success, accessToken } = useSelector(
+    const { userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
 
-    console.log(requests)
+    console.log(requests);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-       const {
-        register,
-        control,
-        handleSubmit,
-    } = useForm();
+    const { register, control, handleSubmit } = useForm();
+    const [radioChange, setRadioChange] = useState("Pending");
+    const [loading, setLoading] = useState(false);
+    const [statusRequests, setStatusRequests] = useState([]);
 
     const SaveOwnerComment = async (data) => {
         await axios
@@ -37,7 +42,7 @@ const TakeCareDetail = ({ requests }) => {
                 headers: { Authorization: "Bearer " + accessToken },
             })
             .then(() => {
-                console.log("success")
+                console.log("success");
             })
             .catch((err) => {
                 console.log(err);
@@ -46,7 +51,7 @@ const TakeCareDetail = ({ requests }) => {
 
     const OwnerCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id, { id : 6 },
+            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -54,14 +59,13 @@ const TakeCareDetail = ({ requests }) => {
     };
 
     const OwnerCancelled = async (value) => {
-        console.log(value)
-        await axios.patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, { id : 3 },
+        await axios.patch(
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id,
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
         );
-    }
-
+    };
 
     const onSubmit = (data) => {
         const result = {
@@ -74,6 +78,11 @@ const TakeCareDetail = ({ requests }) => {
         SaveOwnerComment(result);
         console.log(data);
     };
+
+    useEffect(() => {
+        const filter = requests.filter((item) => item.status === radioChange);
+        setStatusRequests(filter);
+    }, [requests, radioChange]);
 
     const buttonStatus = (data) => {
         if (data.status === "Pending") {
@@ -110,12 +119,15 @@ const TakeCareDetail = ({ requests }) => {
             );
         } else if (data.status === "Keeper Completed") {
             return (
-                // <Form onSubmit={handleSubmit(onSubmitOwnerCompleted)}>
-                <Button onClick={() => OwnerCompleted(data)} appearance="primary" color="blue" type="submit">
+                <Button
+                    onClick={() => OwnerCompleted(data)}
+                    appearance="primary"
+                    color="blue"
+                    type="submit"
+                >
                     {" "}
                     Already get a pet{" "}
                 </Button>
-                // </Form>
             );
         } else if (data.status === "Cancelled") {
             return (
@@ -135,6 +147,17 @@ const TakeCareDetail = ({ requests }) => {
     };
     return (
         <>
+            <RadioGroup
+                name="radio-group-inline-picker"
+                inline
+                appearance="picker"
+                value={radioChange}
+                onChange={(value) => setRadioChange(value)}
+                className="mb-3"
+            >
+                <Radio value="Pending">In Progress</Radio>
+                <Radio value="Completed">Completed</Radio>
+            </RadioGroup>
             {requests.map((item, index) => {
                 return (
                     <div key={index}>
@@ -177,10 +200,15 @@ const TakeCareDetail = ({ requests }) => {
                                     sx={{ minWidth: 182 }}
                                 >
                                     <img
-                                        // src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                                        // srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-                                        // src={item.keeperImg}
-                                        src={item.keeperImg ? import.meta.env.VITE_KEEPER_IMAGE + item.keeperId + "/" + item.keeperImg : null}
+                                        src={
+                                            item.keeperImg
+                                                ? import.meta.env
+                                                      .VITE_KEEPER_IMAGE +
+                                                  item.keeperId +
+                                                  "/" +
+                                                  item.keeperImg
+                                                : null
+                                        }
                                         loading="lazy"
                                     />
                                 </AspectRatio>
@@ -248,7 +276,6 @@ const TakeCareDetail = ({ requests }) => {
                                             </Typography>
                                         </div>
                                     </Sheet>
-
                                     <Box
                                         sx={{
                                             display: "flex",
@@ -265,68 +292,102 @@ const TakeCareDetail = ({ requests }) => {
                                             open={open}
                                             onClose={handleClose}
                                         >
-                                            <Form onSubmit={handleSubmit(onSubmit)}>
-                                            <Modal.Header>
-                                                <Modal.Title>
-                                                    Review
-                                                </Modal.Title>
-                                            </Modal.Header>
-                                            
-                                            <Modal.Body>
-                                                {/* <Placeholder.Paragraph /> */}
-                                                <input type="hidden" {...register("keeperId")} defaultValue={item?.keeperId}/>
-                                                <div className="modal-body">
-                                                    <div className="mb-3">
-                                                    <Controller
-                                                        name="star"
-                                                        control={control}
-                                                        render={({ field: { onChange, value } }) => (
-                                                            <Rate
-                                                            value={value}
-                                                            onChange={(newValue) => onChange(newValue)}
-                                                            size="md"
-                                                            color="yellow"
-                                                            />
+                                            <Form
+                                                onSubmit={handleSubmit(
+                                                    onSubmit
+                                                )}
+                                            >
+                                                <Modal.Header>
+                                                    <Modal.Title>
+                                                        Review
+                                                    </Modal.Title>
+                                                </Modal.Header>
+
+                                                <Modal.Body>
+                                                    {/* <Placeholder.Paragraph /> */}
+                                                    <input
+                                                        type="hidden"
+                                                        {...register(
+                                                            "keeperId"
                                                         )}
+                                                        defaultValue={
+                                                            item?.keeperId
+                                                        }
                                                     />
+                                                    <div className="modal-body">
+                                                        <div className="mb-3">
+                                                            <Controller
+                                                                name="star"
+                                                                control={
+                                                                    control
+                                                                }
+                                                                render={({
+                                                                    field: {
+                                                                        onChange,
+                                                                        value,
+                                                                    },
+                                                                }) => (
+                                                                    <Rate
+                                                                        value={
+                                                                            value
+                                                                        }
+                                                                        onChange={(
+                                                                            newValue
+                                                                        ) =>
+                                                                            onChange(
+                                                                                newValue
+                                                                            )
+                                                                        }
+                                                                        size="md"
+                                                                        color="yellow"
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </div>
+                                                        <div className="mb-3">
+                                                            <textarea
+                                                                className="form-control"
+                                                                id="comment"
+                                                                name="comment"
+                                                                rows={5}
+                                                                maxLength={200}
+                                                                {...register(
+                                                                    "comment",
+                                                                    {
+                                                                        maxLength:
+                                                                            {
+                                                                                value: 200,
+                                                                                message:
+                                                                                    "Message must not more than 200 characters",
+                                                                            },
+                                                                    }
+                                                                )}
+                                                            ></textarea>
+                                                        </div>
                                                     </div>
-                                                    <div className="mb-3">
-                                                        <textarea
-                                                            className="form-control"
-                                                            id="comment"
-                                                            name="comment"
-                                                            rows={5}
-                                                            maxLength={200}
-                                                              {...register("comment", { maxLength: {
-                                                                value: 200,
-                                                                message: "Message must not more than 200 characters"
-                                                            }})}
-                                                        ></textarea>
-                                                    </div>
-                                                </div>
-                                            </Modal.Body>
-                                            
-                                            <Modal.Footer>
-                                                <Button
-                                                    onClick={handleClose}
-                                                    type="submit"
-                                                    appearance="primary"
-                                                >
-                                                    Ok
-                                                </Button>
-                                                <Button
-                                                    onClick={handleClose}
-                                                    appearance="subtle"
-                                                    className="ms-2"
-                                                >
-                                                    Cancel
-                                                </Button>
-                                            </Modal.Footer>
+                                                </Modal.Body>
+
+                                                <Modal.Footer>
+                                                    <Button
+                                                        onClick={handleClose}
+                                                        type="submit"
+                                                        appearance="primary"
+                                                    >
+                                                        Ok
+                                                    </Button>
+                                                    <Button
+                                                        onClick={handleClose}
+                                                        appearance="subtle"
+                                                        className="ms-2"
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </Modal.Footer>
                                             </Form>
                                         </Modal>
                                     </Box>
                                 </CardContent>
-                            </Card>
+                            </Card> 
                         </Box>
                     </div>
                 );
