@@ -40,8 +40,10 @@ const DisableDate = (apiData) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [storeStatus, setStoreStatus] = useState();
 
-    const EditDisbleDate = async (value) => {
+    const EditDisableDate = async (value) => {
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
             value.selectedDays,
@@ -51,7 +53,8 @@ const DisableDate = (apiData) => {
         );
     };
 
-    const StoreClose = async () => {
+    const StoreClose = async (value) => {
+        console.log(value);
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
             {},
@@ -59,25 +62,19 @@ const DisableDate = (apiData) => {
                 headers: { Authorization: "Bearer " + accessToken },
             }
         );
+        setStoreStatus(value)
     };
 
-    const StoreCloseDateRange = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_SCHEDULE_ID + keeperId + "/" + value.id,
-            {},
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        );
+    const DeleteDateRange = async (value) => {
+        await axios.delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
+            headers: { Authorization: "Bearer " + accessToken },
+        });
     };
 
     const onSubmitRange = async (data) => {
-        console.log(data);
-
         const result = {
-            startDate: moment(data.dateRange[0]).format(),
-            endDate: moment(data.dateRange[1]).format(),
-            id: "1",
+            startDate: moment(data.dateRange[0]).format("yyyy-MM-DD"),
+            endDate: moment(data.dateRange[1]).format("yyyy-MM-DD"),
         };
 
         console.log(result);
@@ -85,27 +82,19 @@ const DisableDate = (apiData) => {
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
             })
-            .then((res) => {
-                handleClose();
-                setValue("dateRange", "");
-                setValue("message", "");
-                setValue("petName", "");
-                setValue("phone", "");
-                setValue("tags", "");
-                setDateRange([null, null]);
-            });
     };
 
-    const handleDaySelect = (value) => {
-        setSelectedDays(value);
-        console.log(value);
+    const handleSelect = (value) => {
+        let range = dateRange;
+        if (dateRange.length >= 2) range = [value];
+        else range = [...dateRange, value];
+        setDateRange(range);
     };
 
     const onSubmit = (data) => {
-        EditDisbleDate(data);
+        EditDisableDate(data);
         console.log(data);
     };
-    // console.log(disableRange);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -119,7 +108,8 @@ const DisableDate = (apiData) => {
                                 size="lg"
                                 checkedChildren="Open"
                                 unCheckedChildren="Close"
-                                onChange={() => StoreClose()}
+                                value={storeStatus}
+                                onChange={(value) => StoreClose(value)}
                             />
                         </span>
                     </h3>
@@ -170,20 +160,37 @@ const DisableDate = (apiData) => {
                     </Form>
                 </div>
                 <div className="col-6">
-                    <Form className="mt-3" onSubmit={handleSubmit(onSubmitRange)}>
+                    <Form
+                        className="mt-3"
+                        onSubmit={handleSubmit(onSubmitRange)}
+                    >
                         <Label className="pb-3">Closed Period</Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
                         </Form.HelpText>
                         <div>
-                            <DateRangePicker
-                                format="dd MMMM yyyy HH:mm"
-                                appearance="default"
+                            <Controller
+                                name="dateRange"
+                                control={control}
+                                render={({ field }) => (
+                                    <DateRangePicker
+                                        {...field}
+                                        format="dd MMMM yyyy"
+                                        appearance="default"
+                                        block
+                                        showHeader={false}
+                                        onSelect={handleSelect}
+                                        onChange={(value) => {
+                                            setDateRange(value);
+                                            field.onChange(value);
+                                        }}
+                                    />
+                                )}
                             />
                             <Button
                                 type="submit"
                                 variant="contained"
-                                sx={{ ml: 1 }}
+                                className="mt-2"
                             >
                                 Submit
                             </Button>
@@ -192,7 +199,7 @@ const DisableDate = (apiData) => {
                     <div className="mt-2">
                         <Table
                             height={200}
-                            // data={disableRange}
+                            data={apiData}
                             onRowClick={(rowData) => {
                                 console.log(rowData);
                             }}
@@ -203,12 +210,28 @@ const DisableDate = (apiData) => {
                             </Column>
                             <Column width={160}>
                                 <HeaderCell>Start Date</HeaderCell>
-                                <Cell dataKey="firstName" />
+                                <Cell>
+                                    {(rowData) => (
+                                        <span>
+                                            {moment
+                                                .unix(rowData.startDate)
+                                                .format("DD MMMM YYYY")}
+                                        </span>
+                                    )}
+                                </Cell>
                             </Column>
 
                             <Column width={160}>
                                 <HeaderCell>End Date</HeaderCell>
-                                <Cell dataKey="lastName" />
+                                <Cell>
+                                    {(rowData) => (
+                                        <span>
+                                            {moment
+                                                .unix(rowData.startDate)
+                                                .format("DD MMMM YYYY")}
+                                        </span>
+                                    )}
+                                </Cell>
                             </Column>
                             <Column width={80} fixed="right">
                                 <HeaderCell>...</HeaderCell>
@@ -217,7 +240,7 @@ const DisableDate = (apiData) => {
                                         <Button
                                             appearance="link"
                                             onClick={() =>
-                                                StoreCloseDateRange(rowData)
+                                                DeleteDateRange(rowData)
                                             }
                                         >
                                             Cancel
