@@ -56,6 +56,8 @@ const DisableDate = ({ apiData, fetchData }) => {
         console.log(value);
         if (value.selectedDays.includes(dayOfWeek)) {
             StoreClose(false);
+        } else {
+            StoreClose(true);
         }
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
