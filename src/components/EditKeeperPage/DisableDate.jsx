@@ -51,6 +51,12 @@ const DisableDate = ({ apiData, fetchData }) => {
     }, [apiData]);
 
     const EditDisableDays = async (value) => {
+        const dayOfWeek = moment().format("dddd");
+        console.log(dayOfWeek);
+        console.log(value);
+        if (value.selectedDays.includes(dayOfWeek)) {
+            StoreClose(false);
+        }
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
             value.selectedDays,
@@ -61,7 +67,6 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     const StoreClose = async (value) => {
-        console.log(value);
         await axios
             .patch(
                 import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
@@ -89,21 +94,23 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     const EditDateRange = async (data) => {
-        const result = {
-            startDate: moment(data.dateRange[0]).format("yyyy-MM-DD"),
-            endDate: moment(data.dateRange[1]).format("yyyy-MM-DD"),
-        };
+        if (data.dateRange) {
+            const result = {
+                startDate: moment(data.dateRange[0]).format("yyyy-MM-DD") || 0,
+                endDate: moment(data.dateRange[1]).format("yyyy-MM-DD") || 0,
+            };
 
-        console.log(result);
-        await axios
-            .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
-                headers: { Authorization: "Bearer " + accessToken },
-            })
-            .then(() => {
-                // setTableData()
-                fetchData();
-                setValue("dateRange", "");
-            });
+            console.log(result);
+            await axios
+                .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
+                    headers: { Authorization: "Bearer " + accessToken },
+                })
+                .then(() => {
+                    // setTableData()
+                    fetchData();
+                    setValue("dateRange", "");
+                });
+        }
     };
 
     const onSubmit = (data) => {
