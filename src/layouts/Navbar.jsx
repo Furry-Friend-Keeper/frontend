@@ -19,6 +19,7 @@ import {
   Whisper,
   ButtonToolbar,
 } from "rsuite";
+import UserIcon from '@rsuite/icons/legacy/User';
 
 function Navbar() {
   const settings = ["Profile", "Logout"];
@@ -28,6 +29,7 @@ function Navbar() {
   const getRole = useSelector((state) => state.auth.userInfo.role);
   const getId = useSelector((state) => state.auth.userInfo.id);
   const getName = useSelector((state) => state.auth.userInfo.name) || "";
+  const getImage = useSelector((state) => state.auth.userInfo.img) || "";
   const location = useLocation();
   // const [ownerData, setOwnerData] = useState({})
 
@@ -69,6 +71,8 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  const imageURL = getImage ? getRole === "Owner" ? import.meta.env.VITE_OWNER_IMAGE + getId + "/" + getImage : import.meta.env.VITE_KEEPER_IMAGE + getId + "/" + getImage : null
+
   const renderToggle = (props) => (
     <Button
       {...props}
@@ -78,9 +82,11 @@ function Navbar() {
     >
       <Avatar
         circle
-        src="https://avatars.githubusercontent.com/u/8225666"
+        src={imageURL}
         alt="@SevenOutman"
-      />
+      >
+        {!imageURL && <UserIcon />}
+      </Avatar>
       {/* <span className="person-navbar">{getName.charAt(0).toUpperCase() + getName.slice(1)}</span> */}
       <KeyboardArrowDownIcon />
     </Button>

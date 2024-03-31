@@ -88,7 +88,9 @@ function ScheduleRequest(props) {
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
-        );
+        ).then(() => {
+            fetchRequests()
+        })
     };
 
     const CancelCompleted = async (value) => {
@@ -97,7 +99,9 @@ function ScheduleRequest(props) {
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }  
-        );
+        ).then(() => {
+            fetchRequests()
+        });
     };
 
     const InCareCompleted = async (value) => {
@@ -106,7 +110,9 @@ function ScheduleRequest(props) {
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
-        );
+        ).then(() => {
+            fetchRequests()
+        });
     };
 
     const KeeperCompleted = async (value) => {
@@ -115,7 +121,9 @@ function ScheduleRequest(props) {
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
-        );
+        ).then(() => {
+            fetchRequests()
+        });
     };
 
     useEffect(() => {

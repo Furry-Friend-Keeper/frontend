@@ -21,7 +21,7 @@ import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const DisableDate = ({ apiData }) => {
+const DisableDate = ({ apiData, fetchData }) => {
     const days = [
         "Sunday",
         "Monday",
@@ -40,7 +40,6 @@ const DisableDate = ({ apiData }) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
-    const [dateRange, setDateRange] = useState([null, null]);
     const [storeStatus, setStoreStatus] = useState(false);
     const [tableData, setTableData] = useState([])
 
@@ -48,7 +47,6 @@ const DisableDate = ({ apiData }) => {
         setStoreStatus(apiData?.available)
         setTableData(apiData?.disableAppointment)
         const closeDay = apiData?.closedDay?.split(', ')
-        console.log(closeDay)
         setValue('selectedDays',closeDay )
     },[apiData])
 
@@ -95,7 +93,9 @@ const DisableDate = ({ apiData }) => {
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
             }).then(() => {
-                setTableData()
+                // setTableData()
+                fetchData()
+                setValue("dateRange","")
             })
     };
 
@@ -104,8 +104,6 @@ const DisableDate = ({ apiData }) => {
         EditDisableDays(data);
         console.log(data);
     };
-
-    console.log(apiData.disableAppointment);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -176,6 +174,7 @@ const DisableDate = ({ apiData }) => {
                                         appearance="default"
                                         block
                                         showHeader={false}
+                                        style={{ width: 300 }}
                                         onChange={(value) => {
                                             field.onChange(value);
                                         }}
@@ -221,7 +220,7 @@ const DisableDate = ({ apiData }) => {
                                     {(rowData) => (
                                         <span>
                                             {moment
-                                                .unix(rowData.startDate)
+                                                .unix(rowData.endDate)
                                                 .format("DD MMMM YYYY")}
                                         </span>
                                     )}

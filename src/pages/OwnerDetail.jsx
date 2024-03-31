@@ -103,10 +103,10 @@ function OwnerDetail() {
         <div className="col-md-12 mx-auto">
           <div className=" mx-auto col-12 px-0">
             <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-              <h3>Taking care of my pet</h3>
+              <h4>Taking care of my pet</h4>
               <div className="p-4 movedown-transition">
                 {requests.length > 0 ? (
-                  <TakeCareDetail requests={requests} />
+                  <TakeCareDetail requests={requests} fetchRequests={fetchRequests} />
                 ) : (
                   <div className="text-center mt-3 fs-4">
                     DON'T HAVE AT THIS TIME

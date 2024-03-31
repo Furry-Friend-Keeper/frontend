@@ -725,6 +725,9 @@ input[type=number] {
 .favorite-icon {
   margin: 0 0 0 auto;
   color: rgb(255, 66, 79);
+  & svg {
+    cursor: pointer;
+  }
 }
 .upload-file-input {
 

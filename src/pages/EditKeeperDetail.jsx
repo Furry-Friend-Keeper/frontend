@@ -260,7 +260,7 @@ function EditKeeperDetail() {
                         <ScheduleRequest keeperId={keeperId} />
                     </div>
                     <div className="col-lg-12">
-                        <DisableDate apiData={apiData}/>
+                        <DisableDate apiData={apiData} fetchData={fetchData} />
                     </div>
                         <div className="row mx-auto col-12 px-0">
                             <div className="col-lg-6">

@@ -188,7 +188,7 @@ function ScheduleModal(props) {
         <>
             <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
                 <div className="title">
-                    <h3 className="mb-2">Schedule</h3>
+                    <h4 className="mb-2">Schedule</h4>
                     <p>For the purpose of reserving a pet boarding period</p>
                 </div>
                 {!accessToken ? (
