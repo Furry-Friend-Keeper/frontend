@@ -187,6 +187,7 @@ function EditKeeperDetail() {
             const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             if (validImageTypes.includes(file.type)) {
                 setOpen(false)
+                console.log(file)
                 setImg(file)
                 const reader = new FileReader();
                 reader.onloadend = () => {

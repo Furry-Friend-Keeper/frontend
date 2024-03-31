@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Typography from "@mui/material/Typography";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, resetStore } from "../store/AuthSlice";
 import PersonIcon from "@mui/icons-material/Person";
@@ -33,12 +29,37 @@ function Navbar() {
   const getId = useSelector((state) => state.auth.userInfo.id);
   const getName = useSelector((state) => state.auth.userInfo.name) || "";
   const location = useLocation();
+  // const [ownerData, setOwnerData] = useState({})
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(resetStore());
   }, [location]);
+
+  // const fetchOwner = async () => {
+  //   try {
+  //     if(isLogin) {
+  //       const apiUrl = import.meta.env.VITE_OWNER_ID + getId;
+  //       await axios
+  //         .get(apiUrl, {
+  //           headers: {
+  //             Authorization: "Bearer " + isLogin,
+  //           },
+  //         })
+  //         .then((response) => {
+  //           const data = response.data;
+  //           setOwnerData(data);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchOwner()
+  // },[])
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);

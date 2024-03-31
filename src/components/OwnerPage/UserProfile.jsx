@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import {
     Modal,
     Button,
     Uploader,
+    Rate,
     Message,
     Loader,
     useToaster,
@@ -17,6 +18,7 @@ import { useSelector } from "react-redux";
 import Cropper from "react-easy-crop";
 import CameraRetroIcon from '@rsuite/icons/legacy/CameraRetro';
 import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const SizedAvatar = styled(Avatar)`
   ${({ size, theme }) => `
@@ -25,22 +27,37 @@ const SizedAvatar = styled(Avatar)`
 `};
 `;
 
+const Field = ({ as: Component = Input, field, error, ...rest }) => {
+    return (
+      <Form.Group>
+        <Component
+          id={field.name}
+          value={field.value}
+          onChange={value => field.onChange(value)}
+          {...rest}
+        />
+        <Form.ErrorMessage show={!!error} placement="bottomStart">
+          {error}
+        </Form.ErrorMessage>
+      </Form.Group>
+    );
+  };
+
 function UserProfile(props) {
     const { ownerId, ownerData } = props;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
-    // const [ownerData, setOwnerData] = useState([]);
+    const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("true");
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const toaster = useToaster();
-    const [uploading, setUploading] = useState(false);
-    const [fileInfo, setFileInfo] = useState(null);
-    const [messageLog, setMessageLog] = useState("");
-    const [alertStatus, setAlertStatus] = useState("");
     const [isImg, setImg] = useState();
+
+    const [fileList, setFileList] = useState([]);
+    const uploader = useRef();
 
     const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
 
@@ -52,6 +69,16 @@ function UserProfile(props) {
             setValue("petName", ownerData?.petName)
             setValue("phone", dataPhone)
             setValue("email", ownerData?.email)
+            setValue("upload", [
+                {
+                    url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
+                }
+            ])
+            setFileList([
+                {
+                    url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
+                }
+            ])
         }
     },[ownerData]);
 
@@ -71,6 +98,8 @@ function UserProfile(props) {
                     headers: { Authorization: "Bearer " + accessToken },
                 })
                 .then((res) => {
+                    handleClose()
+                    setTimeout(() => navigate(0), 500)
                 })
                 .catch((err) => {
                 });
@@ -79,13 +108,14 @@ function UserProfile(props) {
 
     const EditOwnerProfileImg = async (data) => {
         let isError = false;
-        if(isImg !== undefined) {
+        const file = data.upload[0].blobFile
+        if(file !== undefined) {
             const formData = new FormData();
-            formData.append("file", isImg)
+            formData.append("file", file)
             await axios.patch(import.meta.env.VITE_OWNER_ID + ownerId + "/profile-img", formData, {
                 headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
             }).then((res) => {
-                fetchData()
+                handleClose()
                 // setOpen(true)
                 // setAlertStatus('success')
                 // setIsError(false)
@@ -115,13 +145,6 @@ function UserProfile(props) {
         EditOwnerProfileImg(data);
     };
 
-    const previewFile = (file, callback) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            callback(reader.result);
-        };
-        reader.readAsDataURL(file);
-    };
 
     return (
         <>
@@ -165,7 +188,7 @@ function UserProfile(props) {
                                 />
                             </div>
                             <div className="profile-info-title-detail">
-                                <h5>
+                                <h5 className="text-break">
                                     {ownerData.firstName} {ownerData.lastName}
                                 </h5>
                                 <div className="blue-btn">
@@ -204,7 +227,7 @@ function UserProfile(props) {
                                                 </p>
                                             </td>
                                         </tr>
-                                        <tr className="profile-warpper">
+                                        {/* <tr className="profile-warpper">
                                             <td>
                                                 <p>Password</p>
                                             </td>
@@ -216,7 +239,7 @@ function UserProfile(props) {
                                                     Change Password
                                                 </Button>
                                             </td>
-                                        </tr>
+                                        </tr> */}
                                         <tr className="profile-warpper">
                                             <td>
                                                 <p>Pet Name</p>
@@ -252,52 +275,23 @@ function UserProfile(props) {
                         {/* <Placeholder.Paragraph /> */}
                         <div className="modal-body">
                             <div className="mb-3">
-                                <Uploader
-                                    fileListVisible={false}
-                                    listType="picture"
-                                    // action="//jsonplaceholder.typicode.com/posts/"
-                                    onUpload={(file) => {
-                                        setUploading(true);
-                                        previewFile(file.blobFile, (value) => {
-                                            setFileInfo(value);
-                                        });
-                                    }}
-                                    onSuccess={(response, file) => {
-                                        setUploading(false);
-                                        toaster.push(
-                                            <Message type="success">
-                                                Uploaded successfully
-                                            </Message>
-                                        );
-                                        console.log(response);
-                                    }}
-                                    onError={() => {
-                                        setFileInfo(null);
-                                        setUploading(false);
-                                        toaster.push(
-                                            <Message type="error">
-                                                Upload failed
-                                            </Message>
-                                        );
-                                    }}
-                                >
-                                    <button style={{ width: 150, height: 150 }}>
-                                        {uploading && (
-                                            <Loader backdrop center />
+                                <div className="upload-file-input">
+                                    <Controller
+                                        name="upload"
+                                        control={control}
+                                        render={({ field, fieldState }) => (
+                                        <Field as={Uploader} field={field} error={errors[field.name]?.message}
+                                            action="//jsonplaceholder.typicode.com/posts/"
+                                            listType="picture"
+                                            multiple={false}
+                                            autoUpload={false}
+                                            disabled={field.value?.length > 0}
+                                            accept="image/png, image/jpeg, image/jpg"
+                                            defaultFileList={fileList}
+                                        />
                                         )}
-                                        {fileInfo ? (
-                                            <img
-                                                src={fileInfo}
-                                                width="100%"
-                                                height="100%"
-                                            />
-                                        ) : (
-                                            <AvatarIcon
-                                                style={{ fontSize: 80 }}
-                                            />
-                                        )}
-                                    </button>
-                                </Uploader>
+                                    />
+                                </div>
                             </div>
                             <div className="mb-3">
                                 <label

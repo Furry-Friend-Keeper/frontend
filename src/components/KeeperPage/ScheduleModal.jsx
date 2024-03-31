@@ -11,7 +11,7 @@ import { TagPicker, SelectPicker } from "rsuite";
 import PhoneInput from "react-phone-input-2";
 
 function ScheduleModal(props) {
-    const { keeperId, closedDays , availableStore } = props;
+    const { keeperId, closedDays , availableStore, disableDate } = props;
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
@@ -124,19 +124,20 @@ function ScheduleModal(props) {
     // };
 
     const disabledDaysArray = closedDays?.split(',')?.map(day => day.trim())?.filter(day => day !== "") || [];
+
+    const disableDateRangeTest = disableDate?.map(date => {
+        return {
+            ...date,
+            startDate: moment.unix(date.startDate).format(), // format as needed
+            endDate: moment.unix(date.endDate).format() // format as needed
+        };
+    }) || []
+
+    // console.log(disableDateRangeTest)
     // console.log(closedDays)
     // console.log(disabledDaysArray)
 
     // const disabledDaysArray = ["Sunday", "Monday", "Tuesday"];
-
-    const disabledWeekdays = disabledDaysArray.map(day =>
-        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day)
-    );
-    
-    const disableDateRange = {
-        startDate: moment("2024-04-17T12:30:00+07:00"),
-        endDate: moment("2024-04-27T16:30:00+07:00")
-    };
 
     const handleSelect = (value) => {
         let range = dateRange
@@ -144,10 +145,23 @@ function ScheduleModal(props) {
         else range = [...dateRange, value];
         setDateRange(range)
       };
+      
+    const disabledWeekdays = disabledDaysArray.map(day =>
+        ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(day)
+    );
+    
+    const disableDateRange = [{
+        startDate: moment("2024-04-17T12:30:00+07:00"),
+        endDate: moment("2024-04-27T16:30:00+07:00")
+    },{
+        startDate: moment("2024-05-17T12:30:00+07:00"),
+        endDate: moment("2024-05-27T16:30:00+07:00")
+    },
+    ];
 
     const disableSundays = (date) => {
         const momentDate = moment(date);
-    const today = moment().startOf('day'); // Get today's date at the start of the day for comparison
+        const today = moment().startOf('day'); // Get today's date at the start of the day for comparison
 
         // Disable dates before today
         if (momentDate.isBefore(today)) {
@@ -162,8 +176,10 @@ function ScheduleModal(props) {
             return true;
         }
         // Check if the date is within the disabled date range
-        if (momentDate.isBetween(disableDateRange.startDate, disableDateRange.endDate, 'day', '[]')) {
-            return true;
+        for (let range of disableDateRangeTest) {
+            if (momentDate.isBetween(range.startDate, range.endDate, 'day', '[]')) {
+                return true;
+            }
         }
         return false;
     };

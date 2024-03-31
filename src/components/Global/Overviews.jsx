@@ -90,7 +90,7 @@ function Overviews(props) {
                                 </div>
                                 <div className="col-md-4">
                                 {!isEditComment ? (
-                                    <Rate value={isOwnerReview?.stars} allowHalf size="sm" color="yellow" readOnly/>
+                                    <Rate value={isOwnerReview?.stars} allowHalf size="xs" color="yellow" readOnly/>
                                     // <Rating
                                     //     name="read-only"
                                     //     value={isOwnerReview?.stars}
@@ -107,7 +107,7 @@ function Overviews(props) {
                                                 <Rate
                                                   value={value}
                                                   onChange={(newValue) => onChange(newValue)}
-                                                  size="sm"
+                                                  size="xs"
                                                   color="yellow"
                                                 />
                                               )}
@@ -219,7 +219,7 @@ function Overviews(props) {
                                             </span>
                                         </div>
                                         <div className="col-md-4">
-                                            <Rate value={review?.stars} allowHalf size="sm" color="yellow" readOnly/>
+                                            <Rate value={review?.stars} allowHalf size="xs" color="yellow" readOnly/>
                                             {/* <Rating
                                                 name=""
                                                 value={review?.stars}

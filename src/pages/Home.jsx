@@ -49,18 +49,20 @@ function Home() {
 
   const fetchOwner = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_OWNER_ID + userInfo.id;
-      await axios
-        .get(apiUrl, {
-          headers: {
-            Authorization: "Bearer " + accessToken,
-          },
-        })
-        .then((response) => {
-          const data = response.data;
-          const favorites = data.favorites.map(item => item.petKeeperId)
-          setFavoriteData(favorites)
-        });
+      if(userInfo.role === "Owner") {
+        const apiUrl = import.meta.env.VITE_OWNER_ID + userInfo.id;
+        await axios
+          .get(apiUrl, {
+            headers: {
+              Authorization: "Bearer " + accessToken,
+            },
+          })
+          .then((response) => {
+            const data = response.data;
+            const favorites = data.favorites.map(item => item.petKeeperId)
+            setFavoriteData(favorites)
+          });
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -341,7 +343,7 @@ const resetFilter = () => {
                     </Box>
                   ))}
                 </div>
-                : loading && search.length > 0 ? <KeeperContents search={search} distanceLookup={distanceLookup} favorites={favoriteData}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                : loading && search.length > 0 ? <KeeperContents search={search} distanceLookup={distanceLookup} favorites={favoriteData} changeFavorite={setFavoriteData}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}
