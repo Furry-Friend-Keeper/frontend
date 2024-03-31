@@ -27,6 +27,9 @@ const authSlice = createSlice({
             state.error = null; // Resetting error to null
             state.success = false
           },
+        changeImageProfile: (state, action) => {
+          state.userInfo.img = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -79,5 +82,5 @@ const authSlice = createSlice({
       },   
 })
 
-export const { logout, resetStore } = authSlice.actions
+export const { logout, resetStore, changeImageProfile } = authSlice.actions
 export default authSlice.reducer;
