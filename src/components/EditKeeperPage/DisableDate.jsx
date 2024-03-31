@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
@@ -21,7 +21,7 @@ import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const DisableDate = (apiData) => {
+const DisableDate = ({ apiData }) => {
     const days = [
         "Sunday",
         "Monday",
@@ -32,7 +32,7 @@ const DisableDate = (apiData) => {
         "Saturday",
     ].map((item) => ({ label: item, value: item }));
 
-    const { register, handleSubmit, control } = useForm();
+    const { register, handleSubmit, control, setValue } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
@@ -40,9 +40,19 @@ const DisableDate = (apiData) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
-    const [storeStatus, setStoreStatus] = useState();
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [storeStatus, setStoreStatus] = useState(false);
+    const [tableData, setTableData] = useState([])
 
-    const EditDisableDate = async (value) => {
+    useEffect(() => {
+        setStoreStatus(apiData?.available)
+        setTableData(apiData?.disableAppointment)
+        const closeDay = apiData?.closedDay?.split(', ')
+        console.log(closeDay)
+        setValue('selectedDays',closeDay )
+    },[apiData])
+
+    const EditDisableDays = async (value) => {
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
             value.selectedDays,
@@ -60,17 +70,21 @@ const DisableDate = (apiData) => {
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
-        );
-        setStoreStatus(value)
+        ).then(() => {
+            setStoreStatus(value)
+        });
     };
 
     const DeleteDateRange = async (value) => {
         await axios.delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
             headers: { Authorization: "Bearer " + accessToken },
+        }).then(() => {
+            const filterData = tableData.filter(item => item.id !== value.id)
+            setTableData(filterData)
         });
     };
 
-    const onSubmitRange = async (data) => {
+    const EditDateRange = async (data) => {
         const result = {
             startDate: moment(data.dateRange[0]).format("yyyy-MM-DD"),
             endDate: moment(data.dateRange[1]).format("yyyy-MM-DD"),
@@ -80,13 +94,18 @@ const DisableDate = (apiData) => {
         await axios
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
+            }).then(() => {
+                setTableData()
             })
     };
 
     const onSubmit = (data) => {
-        EditDisableDate(data);
+        EditDateRange(data)
+        EditDisableDays(data);
         console.log(data);
     };
+
+    console.log(apiData.disableAppointment);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -100,7 +119,7 @@ const DisableDate = (apiData) => {
                                 size="lg"
                                 checkedChildren="Open"
                                 unCheckedChildren="Close"
-                                value={storeStatus}
+                                checked={storeStatus}
                                 onChange={(value) => StoreClose(value)}
                             />
                         </span>
@@ -110,7 +129,7 @@ const DisableDate = (apiData) => {
             <div className="row">
                 <div className="col-6">
                     <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                        <Label className="pb-3">Close Days</Label>
+                        <Label className="pb-3">Select Close Days</Label>
                         <Form.HelpText tooltip>
                             วันที่ร้านปิดเป็นประจำ
                         </Form.HelpText>
@@ -120,6 +139,7 @@ const DisableDate = (apiData) => {
                                     spacing={10}
                                     direction="column"
                                     alignItems="flex-start"
+                                    data
                                 >
                                     <Controller
                                         name="selectedDays"
@@ -128,6 +148,7 @@ const DisableDate = (apiData) => {
                                             <CheckPicker
                                                 {...field}
                                                 data={days}
+                                                // value={disableDays}
                                                 searchable={false}
                                                 style={{ width: 300 }}
                                                 placeholder="Select days"
@@ -139,24 +160,8 @@ const DisableDate = (apiData) => {
                                     />
                                 </Stack>
                             </div>
-                            <div>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    className="mt-2"
-                                >
-                                    Submit
-                                </Button>
-                            </div>
                         </div>
-                    </Form>
-                </div>
-                <div className="col-6">
-                    <Form
-                        className="mt-3"
-                        onSubmit={handleSubmit(onSubmitRange)}
-                    >
-                        <Label className="pb-3">Closed Period</Label>
+                        <Label className="pb-3 mt-3">Select Closed Period</Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
                         </Form.HelpText>
@@ -186,19 +191,18 @@ const DisableDate = (apiData) => {
                             </Button>
                         </div>
                     </Form>
+                </div>
+                <div className="col-6">
                     <div className="mt-2">
+                    <Label className="pb-3">Closed Period</Label>
                         <Table
                             height={200}
-                            data={apiData}
+                            data={tableData}
                             onRowClick={(rowData) => {
                                 console.log(rowData);
                             }}
                         >
-                            <Column width={60} align="center" fixed>
-                                <HeaderCell>Id</HeaderCell>
-                                <Cell dataKey="id" />
-                            </Column>
-                            <Column width={160}>
+                            <Column width={140}>
                                 <HeaderCell>Start Date</HeaderCell>
                                 <Cell>
                                     {(rowData) => (
@@ -211,7 +215,7 @@ const DisableDate = (apiData) => {
                                 </Cell>
                             </Column>
 
-                            <Column width={160}>
+                            <Column width={140}>
                                 <HeaderCell>End Date</HeaderCell>
                                 <Cell>
                                     {(rowData) => (
@@ -223,7 +227,7 @@ const DisableDate = (apiData) => {
                                     )}
                                 </Cell>
                             </Column>
-                            <Column width={80} fixed="right">
+                            <Column width={100} fixed="right">
                                 <HeaderCell>...</HeaderCell>
                                 <Cell style={{ padding: "6px" }}>
                                     {(rowData) => (
@@ -241,6 +245,7 @@ const DisableDate = (apiData) => {
                         </Table>
                     </div>
                 </div>
+                
             </div>
         </div>
     );
