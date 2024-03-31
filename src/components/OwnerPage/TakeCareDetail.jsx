@@ -50,7 +50,7 @@ const TakeCareDetail = ({ requests }) => {
 
     const OwnerCompleted = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,
+            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id, "",
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -59,7 +59,7 @@ const TakeCareDetail = ({ requests }) => {
 
     const OwnerCancelled = async (value) => {
         await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id,
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "",
             {
                 headers: { Authorization: "Bearer " + accessToken },
             }
@@ -187,7 +187,6 @@ const TakeCareDetail = ({ requests }) => {
                                         minWidth:
                                             "clamp(0px, (calc(var(--stack-point) - 2 * var(--Card-padding) - 2 * var(--variant-borderWidth, 0px)) + 1px - 100%) * 999, 100%)",
                                     },
-                                    // make the card resizable for demo
                                     overflow: "auto",
                                     resize: "horizontal",
                                 }}
