@@ -83,7 +83,7 @@ function KeeperDetail() {
 
     const handleFavorite = async (value) => {
         try {
-          if(userInfo.role === "Owner") {
+          if(userInfo.role === "Owner" && accessToken) {
               const data = {
                 "petOwnerId" : userInfo.id,
                 "petKeeperId": value.id
@@ -103,6 +103,8 @@ function KeeperDetail() {
                         setFavoriteData([...favoriteData, value.id])
                       }
                   });
+            } else {
+                navigate("/at3/login")
             }
             } catch (error) {
             console.error("Error fetching data:", error);
