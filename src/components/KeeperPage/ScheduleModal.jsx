@@ -143,6 +143,7 @@ function ScheduleModal(props) {
         let range = dateRange
         if(dateRange.length >= 2) range = [value]
         else range = [...dateRange, value];
+        range = range.sort((a, b) => new Date(a) - new Date(b))
         setDateRange(range)
       };
       
@@ -167,8 +168,7 @@ function ScheduleModal(props) {
         if (momentDate.isBefore(today)) {
             return true;
         }
-    //    console.log(dateRange)
-       if (dateRange[0] && dateRange[1] && moment(date).isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
+       if (dateRange[0] && dateRange[1] && momentDate.isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
         return false;
         }
         // Check if the date is a disabled weekday

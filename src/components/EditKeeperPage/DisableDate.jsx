@@ -40,7 +40,6 @@ const DisableDate = (apiData) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
-    const [dateRange, setDateRange] = useState([null, null]);
     const [storeStatus, setStoreStatus] = useState();
 
     const EditDisableDate = async (value) => {
@@ -82,13 +81,6 @@ const DisableDate = (apiData) => {
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
             })
-    };
-
-    const handleSelect = (value) => {
-        let range = dateRange;
-        if (dateRange.length >= 2) range = [value];
-        else range = [...dateRange, value];
-        setDateRange(range);
     };
 
     const onSubmit = (data) => {
@@ -179,9 +171,7 @@ const DisableDate = (apiData) => {
                                         appearance="default"
                                         block
                                         showHeader={false}
-                                        onSelect={handleSelect}
                                         onChange={(value) => {
-                                            setDateRange(value);
                                             field.onChange(value);
                                         }}
                                     />
