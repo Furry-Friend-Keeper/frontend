@@ -234,7 +234,6 @@ function EditKeeperDetail() {
         console.log(value)
         setCategoryId(test)
       };
-    //   console.log(apiData.disableAppointment);
 
     return (
         <>
@@ -248,14 +247,12 @@ function EditKeeperDetail() {
                     :
                     <div>
                         <AlertTitle><b>Failed</b></AlertTitle>
-                        {/* Signup Failed!! Email must be unique. */}
                         {messageLog}
                     </div>
                     }
                 </Alert>
             </Snackbar>
             <GalleryEditer galleryData={galleryData} keeperId={keeperId} fetchData={fetchData} /> 
-            {/* <div className="container pb-lg-5"> */}
             <Container maxWidth="lg">
                 <div className="row mx-auto col-12">
                     <div className="col-lg-12">
