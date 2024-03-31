@@ -134,7 +134,7 @@ function KeeperContents(props) {
                           <p className="mt-0 fs-6">{distance} km</p>
                         </div>
                           {userInfo.role === "Owner" && 
-                            <div>
+                            <div className="favorite-icon">
                               {favorites && favorites?.includes(item.id) ? (
                                 <FavoriteIcon onClick={() => handleFavorite(item)} className="favorite-icon" />
                               ) : (

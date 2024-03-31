@@ -12,6 +12,8 @@ import GallerySider from "../components/KeeperPage/GallerySider";
 import { useSelector } from "react-redux";
 import Overviews from "../components/Global/Overviews";
 import ScheduleModal from "../components/KeeperPage/ScheduleModal";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 function KeeperDetail() {
     const [apiData, setApiData] = useState({});
@@ -23,6 +25,7 @@ function KeeperDetail() {
     const navigate = useNavigate()
     const [ isOwnerReview, setIsOwnerReview ] = useState(null);
     const [isMap, setMap] = useState([]);
+    const [favoriteData, setFavoriteData] = useState([])
 
     const fetchData = async () => {
         try {
@@ -51,48 +54,60 @@ function KeeperDetail() {
         }
     };
 
+    const fetchOwner = async () => {
+        try {
+          if(userInfo.role === "Owner") {
+            const apiUrl = import.meta.env.VITE_OWNER_ID + userInfo.id;
+            await axios
+              .get(apiUrl, {
+                headers: {
+                  Authorization: "Bearer " + accessToken,
+                },
+              })
+              .then((response) => {
+                const data = response.data;
+                const favorites = data.favorites.map(item => item.petKeeperId)
+                setFavoriteData(favorites)
+              });
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+
     useEffect(() => {
         fetchData();
+        fetchOwner()
     }, [id]);
 
-    // const SaveOwnerComment = async (data) => {
-    //     await axios
-    //         .post(import.meta.env.VITE_OWNER_REVIEWS, data, {
-    //             headers: { 'Authorization': 'Bearer ' + accessToken}
-    //         })
-    //         .then((res) => {
-    //             const response = res.data;
-    //             setApiData({ ...apiData, ...data });
-    //             setIsEditComment(false);
-    //             fetchData()
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // };
-        
-    // const onSubmit = (data) => {
-    //     if(!accessToken){
-    //         navigate("/at3/login")
-    //     }
-    //     const result = {
-    //         comment: data.comment,
-    //         petownerId: userInfo.id,
-    //         petkeeperId: parseInt(id,10),
-    //         star: data.stars,
-    //         date: moment().format()
-    //     };
-    //     SaveOwnerComment(result);
-    //     console.log(data);
-    // };
-
-    // const {
-    //     register,
-    //     handleSubmit,
-    //     setValue,
-    //     control,
-    //     formState: { errors },
-    // } = useForm();
+    const handleFavorite = async (value) => {
+        try {
+          if(userInfo.role === "Owner") {
+              const data = {
+                "petOwnerId" : userInfo.id,
+                "petKeeperId": value.id
+              }
+              const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
+              await axios.put(apiUrl, data, 
+                  {
+                      headers: {
+                      Authorization: "Bearer " + accessToken,
+                  },
+                  })
+                  .then(() => {
+                      console.log("success")
+                      if(favoriteData.includes(value.id)) {
+                        setFavoriteData(favoriteData.filter(item => item !== value.id))
+                      }else {
+                        setFavoriteData([...favoriteData, value.id])
+                      }
+                  });
+            }
+            } catch (error) {
+            console.error("Error fetching data:", error);
+            }
+      };
 
     const [showPicker, setShowPicker] = useState(false);
     const [dateRange, setDateRange] = useState([null, null]);
@@ -119,18 +134,27 @@ function KeeperDetail() {
                 <div className="row mx-auto col-12 movedown-transition">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <Stack direction="row" spacing={1} className="pb-4">
-                                {apiData.categories &&
-                                    apiData.categories.map(
-                                        (category, index) => (
-                                            <Chip
-                                                className="keeper-tag"
-                                                key={index}
-                                                label={category}
-                                            />
-                                        )
-                                    )}
-                            </Stack>
+                            <div className="d-flex">
+                                <Stack direction="row" spacing={1} className="pb-4">
+                                    {apiData.categories &&
+                                        apiData.categories.map(
+                                            (category, index) => (
+                                                <Chip
+                                                    className="keeper-tag"
+                                                    key={index}
+                                                    label={category}
+                                                />
+                                            )
+                                        )}
+                                </Stack>
+                                <div className="favorite-icon">
+                                {favoriteData && favoriteData?.includes(apiData.id) ? (
+                                    <FavoriteIcon onClick={() => handleFavorite(apiData)} className="favorite-icon" />
+                                ) : (
+                                    <FavoriteBorderIcon onClick={() => handleFavorite(apiData)} className="favorite-icon" />
+                                )}
+                                </div>
+                            </div>
                             <div className="row">
                                 <div className="col-sm-4">
                                 {!apiData.img ?
@@ -158,9 +182,9 @@ function KeeperDetail() {
                                 </div>
                                 <div className="col">
                                     <div className="title d-flex justify-content-between align-items-center">
-                                        <h2 className="mb-lg-4 mt-lg-3">
+                                        <h3 className="mb-lg-4 mt-lg-3">
                                             {apiData.name}
-                                        </h2>
+                                        </h3>
                                         {/* <span className="fs-3">
                                         <i className="bi bi-star"></i>
                                     </span> */}
@@ -175,7 +199,7 @@ function KeeperDetail() {
                         </div>
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="title">
-                                <h2>Contact</h2>
+                                <h4>Contact</h4>
                             </div>
                             <div className="table">
                                 <table className="w-100">

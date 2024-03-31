@@ -19,21 +19,38 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const TakeCareDetail = ({ requests }) => {
+const TakeCareDetail = ({ requests, fetchRequests }) => {
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("static");
     const { userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
+    console.log(requests);
+    const navigate = useNavigate();
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const { register, control, handleSubmit } = useForm();
+    const {
+        register,
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
     const [radioChange, setRadioChange] = useState("Pending");
     const [loading, setLoading] = useState(false);
     const [statusRequests, setStatusRequests] = useState([]);
+    // const [requestsData, setRequestsData] = useState([])
+
+    // useEffect(() => {
+    //     setRequestsData(requests)
+    // },[requests])
+
+    const goToStore = () => {
+        navigate("/at3/keeper/" + requests.keeperId);
+    };
 
     const SaveOwnerComment = async (data) => {
         await axios
@@ -42,6 +59,7 @@ const TakeCareDetail = ({ requests }) => {
             })
             .then(() => {
                 console.log("success");
+                handleClose();
             })
             .catch((err) => {
                 console.log(err);
@@ -49,21 +67,27 @@ const TakeCareDetail = ({ requests }) => {
     };
 
     const OwnerCompleted = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id, "",
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        );
+        await axios
+            .patch(
+                import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,
+                "",
+                {
+                    headers: { Authorization: "Bearer " + accessToken },
+                }
+            )
+            .then(() => {
+                fetchRequests();
+            });
     };
 
     const OwnerCancelled = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "",
-            {
+        await axios
+            .patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "", {
                 headers: { Authorization: "Bearer " + accessToken },
-            }
-        );
+            })
+            .then(() => {
+                fetchRequests();
+            });
     };
 
     const onSubmit = (data) => {
@@ -135,18 +159,25 @@ const TakeCareDetail = ({ requests }) => {
                     Cancelled{" "}
                 </Button>
             );
-        } else {
+        } else if (data.status === "Completed") {
             return (
                 <Button appearance="primary" color="green" onClick={handleOpen}>
                     {" "}
                     Review{" "}
                 </Button>
             );
+        } else if (data.status === "Review Completed") {
+            return (
+                <Button appearance="primary" onClick={goToStore}>
+                    {" "}
+                    Go to Store{" "}
+                </Button>
+            );
         }
     };
     return (
         <>
-            <RadioGroup
+            {/* <RadioGroup
                 name="radio-group-inline-picker"
                 inline
                 appearance="picker"
@@ -156,7 +187,7 @@ const TakeCareDetail = ({ requests }) => {
             >
                 <Radio value="Pending">In Progress</Radio>
                 <Radio value="Completed">Completed</Radio>
-            </RadioGroup>
+            </RadioGroup> */}
             {requests.map((item, index) => {
                 return (
                     <div key={index}>
@@ -319,6 +350,10 @@ const TakeCareDetail = ({ requests }) => {
                                                                 control={
                                                                     control
                                                                 }
+                                                                rules={{
+                                                                    required:
+                                                                        "Please enter star before OK",
+                                                                }}
                                                                 render={({
                                                                     field: {
                                                                         onChange,
@@ -341,6 +376,16 @@ const TakeCareDetail = ({ requests }) => {
                                                                     />
                                                                 )}
                                                             />
+                                                            <br />
+                                                            {errors.star && (
+                                                                <small className="error-message">
+                                                                    {
+                                                                        errors
+                                                                            .star
+                                                                            .message
+                                                                    }
+                                                                </small>
+                                                            )}
                                                         </div>
                                                         <div className="mb-3">
                                                             <textarea
@@ -348,11 +393,11 @@ const TakeCareDetail = ({ requests }) => {
                                                                 id="comment"
                                                                 name="comment"
                                                                 rows={5}
-                                                                placeholder="Message..."
                                                                 maxLength={200}
                                                                 {...register(
                                                                     "comment",
                                                                     {
+                                                                        // required: "Please enter message before OK",
                                                                         maxLength:
                                                                             {
                                                                                 value: 200,
@@ -362,13 +407,14 @@ const TakeCareDetail = ({ requests }) => {
                                                                     }
                                                                 )}
                                                             ></textarea>
+                                                            {/* {errors.comment && <small className="error-message">{errors.comment.message}</small>} */}
                                                         </div>
                                                     </div>
                                                 </Modal.Body>
 
                                                 <Modal.Footer>
                                                     <Button
-                                                        onClick={handleClose}
+                                                        // onClick={handleClose}
                                                         type="submit"
                                                         appearance="primary"
                                                     >
@@ -386,7 +432,7 @@ const TakeCareDetail = ({ requests }) => {
                                         </Modal>
                                     </Box>
                                 </CardContent>
-                            </Card> 
+                            </Card>
                         </Box>
                     </div>
                 );

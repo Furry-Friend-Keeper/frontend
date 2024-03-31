@@ -56,7 +56,7 @@ function Overviews(props) {
             <div className="mt-4">
             <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
                 <div className="title">
-                    <h2>Overviews</h2>
+                    <h3>Overviews</h3>
                 </div>
                 <div className="rating">
                     <span className="fs-3 rating-score me-2">
@@ -75,9 +75,9 @@ function Overviews(props) {
                 <div className="row justify-content-start mt-4">
                     { reviewsData !== null &&
                     <div className="mb-3">
-                        <p>
+                        <h6>
                             My Review
-                        </p>
+                        </h6>
                     <form onSubmit={handleSubmit(onEditSubmit)}>
                         <input type="hidden" {...register("reviewId")} defaultValue={reviewsData?.reviewId}/>
                         <div className="d-flex align-items-center mt-4">

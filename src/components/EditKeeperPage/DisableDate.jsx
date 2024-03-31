@@ -21,7 +21,7 @@ import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const DisableDate = ({ apiData }) => {
+const DisableDate = ({ apiData, fetchData }) => {
     const days = [
         "Sunday",
         "Monday",
@@ -40,17 +40,15 @@ const DisableDate = ({ apiData }) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
-    const [dateRange, setDateRange] = useState([null, null]);
     const [storeStatus, setStoreStatus] = useState(false);
-    const [tableData, setTableData] = useState([])
+    const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        setStoreStatus(apiData?.available)
-        setTableData(apiData?.disableAppointment)
-        const closeDay = apiData?.closedDay?.split(', ')
-        console.log(closeDay)
-        setValue('selectedDays',closeDay )
-    },[apiData])
+        setStoreStatus(apiData?.available);
+        setTableData(apiData?.disableAppointment);
+        const closeDay = apiData?.closedDay?.split(", ");
+        setValue("selectedDays", closeDay);
+    }, [apiData]);
 
     const EditDisableDays = async (value) => {
         await axios.patch(
@@ -64,24 +62,30 @@ const DisableDate = ({ apiData }) => {
 
     const StoreClose = async (value) => {
         console.log(value);
-        await axios.patch(
-            import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
-            {},
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        ).then(() => {
-            setStoreStatus(value)
-        });
+        await axios
+            .patch(
+                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
+                {},
+                {
+                    headers: { Authorization: "Bearer " + accessToken },
+                }
+            )
+            .then(() => {
+                setStoreStatus(value);
+            });
     };
 
     const DeleteDateRange = async (value) => {
-        await axios.delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
-            headers: { Authorization: "Bearer " + accessToken },
-        }).then(() => {
-            const filterData = tableData.filter(item => item.id !== value.id)
-            setTableData(filterData)
-        });
+        await axios
+            .delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
+                headers: { Authorization: "Bearer " + accessToken },
+            })
+            .then(() => {
+                const filterData = tableData.filter(
+                    (item) => item.id !== value.id
+                );
+                setTableData(filterData);
+            });
     };
 
     const EditDateRange = async (data) => {
@@ -94,25 +98,19 @@ const DisableDate = ({ apiData }) => {
         await axios
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
-            }).then(() => {
-                // setTableData()
             })
-    };
-
-    const handleSelect = (value) => {
-        let range = dateRange;
-        if (dateRange.length >= 2) range = [value];
-        else range = [...dateRange, value];
-        setDateRange(range);
+            .then(() => {
+                // setTableData()
+                fetchData();
+                setValue("dateRange", "");
+            });
     };
 
     const onSubmit = (data) => {
-        EditDateRange(data)
+        EditDateRange(data);
         EditDisableDays(data);
         console.log(data);
     };
-
-    console.log(apiData.disableAppointment);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
@@ -168,7 +166,9 @@ const DisableDate = ({ apiData }) => {
                                 </Stack>
                             </div>
                         </div>
-                        <Label className="pb-3 mt-3">Select Closed Period</Label>
+                        <Label className="pb-3 mt-3">
+                            Select Closed Period
+                        </Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
                         </Form.HelpText>
@@ -183,10 +183,8 @@ const DisableDate = ({ apiData }) => {
                                         appearance="default"
                                         block
                                         showHeader={false}
-                                        onSelect={handleSelect}
                                         style={{ width: 300 }}
                                         onChange={(value) => {
-                                            setDateRange(value);
                                             field.onChange(value);
                                         }}
                                     />
@@ -204,7 +202,7 @@ const DisableDate = ({ apiData }) => {
                 </div>
                 <div className="col-6">
                     <div className="mt-2">
-                    <Label className="pb-3">Closed Period</Label>
+                        <Label className="pb-3">Closed Period</Label>
                         <Table
                             height={200}
                             data={tableData}
@@ -231,7 +229,7 @@ const DisableDate = ({ apiData }) => {
                                     {(rowData) => (
                                         <span>
                                             {moment
-                                                .unix(rowData.startDate)
+                                                .unix(rowData.endDate)
                                                 .format("DD MMMM YYYY")}
                                         </span>
                                     )}
@@ -255,7 +253,6 @@ const DisableDate = ({ apiData }) => {
                         </Table>
                     </div>
                 </div>
-                
             </div>
         </div>
     );
