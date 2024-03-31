@@ -14,11 +14,12 @@ import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import PhoneInput from "react-phone-input-2";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Cropper from "react-easy-crop";
 import CameraRetroIcon from '@rsuite/icons/legacy/CameraRetro';
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { changeImageProfile } from "/src/store/AuthSlice";
 
 const SizedAvatar = styled(Avatar)`
   ${({ size, theme }) => `
@@ -48,16 +49,20 @@ function UserProfile(props) {
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("true");
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false)
+        setValue("upload", [
+            {
+                url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
+            }
+        ])
+    };
     const toaster = useToaster();
-    const [isImg, setImg] = useState();
-
-    const [fileList, setFileList] = useState([]);
-    const uploader = useRef();
 
     const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
 
@@ -70,11 +75,6 @@ function UserProfile(props) {
             setValue("phone", dataPhone)
             setValue("email", ownerData?.email)
             setValue("upload", [
-                {
-                    url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
-                }
-            ])
-            setFileList([
                 {
                     url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
                 }
@@ -99,7 +99,7 @@ function UserProfile(props) {
                 })
                 .then((res) => {
                     handleClose()
-                    setTimeout(() => navigate(0), 500)
+                   
                 })
                 .catch((err) => {
                 });
@@ -108,7 +108,8 @@ function UserProfile(props) {
 
     const EditOwnerProfileImg = async (data) => {
         let isError = false;
-        const file = data.upload[0].blobFile
+        const file = data.upload[0]?.blobFile || undefined
+        console.log(data.upload[0])
         if(file !== undefined) {
             const formData = new FormData();
             formData.append("file", file)
@@ -116,6 +117,8 @@ function UserProfile(props) {
                 headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
             }).then((res) => {
                 handleClose()
+                dispatch(changeImageProfile(data.upload[0].name))
+                setTimeout(() => navigate(0), 500)
                 // setOpen(true)
                 // setAlertStatus('success')
                 // setIsError(false)
@@ -279,6 +282,7 @@ function UserProfile(props) {
                                     <Controller
                                         name="upload"
                                         control={control}
+                                        rules={{ required: "Please upload your profile image"}}
                                         render={({ field, fieldState }) => (
                                         <Field as={Uploader} field={field} error={errors[field.name]?.message}
                                             action="//jsonplaceholder.typicode.com/posts/"
@@ -287,7 +291,7 @@ function UserProfile(props) {
                                             autoUpload={false}
                                             disabled={field.value?.length > 0}
                                             accept="image/png, image/jpeg, image/jpg"
-                                            defaultFileList={fileList}
+                                            defaultFileList={field.value}
                                         />
                                         )}
                                     />

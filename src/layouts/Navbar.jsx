@@ -81,6 +81,7 @@ function Navbar() {
       sx={{ p: 0 }}
     >
       <Avatar
+        className="avatar-navbar"
         circle
         src={imageURL}
         alt="@SevenOutman"

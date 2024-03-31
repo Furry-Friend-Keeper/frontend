@@ -11,7 +11,7 @@ function MapContainer(props) {
 
     useEffect(() => {
         
-        const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [32, 32] });
+        const customIcon = L.icon({ iconUrl: 'https://i.imgur.com/YRFA9Ve.png', iconSize: [25, 25] });
         const latlng = L.latLng(lat, lng);
         const map = L.map('map-container').setView(latlng, 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -42,14 +42,23 @@ function MapContainer(props) {
               addWaypoints: false,
               createMarker: function(i, waypoint, n) {
                 // Customize marker appearance
-                if (i === n - 1) { // Check if it's the last waypoint (currentLocation)
+                if (i === 0) { // First waypoint (start location)
+                  return L.marker(waypoint.latLng, {
+                    icon: L.icon({
+                      iconUrl: 'https://i.imgur.com/YRFA9Ve.png', // Path to your custom icon
+                      iconSize: [25, 25], // Size of the icon
+                  })
+                  });
+                }
+                else if (i === n - 1) { // Check if it's the last waypoint (currentLocation)
                     return L.marker(waypoint.latLng, {
                         icon: L.icon({
-                            iconUrl: '/assets/rec.png', // Path to your custom icon
+                            iconUrl: 'https://i.imgur.com/IDpXrbP.png', // Path to your custom icon
                             iconSize: [25, 25], // Size of the icon
                         })
                     });
-                } else {
+                } 
+                else {
                     return L.marker(waypoint.latLng); // Default marker for other waypoints
                 }
               }       
@@ -69,11 +78,12 @@ function MapContainer(props) {
           // });
 
           instance.addTo(map)
-            
-              
-            },
-            (error) => {
-              console.error('Error getting current location:', error.message);
+          
+          
+        },
+        (error) => {
+          console.error('Error getting current location:', error.message);
+          currentMarker.addTo(map);
             }
           );
         }

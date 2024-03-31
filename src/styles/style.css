@@ -729,6 +729,10 @@ input[type=number] {
     cursor: pointer;
   }
 }
+
+.avatar-navbar img {
+  object-fit: cover;
+}
 .upload-file-input {
 
   & .rs-uploader-trigger-disabled {

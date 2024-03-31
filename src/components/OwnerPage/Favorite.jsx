@@ -58,7 +58,7 @@ const Favorite = (props) => {
                     <div className="profile-favorite">
                         <h4>My Favorite Keeper</h4>
                         <div className="profile-favorite-list-all">
-                            {!favvoriteData && <div className='d-flex justify-content-center align-items-center h-100 fs-4 fw-bold'>DON'T HAVE FAVORITE KEEPER</div>}
+                            {favvoriteData.length === 0 && <div className='d-flex justify-content-center align-items-center h-100 fs-4 fw-bold'>DON'T HAVE FAVORITE KEEPER</div>}
                             {favvoriteData.map((favorite) => (
                                 <div key={favorite.id} className="movedown-transition">
                                     <div className="profile-favorite-list">
