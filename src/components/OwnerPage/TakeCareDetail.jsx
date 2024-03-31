@@ -348,6 +348,7 @@ const TakeCareDetail = ({ requests }) => {
                                                                 id="comment"
                                                                 name="comment"
                                                                 rows={5}
+                                                                placeholder="Message..."
                                                                 maxLength={200}
                                                                 {...register(
                                                                     "comment",

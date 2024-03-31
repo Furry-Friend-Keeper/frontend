@@ -95,7 +95,7 @@ const DisableDate = ({ apiData }) => {
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
             }).then(() => {
-                setTableData()
+                // setTableData()
             })
     };
 
