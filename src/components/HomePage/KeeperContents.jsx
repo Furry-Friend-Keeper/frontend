@@ -10,141 +10,180 @@ import L from "leaflet";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import CircleIcon from '@mui/icons-material/Circle';
+import CircleIcon from "@mui/icons-material/Circle";
 import { useSelector } from "react-redux";
 
 function KeeperContents(props) {
-    const { search, distanceLookup, favorites } = props;
-    
-    // const [distanceAll, setDistanceAll] = useState([])
-    const currentLocation = useSelector(
-        (state) => state?.location?.currentLocation
-    );
-    const [activePage, setActivePage] = useState(1);
-    const [limit, setLimit] = useState(
-        parseInt(import.meta.env.VITE_LIMIT_PAGINATION)
-    );
-    const [filteredData, setFilteredData] = useState([]);
+  const { search, distanceLookup, favorites, changeFavorite } = props;
 
-    const limitOptions = [5, 10, 20];
-    const size = "md";
-    const maxButtons = 5;
-    const total = search.length;
-    const layout = ["limit", "-", "pager", "skip"];
+  const { userInfo, accessToken } = useSelector((state) => state.auth);
+  const [activePage, setActivePage] = useState(1);
+  // const [favoriteData, setFavoriteData] = useState({});
+  const [limit, setLimit] = useState(
+    parseInt(import.meta.env.VITE_LIMIT_PAGINATION)
+  );
 
-    // Calculate the current page's items
-    const paginatedItems = useMemo(() => {
-        const startIndex = (activePage - 1) * limit;
-        const endIndex = startIndex + limit;
-        return search.slice(startIndex, endIndex);
-    }, [activePage, limit, search]);
+  const limitOptions = [5, 10, 20];
+  const size = "md";
+  const maxButtons = 5;
+  const total = search.length;
+  const layout = ["limit", "-", "pager", "skip"];
 
-    const handlePageChange = (page) => {
-        setActivePage(page);
-    };
+  // Calculate the current page's items
+  const paginatedItems = useMemo(() => {
+    const startIndex = (activePage - 1) * limit;
+    const endIndex = startIndex + limit;
+    return search.slice(startIndex, endIndex);
+  }, [activePage, limit, search]);
 
-    const handleLimitChange = (newLimit) => {
-        setLimit(newLimit);
-        setActivePage(1); // Reset to first page when limit changes
-    };
+  const handlePageChange = (page) => {
+    setActivePage(page);
+  };
 
+  const handleLimitChange = (newLimit) => {
+    setLimit(newLimit);
+    setActivePage(1); // Reset to first page when limit changes
+  };
 
-    return (
-        <>
-            {paginatedItems.map((item, index) => {
-                const distance = distanceLookup[item.id];
-                return (
-                    <div
-                        key={index}
-                        className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 "
+  const handleFavorite = async (value) => {
+    try {
+      if(userInfo.role === "Owner") {
+          const data = {
+            "petOwnerId" : userInfo.id,
+            "petKeeperId": value.id
+          }
+          const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
+          await axios.put(apiUrl, data, 
+              {
+                  headers: {
+                  Authorization: "Bearer " + accessToken,
+              },
+              })
+              .then(() => {
+                  console.log("success")
+                  if(favorites.includes(value.id)) {
+                    changeFavorite(favorites.filter(item => item !== value.id))
+                  }else {
+                    changeFavorite([...favorites, value.id])
+                  }
+              });
+        }
+        } catch (error) {
+        console.error("Error fetching data:", error);
+        }
+  };
+
+  return (
+    <>
+      {paginatedItems.map((item, index) => {
+        const distance = distanceLookup[item.id];
+        return (
+          <div
+            key={index}
+            className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 "
+          >
+            <div className="keeper card bg-shadow text-center border-0 movedown-transition">
+              {item.img ? (
+                <Link to={`/at3/keepers/${item.id}`} className="image-status">
+                  {item.available === true && (
+                    <div className="status-open">
+                      {" "}
+                      <CircleIcon fontSize="small" /> Open{" "}
+                    </div>
+                  )}
+                  {item.available === false && (
+                    <div className="status-close">
+                      {" "}
+                      <CircleIcon fontSize="small" /> Close{" "}
+                    </div>
+                  )}
+                  <img
+                    src={
+                      import.meta.env.VITE_KEEPER_IMAGE +
+                      item.id +
+                      "/" +
+                      item.img
+                    }
+                    alt={item.title}
+                  />
+                </Link>
+              ) : (
+                <Link to={`/at3/keepers/${item.id}`} className="image-status">
+                  {item.available === true && (
+                    <div className="status-open">
+                      {" "}
+                      <CircleIcon fontSize="small" /> Open{" "}
+                    </div>
+                  )}
+                  {item.available === false && (
+                    <div className="status-close">
+                      {" "}
+                      <CircleIcon fontSize="small" /> Close{" "}
+                    </div>
+                  )}
+                  <ImageNotSupportedIcon className="notImage" />
+                </Link>
+              )}
+              <div className="card-body keeper-radius keeeper-container">
+                <div className="keeeper-warpper">
+                  <div className="border-2 border-bottom-0 mb-2 ">
+                    {distance ? (
+                      <div className="distance-keeper d-flex justify-content-between align-items-center mb-2">
+                        <div className="d-flex align-items-end">
+                          <PlaceOutlinedIcon />
+                          <p className="mt-0 fs-6">{distance} km</p>
+                        </div>
+                          {userInfo.role === "Owner" && 
+                            <div>
+                              {favorites && favorites?.includes(item.id) ? (
+                                <FavoriteIcon onClick={() => handleFavorite(item)} className="favorite-icon" />
+                              ) : (
+                                <FavoriteBorderIcon onClick={() => handleFavorite(item)} className="favorite-icon" />
+                              )}
+                            </div>
+                          }
+                      </div>
+                    ) : (
+                      <Skeleton className="mx-auto mt-2" width={100} />
+                    )}
+                  </div>
+                  <div className="d-flex justify-content-center mb-2">
+                    <h5>
+                      <Link
+                        to={`/at3/keepers/${item.id}`}
+                        className="text-black"
+                      >
+                        {item.name}
+                      </Link>
+                    </h5>
+                  </div>
+                  <div>
+                    <Rate
+                      className="mb-2"
+                      value={item.reviewStars}
+                      size="xs"
+                      color="yellow"
+                      readOnly
+                    />
+                    {/* <Rating className='mb-2' name="half-rating-read" value={item.reviewStars} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      className="justify-content-center d-block"
                     >
-                        <div className="keeper card bg-shadow text-center border-0 movedown-transition">
-                            {item.img ? (
-                                <Link to={`/at3/keepers/${item.id}`} className="image-status">
-                                    {item.available === true && <div className="status-open"> <CircleIcon fontSize="small"/> Open </div>}
-                                    {item.available === false && <div className="status-close"> <CircleIcon fontSize="small"/> Close </div>}
-                                    <img
-                                        src={
-                                            import.meta.env.VITE_KEEPER_IMAGE +
-                                            item.id +
-                                            "/" +
-                                            item.img
-                                        }
-                                        alt={item.title}
-                                    />
-                                </Link>
-                            ) : (
-                                <Link to={`/at3/keepers/${item.id}`} className="image-status">
-                                    {item.available === true && <div className="status-open"> <CircleIcon fontSize="small"/> Open </div>}
-                                    {item.available === false && <div className="status-close"> <CircleIcon fontSize="small"/> Close </div>}
-                                    <ImageNotSupportedIcon className="notImage" />
-                                </Link>
-                            )}
-                            <div className="card-body keeper-radius keeeper-container">
-                                <div className="keeeper-warpper">
-                                    <div className="border-2 border-bottom-0 mb-2 ">
-                                        {distance ? (
-                                            <div className="distance-keeper d-flex justify-content-between align-items-center mb-2">
-                                                <div className="d-flex align-items-end">
-                                                    <PlaceOutlinedIcon />
-                                                    <p className="mt-0 fs-6">
-                                                        {distance} km
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    {favorites && favorites?.includes(item.id) ?
-                                                    <FavoriteIcon className="favorite-icon" />
-                                                    :
-                                                    <FavoriteBorderIcon className="favorite-icon" />
-                                                    }
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <Skeleton
-                                                className="mx-auto mt-2"
-                                                width={100}
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="d-flex justify-content-center mb-2">
-                                        <h5>
-                                            <Link
-                                                to={`/at3/keepers/${item.id}`}
-                                                className="text-black"
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        </h5>
-                                    </div>
-                                    <div>
-                                        <Rate
-                                            className="mb-2"
-                                            value={item.reviewStars}
-                                            size="xs"
-                                            color="yellow"
-                                            readOnly
-                                        />
-                                        {/* <Rating className='mb-2' name="half-rating-read" value={item.reviewStars} precision={1} readOnly emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />} /> */}
-                                        <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            className="justify-content-center d-block"
-                                        >
-                                            {item.categories &&
-                                                item.categories.map(
-                                                    (category, i) => (
-                                                        <Chip
-                                                            className="keeper-tag"
-                                                            key={i}
-                                                            label={category}
-                                                            size="small"
-                                                        />
-                                                    )
-                                                )}
-                                        </Stack>
-                                    </div>
-                                </div>
-                                {/* <div className='border-2 border-top mt-2'>
+                      {item.categories &&
+                        item.categories.map((category, i) => (
+                          <Chip
+                            className="keeper-tag"
+                            key={i}
+                            label={category}
+                            size="small"
+                          />
+                        ))}
+                    </Stack>
+                  </div>
+                </div>
+                {/* <div className='border-2 border-top mt-2'>
                         {distance ? 
                         <div className='d-flex justify-content-between align-items-center mt-2'>
                             <div className='distance-keeper d-flex'>
@@ -159,33 +198,32 @@ function KeeperContents(props) {
                             <Skeleton className='mx-auto mt-2' width={100} />
                         }
                     </div> */}
-                                
-                            </div>
-                        </div>
-                    </div>
-                );
-            })}
-            <div className="w-100 mt-4">
-                <Pagination
-                    prev
-                    next
-                    first
-                    last
-                    ellipsis
-                    boundaryLinks
-                    layout={layout}
-                    size={size}
-                    total={total}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    maxButtons={maxButtons}
-                    activePage={activePage}
-                    onChangePage={handlePageChange}
-                    onChangeLimit={handleLimitChange}
-                />
+              </div>
             </div>
-        </>
-    );
+          </div>
+        );
+      })}
+      <div className="w-100 mt-4">
+        <Pagination
+          prev
+          next
+          first
+          last
+          ellipsis
+          boundaryLinks
+          layout={layout}
+          size={size}
+          total={total}
+          limit={limit}
+          limitOptions={limitOptions}
+          maxButtons={maxButtons}
+          activePage={activePage}
+          onChangePage={handlePageChange}
+          onChangeLimit={handleLimitChange}
+        />
+      </div>
+    </>
+  );
 }
 
 export default KeeperContents;

@@ -161,7 +161,9 @@ p {
 }
 
 .css-1pqm26d-MuiAvatar-img {
-  width: auto !important;
+  /* width: auto !important; */
+  width: 12rem !important;
+  height: 12rem !important
 }
 
 
@@ -683,11 +685,12 @@ input[type=number] {
     margin-bottom: 20px;
   }
   & .profile-favorite-list-all {
-    overflow-y: auto;
+    height: 450px;
+    overflow: auto;
     & .profile-favorite-list {
       /* cursor: pointer; */
       display: flex;
-      margin: 10px 0;
+      padding: 15px 0;
       padding-bottom: 10px;
       border: 3px solid var(--c-blue-gray);
       border-top: 0;
@@ -707,6 +710,9 @@ input[type=number] {
         padding-left: 24px;
         
       }
+      & .favorite-icon {
+        margin-right: 20px;
+      }
 
     }
   
@@ -719,6 +725,26 @@ input[type=number] {
 .favorite-icon {
   margin: 0 0 0 auto;
   color: rgb(255, 66, 79);
+}
+.upload-file-input {
+
+  & .rs-uploader-trigger-disabled {
+    display: none;
+  }
+  
+  & .rs-uploader-picture .rs-uploader-trigger-btn {
+    width: 150px;
+    height: 150px;
+  }
+  
+  & .rs-uploader-picture .rs-uploader-file-item {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  
+  & .rs-uploader-picture .rs-uploader-file-item-preview {
+    height: 150px !important;
+  }
 }
 
 .profile-menu {
