@@ -94,7 +94,6 @@ function ScheduleModal(props) {
 
         // SignUpForm(data);
     };
-    console.log(availableStore);
 
     const PetKeeperCategories = async () => {
         await axios

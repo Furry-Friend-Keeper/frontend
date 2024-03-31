@@ -184,7 +184,7 @@ function ScheduleRequest(props) {
                         onChange={handleExpanded}
                     />
                 </Column>
-                <Column width={150}>
+                <Column width={160}>
                     <HeaderCell>Start Date</HeaderCell>
                     <Cell>
                         {(rowData) => (
@@ -196,7 +196,7 @@ function ScheduleRequest(props) {
                         )}
                     </Cell>
                 </Column>
-                <Column width={150}>
+                <Column width={160}>
                     <HeaderCell>End Date</HeaderCell>
                     <Cell>
                         {(rowData) => (

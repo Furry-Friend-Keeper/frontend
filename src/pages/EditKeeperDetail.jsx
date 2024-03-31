@@ -234,6 +234,7 @@ function EditKeeperDetail() {
         console.log(value)
         setCategoryId(test)
       };
+    //   console.log(apiData.disableAppointment);
 
     return (
         <>
