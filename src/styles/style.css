@@ -415,7 +415,7 @@ input[type=number] {
   background-color: var(--c-blue-white) !important;
   color: var(--c-blue) !important;
   font-weight: 600 !important;
-  font-size: 0.875rem !important;
+  font-size: 12px !important;
   padding: 0.5em 0.75em !important;
   line-height: 1 !important;
   border-radius: 6px !important;
@@ -685,7 +685,7 @@ input[type=number] {
   & .profile-favorite-list-all {
     overflow-y: auto;
     & .profile-favorite-list {
-      cursor: pointer;
+      /* cursor: pointer; */
       display: flex;
       margin: 10px 0;
       padding-bottom: 10px;
@@ -695,7 +695,8 @@ input[type=number] {
       border-right: 0;
       /* align-items: center; */
       & .profile-favorite-imge img{
-        width: 100%;
+        cursor: pointer;
+        width: 220px;
         height: 150px;
         object-fit: cover;
         border-radius: 5px;
@@ -706,12 +707,18 @@ input[type=number] {
         padding-left: 24px;
         
       }
+
     }
   
     & .profile-favorite-list:hover {
       background-color: var(--c-blue-gray);
     }
   }
+}
+
+.favorite-icon {
+  margin: 0 0 0 auto;
+  color: rgb(255, 66, 79);
 }
 
 .profile-menu {

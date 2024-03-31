@@ -14,7 +14,8 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { useSelector } from "react-redux";
 
 function KeeperContents(props) {
-    const { search, distanceLookup } = props;
+    const { search, distanceLookup, favorites } = props;
+    
     // const [distanceAll, setDistanceAll] = useState([])
     const currentLocation = useSelector(
         (state) => state?.location?.currentLocation
@@ -91,7 +92,11 @@ function KeeperContents(props) {
                                                     </p>
                                                 </div>
                                                 <div>
-                                                    <FavoriteBorderIcon />
+                                                    {favorites && favorites?.includes(item.id) ?
+                                                    <FavoriteIcon className="favorite-icon" />
+                                                    :
+                                                    <FavoriteBorderIcon className="favorite-icon" />
+                                                    }
                                                 </div>
                                             </div>
                                         ) : (

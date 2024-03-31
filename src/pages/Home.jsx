@@ -16,6 +16,9 @@ import { Tag, TagGroup } from 'rsuite';
 
 function Home() {  
 
+  const {  userInfo, accessToken } = useSelector(
+    (state) => state.auth
+  );
   const [apiData, setApiData] = useState([]);
   const [distanceAll, setDistanceAll] = useState([])
   const [ratingScore, setRatingScore] = useState(0);
@@ -29,6 +32,7 @@ function Home() {
   const [distanceTitle, setDistanceTitle] = useState("")
   const dispatch = useDispatch();
   const currentLocation = useSelector((state) => state?.location?.currentLocation);
+  const [favoriteData, setFavoriteData] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -43,8 +47,28 @@ function Home() {
     }
   };
 
+  const fetchOwner = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_OWNER_ID + userInfo.id;
+      await axios
+        .get(apiUrl, {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        })
+        .then((response) => {
+          const data = response.data;
+          const favorites = data.favorites.map(item => item.petKeeperId)
+          setFavoriteData(favorites)
+        });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchOwner()
 
       if (!currentLocation && 'geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
@@ -317,7 +341,7 @@ const resetFilter = () => {
                     </Box>
                   ))}
                 </div>
-                : loading && search.length > 0 ? <KeeperContents search={search} distanceLookup={distanceLookup}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
+                : loading && search.length > 0 ? <KeeperContents search={search} distanceLookup={distanceLookup} favorites={favoriteData}  /> : <div className='text-center fw-bold mt-5 fs-4'>NO PET KEEPER FOUND</div>}
                 {/* <KeeperContents search={search} /> */}
               </div>
                 {/* <PaginationButton /> */}

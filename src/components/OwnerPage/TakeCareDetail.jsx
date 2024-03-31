@@ -27,7 +27,6 @@ const TakeCareDetail = ({ requests }) => {
         (state) => state.auth
     );
 
-    console.log(requests);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
