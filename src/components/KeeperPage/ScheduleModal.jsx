@@ -159,7 +159,7 @@ function ScheduleModal(props) {
     },
     ];
 
-    const disableSundays = (date) => {
+    const disableDays = (date) => {
         const momentDate = moment(date);
         const today = moment().startOf('day'); // Get today's date at the start of the day for comparison
 
@@ -263,7 +263,7 @@ function ScheduleModal(props) {
                                             block
                                             showHeader={false}
                                             onSelect={handleSelect}
-                                            shouldDisableDate={disableSundays}
+                                            shouldDisableDate={disableDays}
                                             ranges={Ranges}
                                             onChange={(value) => {
                                                 setDateRange(value);

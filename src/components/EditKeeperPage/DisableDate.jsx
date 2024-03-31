@@ -17,6 +17,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -39,9 +40,10 @@ const DisableDate = (apiData) => {
 
     const { keeperId } = useParams();
     const [selectedDays, setSelectedDays] = useState([]);
-    const [isEditDate, setIsEditDate] = useState(false);
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [storeStatus, setStoreStatus] = useState();
 
-    const EditDisbleDate = async (value) => {
+    const EditDisableDate = async (value) => {
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
             value.selectedDays,
@@ -51,7 +53,8 @@ const DisableDate = (apiData) => {
         );
     };
 
-    const StoreClose = async () => {
+    const StoreClose = async (value) => {
+        console.log(value);
         await axios.patch(
             import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
             {},
@@ -59,25 +62,19 @@ const DisableDate = (apiData) => {
                 headers: { Authorization: "Bearer " + accessToken },
             }
         );
+        setStoreStatus(value)
     };
 
-    const StoreCloseDateRange = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_SCHEDULE_ID  + keeperId + "/" + value.id,
-            {},
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        );
+    const DeleteDateRange = async (value) => {
+        await axios.delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
+            headers: { Authorization: "Bearer " + accessToken },
+        });
     };
 
     const onSubmitRange = async (data) => {
-        console.log(data);
-
         const result = {
-            startDate: moment(data.dateRange[0]).format(),
-            endDate: moment(data.dateRange[1]).format(),
-            id: "1",
+            startDate: moment(data.dateRange[0]).format("yyyy-MM-DD"),
+            endDate: moment(data.dateRange[1]).format("yyyy-MM-DD"),
         };
 
         console.log(result);
@@ -85,34 +82,24 @@ const DisableDate = (apiData) => {
             .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
                 headers: { Authorization: "Bearer " + accessToken },
             })
-            .then((res) => {
-                handleClose();
-                setValue("dateRange", "");
-                setValue("message", "");
-                setValue("petName", "");
-                setValue("phone", "");
-                setValue("tags", "");
-                setDateRange([null, null]);
-            });
-
-        // SignUpForm(data);
     };
 
-    const handleDaySelect = (value) => {
-        setSelectedDays(value);
-        console.log(value);
+    const handleSelect = (value) => {
+        let range = dateRange;
+        if (dateRange.length >= 2) range = [value];
+        else range = [...dateRange, value];
+        setDateRange(range);
     };
 
     const onSubmit = (data) => {
-        EditDisbleDate(data);
+        EditDisableDate(data);
         console.log(data);
     };
-    // console.log(disableRange);
 
     return (
         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
             <div className="row">
-                <div className="title d-flex justify-content-between align-items-center col-6">
+                <div className="title d-flex justify-content-between align-items-center">
                     <h3>
                         Store{" "}
                         <span>
@@ -121,136 +108,150 @@ const DisableDate = (apiData) => {
                                 size="lg"
                                 checkedChildren="Open"
                                 unCheckedChildren="Close"
-                                onChange={() => StoreClose()}
+                                value={storeStatus}
+                                onChange={(value) => StoreClose(value)}
                             />
                         </span>
                     </h3>
                 </div>
             </div>
-
-            <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                <div className="row">
-                    <div className="col-6">
+            <div className="row">
+                <div className="col-6">
+                    <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
+                        <Label className="pb-3">Close Days</Label>
+                        <Form.HelpText tooltip>
+                            วันที่ร้านปิดเป็นประจำ
+                        </Form.HelpText>
                         <div className="row">
                             <div className="col-6">
-                                <Label className="pb-3">Close Days</Label>
-                                <Form.HelpText tooltip>
-                                    วันที่ร้านปิดเป็นประจำ
-                                </Form.HelpText>
-                                <div className="mt-2">
-                                    <Stack
-                                        spacing={10}
-                                        direction="column"
-                                        alignItems="flex-start"
-                                    >
-                                        <Controller
-                                            name="selectedDays"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <CheckPicker
-                                                    {...field}
-                                                    data={days}
-                                                    searchable={false}
-                                                    style={{
-                                                        width: 300,
-                                                    }}
-                                                    placeholder="Select days"
-                                                    onChange={(value) => {
-                                                        field.onChange(value);
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Stack>
-                                </div>
+                                <Stack
+                                    spacing={10}
+                                    direction="column"
+                                    alignItems="flex-start"
+                                >
+                                    <Controller
+                                        name="selectedDays"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <CheckPicker
+                                                {...field}
+                                                data={days}
+                                                searchable={false}
+                                                style={{ width: 300 }}
+                                                placeholder="Select days"
+                                                onChange={(value) => {
+                                                    field.onChange(value);
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Stack>
                             </div>
-                            <div className="col-6">
-                                <Label className="pb-3">
-                                    Temporary Close Days
-                                </Label>
-                                <Form.HelpText tooltip>
-                                    วันและเวลาปิดร้านชั่วคราว
-                                </Form.HelpText>
-                                <div className="mt-2">
+                            <div>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    className="mt-2"
+                                >
+                                    Submit
+                                </Button>
+                            </div>
+                        </div>
+                    </Form>
+                </div>
+                <div className="col-6">
+                    <Form
+                        className="mt-3"
+                        onSubmit={handleSubmit(onSubmitRange)}
+                    >
+                        <Label className="pb-3">Closed Period</Label>
+                        <Form.HelpText tooltip>
+                            วันและเวลาปิดร้านชั่วคราว
+                        </Form.HelpText>
+                        <div>
+                            <Controller
+                                name="dateRange"
+                                control={control}
+                                render={({ field }) => (
                                     <DateRangePicker
-                                        format="dd MMMM yyyy HH:mm"
+                                        {...field}
+                                        format="dd MMMM yyyy"
                                         appearance="default"
                                         block
+                                        showHeader={false}
+                                        onSelect={handleSelect}
+                                        onChange={(value) => {
+                                            setDateRange(value);
+                                            field.onChange(value);
+                                        }}
                                     />
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{ mt: 3, ml: 1 }}
-                                    >
-                                        Submit
-                                    </Button>
-                                </div>
-                                <div className="mt-2">
-                                    <Table
-                                        height={200}
-                                        // data={disableRange}
-                                        onRowClick={(rowData) => {
-                                            console.log(rowData);
-                                        }}
-                                    >
-                                        <Column width={60} align="center" fixed>
-                                            <HeaderCell>Id</HeaderCell>
-                                            <Cell dataKey="id" />
-                                        </Column>
-                                        <Column width={160}>
-                                            <HeaderCell>Start Date</HeaderCell>
-                                            <Cell dataKey="firstName" />
-                                        </Column>
-
-                                        <Column width={160}>
-                                            <HeaderCell>End Date</HeaderCell>
-                                            <Cell dataKey="lastName" />
-                                        </Column>
-                                        <Column width={80} fixed="right">
-                                            <HeaderCell>...</HeaderCell>
-                                            <Cell style={{ padding: "6px" }}>
-                                                {(rowData) => (
-                                                    <Button
-                                                        appearance="link"
-                                                        onClick={() => StoreCloseDateRange(rowData)}
-                                                    >
-                                                        Cancel
-                                                    </Button>
-                                                )}
-                                            </Cell>
-                                        </Column>
-                                    </Table>
-                                </div>
-                            </div>
-                            {/* <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                    }}
-                                >
-                                    <Button
-                                        variant="contained"
-                                        style={{
-                                            backgroundColor: "red",
-                                            color: "white",
-                                        }}
-                                        onClick={() => setIsEditName(false)}
-                                        sx={{ mt: 3, ml: 1 }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        sx={{ mt: 3, ml: 1 }}
-                                    >
-                                        Submit
-                                    </Button>
-                                </Box> */}
+                                )}
+                            />
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                className="mt-2"
+                            >
+                                Submit
+                            </Button>
                         </div>
+                    </Form>
+                    <div className="mt-2">
+                        <Table
+                            height={200}
+                            data={apiData}
+                            onRowClick={(rowData) => {
+                                console.log(rowData);
+                            }}
+                        >
+                            <Column width={60} align="center" fixed>
+                                <HeaderCell>Id</HeaderCell>
+                                <Cell dataKey="id" />
+                            </Column>
+                            <Column width={160}>
+                                <HeaderCell>Start Date</HeaderCell>
+                                <Cell>
+                                    {(rowData) => (
+                                        <span>
+                                            {moment
+                                                .unix(rowData.startDate)
+                                                .format("DD MMMM YYYY")}
+                                        </span>
+                                    )}
+                                </Cell>
+                            </Column>
+
+                            <Column width={160}>
+                                <HeaderCell>End Date</HeaderCell>
+                                <Cell>
+                                    {(rowData) => (
+                                        <span>
+                                            {moment
+                                                .unix(rowData.startDate)
+                                                .format("DD MMMM YYYY")}
+                                        </span>
+                                    )}
+                                </Cell>
+                            </Column>
+                            <Column width={80} fixed="right">
+                                <HeaderCell>...</HeaderCell>
+                                <Cell style={{ padding: "6px" }}>
+                                    {(rowData) => (
+                                        <Button
+                                            appearance="link"
+                                            onClick={() =>
+                                                DeleteDateRange(rowData)
+                                            }
+                                        >
+                                            Cancel
+                                        </Button>
+                                    )}
+                                </Cell>
+                            </Column>
+                        </Table>
                     </div>
                 </div>
-            </Form>
+            </div>
         </div>
     );
 };
