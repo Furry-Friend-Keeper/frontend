@@ -150,7 +150,7 @@ function Home() {
     return () => {
         isMounted = false;
     };
-}, [search]);
+}, [search, currentLocation]);
 
     // Pre-process distance data for quick lookup
 const distanceLookup = useMemo(() => {
@@ -277,6 +277,21 @@ const resetFilter = () => {
   //reset filter categories
   setSelected([])
 }
+
+const [locationAllowed, setLocationAllowed] = useState(false);
+
+  useEffect(() => {
+    if (!locationAllowed && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        () => {
+          setLocationAllowed(true);
+        },
+        () => {
+          window.location.reload();
+        }
+      );
+    }
+  }, [locationAllowed]);
 
   return (
     <>
