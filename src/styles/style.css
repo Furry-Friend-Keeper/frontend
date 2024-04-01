@@ -371,7 +371,7 @@ a:hover {
   }
 
   & .notImage {
-    height: 200px!important;
+    height: 220px!important;
     margin: 0 auto;
     width: 50px;
     opacity: 0.5;
@@ -763,6 +763,23 @@ input[type=number] {
     font-size: 20px !important;
   }
 
+}
+
+.img-close-status{
+  position: relative;
+  & .bg-tranparency {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  & img {
+
+  }
 }
 
 .rs-dropdown-item-focus {

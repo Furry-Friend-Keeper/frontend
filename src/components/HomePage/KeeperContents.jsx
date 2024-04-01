@@ -85,43 +85,26 @@ function KeeperContents(props) {
             <div className="keeper card bg-shadow text-center border-0 movedown-transition">
               {item.img ? (
                 <Link to={`/at3/keepers/${item.id}`} className="image-status">
-                  {item.available === true && (
-                    <div className="status-open">
-                      {" "}
-                      <CircleIcon fontSize="small" /> Open{" "}
-                    </div>
-                  )}
-                  {item.available === false && (
-                    <div className="status-close">
-                      {" "}
-                      <CircleIcon fontSize="small" /> Close{" "}
-                    </div>
-                  )}
-                  <img
-                    src={
-                      import.meta.env.VITE_KEEPER_IMAGE +
-                      item.id +
-                      "/" +
-                      item.img
-                    }
-                    alt={item.title}
-                  />
+
+                  <div className="img-close-status">
+                  {item.available === false && <div className="bg-tranparency">Closed</div>}
+                    <img
+                      src={
+                        import.meta.env.VITE_KEEPER_IMAGE +
+                        item.id +
+                        "/" +
+                        item.img
+                      }
+                      alt={item.title}
+                    />
+                  </div>
                 </Link>
               ) : (
                 <Link to={`/at3/keepers/${item.id}`} className="image-status">
-                  {item.available === true && (
-                    <div className="status-open">
-                      {" "}
-                      <CircleIcon fontSize="small" /> Open{" "}
-                    </div>
-                  )}
-                  {item.available === false && (
-                    <div className="status-close">
-                      {" "}
-                      <CircleIcon fontSize="small" /> Close{" "}
-                    </div>
-                  )}
-                  <ImageNotSupportedIcon className="notImage" />
+                  <div className="img-close-status">
+                    {item.available === false && <div className="bg-tranparency">Closed</div>}
+                    <ImageNotSupportedIcon className="notImage" />
+                  </div>
                 </Link>
               )}
               <div className="card-body keeper-radius keeeper-container">
