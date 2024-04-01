@@ -41,7 +41,6 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
     } = useForm();
     const [loading, setLoading] = useState(false);
     const [reviews, setReviews] = useState([]);
-    let arrReview = []
 
     const checkReviews = async (review) => {
         try {
@@ -51,8 +50,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                 if(data){
                     setValue("star", data.stars);
                     setValue("comment", data.comment);
-                    // setReviews([...reviews, review.keeperId]);
-                    arrReview.push(review.keeperId)
+                    setReviews(prevReviews => [...new Set([...prevReviews, review.keeperId])]);
                 }
             });         
         } catch (error) {
@@ -62,13 +60,16 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
 
     useEffect(() => {
         const filter = requests.filter((item) => item.status === "Completed") || [];
-
         if (filter.length > 0) {
             for (let review of filter) {
                 checkReviews(review);
             }
         }
     }, [requests]);
+
+    // useEffect(() => {
+    //     console.log(reviews);
+    // }, [reviews]);
 
     const goToStore = () => {
         navigate("/at3/keeper/" + requests.keeperId);
@@ -155,7 +156,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
     };
 
     const buttonStatus = (data) => {
-        console.log(arrReview)
+        // console.log(arrReview)
         if (data.status === "Pending") {
             return (
                 <ButtonGroup className="w-100">
@@ -207,7 +208,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                     Cancelled{" "}
                 </Button>
             );
-        } else if (data.status === "Completed" && arrReview.includes(data.keeperId)) {
+        } else if (data.status === "Completed" && reviews.includes(data.keeperId)) {
             return (
                 <ButtonGroup className="w-100">
                     <Button
