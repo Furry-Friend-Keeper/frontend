@@ -216,7 +216,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       return (
         <Button appearance="ghost" color="blue">
           {" "}
-          Pet is Caring{" "}
+          Your pet is in care{" "}
         </Button>
       );
     } else if (data.status === "Keeper Completed") {

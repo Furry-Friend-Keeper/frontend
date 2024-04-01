@@ -278,20 +278,20 @@ const resetFilter = () => {
   setSelected([])
 }
 
-const [locationAllowed, setLocationAllowed] = useState(false);
+// const [locationAllowed, setLocationAllowed] = useState(false);
 
-  useEffect(() => {
-    if (!locationAllowed && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setLocationAllowed(true);
-        },
-        () => {
-          window.location.reload();
-        }
-      );
-    }
-  }, [locationAllowed]);
+  // useEffect(() => {
+  //   if (!locationAllowed && navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       () => {
+  //         setLocationAllowed(true);
+  //       },
+  //       () => {
+  //         window.location.reload();
+  //       }
+  //     );
+  //   }
+  // }, [locationAllowed]);
 
   return (
     <>

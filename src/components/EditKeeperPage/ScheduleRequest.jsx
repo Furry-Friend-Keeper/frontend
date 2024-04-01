@@ -246,7 +246,7 @@ function ScheduleRequest(props) {
                         </Cell>
                     </Column>
                 )}
-                <Column width={80} fixed="right">
+                <Column width={90} fixed="right">
                     <HeaderCell>...</HeaderCell>
                     <Cell style={{ padding: "6px" }}>
                     {(rowData) => (
