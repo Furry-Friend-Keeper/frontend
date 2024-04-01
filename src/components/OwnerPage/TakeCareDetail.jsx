@@ -67,9 +67,9 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
         }
     }, [requests]);
 
-    // useEffect(() => {
-    //     console.log(reviews);
-    // }, [reviews]);
+    useEffect(() => {
+        console.log(reviews);
+    }, [reviews]);
 
     const goToStore = () => {
         navigate("/at3/keeper/" + requests.keeperId);
