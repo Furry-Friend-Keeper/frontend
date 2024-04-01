@@ -233,7 +233,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       );
     } else if (data.status === "Cancelled") {
       return (
-        <Button appearance="primary" color="red">
+        <Button appearance="primary" color="red" disabled>
           {" "}
           Cancelled{" "}
         </Button>
