@@ -162,14 +162,18 @@ function ScheduleModal(props) {
 
     const disableDays = (date) => {
         const momentDate = moment(date);
-        const today = moment().startOf('day'); // Get today's date at the start of the day for comparison
+        // Get today's date at the start of the day for comparison
+        const today = moment().startOf('day');
 
         // Disable dates before today
         if (momentDate.isBefore(today)) {
             return true;
         }
-       if (dateRange[0] && dateRange[1] && momentDate.isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
-        return false;
+        // Enable dates if selected dates range between disabled date range
+        if (dateRange[0] && dateRange[1]) {
+            if (momentDate.isBetween(dateRange[0], dateRange[1], 'day', '[]')) {
+             return false;
+             }
         }
         // Check if the date is a disabled weekday
         if (disabledWeekdays.includes(momentDate.day())) {

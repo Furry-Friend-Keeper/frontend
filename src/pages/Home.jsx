@@ -95,13 +95,14 @@ function Home() {
   useEffect(() => {
     let isMounted = true; // For avoiding state update on unmounted component
 
-
     async function calculateDistance(start, end) {
         const cacheKey = `${start.lat},${start.lng}-${end.lat},${end.lng}`;
         const cachedDistance = sessionStorage.getItem(cacheKey);
         if (cachedDistance) return parseFloat(cachedDistance);
 
-        const apiUrl = getURL(start, end) //`http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
+        //`http://router.project-osrm.org/route/v1/driving/
+        //${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
+        const apiUrl = getURL(start, end) 
         try {
             const response = await axios.get(apiUrl);
             const distance = response.data.routes[0].distance;
@@ -115,7 +116,6 @@ function Home() {
 
     async function updateSearchWithDistances() {
         if (!currentLocation) return;
-
         let batchDistances = [];
         for (const data of search) {
             if (data.map && data.map.length > 0) {
@@ -170,8 +170,9 @@ const distanceLookup = useMemo(() => {
   }
 
   useEffect(() => {
+
     const filter = apiData.filter((item) => 
-    item.reviewStars >= ratingScore && selected.every((filter) =>  item.categories.includes(filter))
+    item.reviewStars >= ratingScore && selected.every((filter) =>  item.categories?.includes(filter))
     );
 
     // console.log(filter)
@@ -278,20 +279,20 @@ const resetFilter = () => {
   setSelected([])
 }
 
-const [locationAllowed, setLocationAllowed] = useState(false);
+// const [locationAllowed, setLocationAllowed] = useState(false);
 
-  useEffect(() => {
-    if (!locationAllowed && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setLocationAllowed(true);
-        },
-        () => {
-          window.location.reload();
-        }
-      );
-    }
-  }, [locationAllowed]);
+//   useEffect(() => {
+//     if (!locationAllowed && navigator.geolocation) {
+//       navigator.geolocation.getCurrentPosition(
+//         () => {
+//           setLocationAllowed(true);
+//         },
+//         () => {
+//           window.location.reload();
+//         }
+//       );
+//     }
+//   }, [locationAllowed]);
 
   return (
     <>
