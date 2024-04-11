@@ -208,12 +208,6 @@ function ScheduleModal(props) {
                             First
                         </p>
                     </div>
-                ) : availableStore === false ? (
-                    <div className="mt-3 d-flex justify-content-center align-items-center">
-                        <p className="fw-bold ">
-                            Store has close
-                        </p>
-                    </div>
                 ) : userInfo.role === "Owner" ? (
                     <div className="mt-3 d-flex justify-content-between align-item-center">
                         <div>

@@ -170,8 +170,8 @@ function ScheduleRequest(props) {
                 onChange={(value) => setRadioChange(value)}
             >
                 <Radio value="Pending">Incoming Request</Radio>
-                <Radio value="Scheduled">In Care</Radio>
-                <Radio value="In Care">Successful Care</Radio>
+                <Radio value="Scheduled">Scheduled</Radio>
+                <Radio value="In Care">In Care</Radio>
             </RadioGroup>
             <Table
                 className="mt-3"
@@ -246,7 +246,7 @@ function ScheduleRequest(props) {
                         </Cell>
                     </Column>
                 )}
-                <Column width={80} fixed="right">
+                <Column width={90} fixed="right">
                     <HeaderCell>...</HeaderCell>
                     <Cell style={{ padding: "6px" }}>
                     {(rowData) => (
@@ -267,7 +267,7 @@ function ScheduleRequest(props) {
                                             InCareCompleted(rowData);
                                         }}
                                     >
-                                        Accept
+                                        In Care
                                     </Button>
                                 ) : (
                                     <Button
