@@ -1330,3 +1330,8 @@ div.scrollmenu a:hover {
     border-radius: 20px;
   }
 }
+
+.border-error {
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+}

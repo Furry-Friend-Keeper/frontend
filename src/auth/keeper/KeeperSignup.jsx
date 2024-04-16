@@ -15,6 +15,7 @@ import Map from "./Map.jsx"
 import { useDispatch, useSelector } from 'react-redux'
 import { registerKeeper } from "../../store/AuthAction";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Message, useToaster } from 'rsuite';
 
 export default function BasicFormControl() {
   const [subdistrict, setSubdistrict] = useState("");
@@ -37,6 +38,18 @@ export default function BasicFormControl() {
   )
   const dispatch = useDispatch()
 
+  const [type, setType] = useState('error');
+  const [placement, setPlacement] = useState('topEnd');
+  const toaster = useToaster();
+
+  const message = (
+    <Message showIcon type={type} header={'Failed!'} closable>
+      {/* <h6><strong>Failed!</strong> </h6> */}
+      <p className="text-black">{error}</p>
+    </Message>
+  );
+
+
   useEffect(() => {
     PetKeeperCategories();
   }, []);
@@ -48,8 +61,10 @@ export default function BasicFormControl() {
       //   navigate("/at3/login");
       // }, 3000);
       navigate('/at3/login')
+    } else if(error) {
+      toaster.push(message, { placement, duration: 3000 })
     }
-  }, [success])
+  }, [success, error])
 
   const PetKeeperCategories = async () => {
     await axios
@@ -64,7 +79,6 @@ export default function BasicFormControl() {
   };
 
   const onSubmit = (data) => {
-    console.log('Selected petCategories:', JSON.parse(data.petCategories));
     const address = {
       address: addressLabel,
       district: district,
@@ -92,7 +106,6 @@ export default function BasicFormControl() {
     dispatch(registerKeeper(result))
     // SignUpForm(data);
   };
-  watch('phone')
 
   const password = useRef({});
   password.current = watch("password", "");
@@ -114,7 +127,7 @@ export default function BasicFormControl() {
 
   return (
     <form className="border-top border-2" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <Snackbar
+      {/* <Snackbar
         open={!!error}
         autoHideDuration={3000}
         onClose={handleClose}
@@ -133,12 +146,11 @@ export default function BasicFormControl() {
           ) : (
             <div  className="fs-6">
               <AlertTitle><b>Failed</b></AlertTitle>
-               {/* Something went wrong. User signup failed. */}
                {error}
             </div>
           )}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <div className="container mt-4">
         <div className="">
           <h5 className="mb-5">Please complete all information below:</h5>
