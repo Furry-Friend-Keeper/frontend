@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.0.1",
     "@rsuite/icons": "^1.0.3",
     "@stomp/stompjs": "^7.0.0",
+    "aos": "^2.3.4",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.1",
