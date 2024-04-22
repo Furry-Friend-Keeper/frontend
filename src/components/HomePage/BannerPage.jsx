@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
 
 function BannerPage() {
+    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
     return (
-        <Container maxWidth="lg" className="banner">
+        <Container maxWidth={customWidth} className="banner">
             {/* <div className="container banner"> */}
             <div className="page-banner">
                 <div className="keeper-title">

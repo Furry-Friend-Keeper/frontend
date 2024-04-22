@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch';
 
-function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
+function MapEditer({ isMap, getLocation, getLocationLabel }) {
 
   const lat = isMap[0] || 13.7563;
   const lng = isMap[1] || 100.5018
@@ -17,7 +17,7 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
             attribution: '© OpenStreetMap contributors',
           }).addTo(map);
 
-        const marker = L.marker(latlng, { draggable: editMap, icon: customIcon}).addTo(map);
+        const marker = L.marker(latlng, { draggable: true, icon: customIcon}).addTo(map);
         marker.bindPopup('You are here!');
 
         const provider = new OpenStreetMapProvider();
@@ -48,9 +48,7 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
             draggable: true,
           },
         });
-       if(editMap){
-           map.addControl(searchControl);
-       }        
+          map.addControl(searchControl);     
 
         marker.on('dragend', (event) => {
             const newLocation = event.target.getLatLng();
@@ -86,7 +84,7 @@ function MapEditer({ editMap, isMap, getLocation, getLocationLabel }) {
           return () => {
             map.remove();
           };
-    },[editMap, isMap])
+    },[isMap])
   return (
     <div id="map-editer" />
   )

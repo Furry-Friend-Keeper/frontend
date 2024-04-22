@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { refreshToken } from "../../store/AuthAction";
+// import { refreshToken } from "../../store/AuthAction";
 import { logout } from '../../store/AuthSlice';
 
 const parseJwt = (token) => {
@@ -30,9 +30,9 @@ function AuthVerify() {
             dispatch(logout())
         }
         else if (getTokenExpireTime(decodedJwt_accessToken) < Date.now()) {
-            dispatch(refreshToken()).then(() => {
-              navigate(0)
-            })
+            // dispatch(refreshToken()).then(() => {
+            //   navigate(0)
+            // })
         }
       }
     }, [location, dispatch, accessToken]);

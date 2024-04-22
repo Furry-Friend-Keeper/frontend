@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Rating from "@mui/material/Rating";
+import axiosAuth from "../components/Global/AxiosService";
 import axios from "axios";
 import { useNavigate, Navigate ,useParams } from "react-router-dom";
 import { Button, Chip, Stack, Card, CardMedia, Container  } from "@mui/material"
@@ -16,6 +17,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 function KeeperDetail() {
+    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
     const [apiData, setApiData] = useState({});
     const [galleryData, setGalleryData] = useState([]);
     const [isEditComment, setIsEditComment] = useState(false);
@@ -58,12 +60,8 @@ function KeeperDetail() {
         try {
           if(userInfo.role === "Owner") {
             const apiUrl = import.meta.env.VITE_OWNER_ID + userInfo.id;
-            await axios
-              .get(apiUrl, {
-                headers: {
-                  Authorization: "Bearer " + accessToken,
-                },
-              })
+            await axiosAuth
+              .get(apiUrl)
               .then((response) => {
                 const data = response.data;
                 const favorites = data.favorites.map(item => item.petKeeperId)
@@ -89,12 +87,7 @@ function KeeperDetail() {
                 "petKeeperId": value.id
               }
               const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
-              await axios.put(apiUrl, data, 
-                  {
-                      headers: {
-                      Authorization: "Bearer " + accessToken,
-                  },
-                  })
+              await axiosAuth.put(apiUrl, data)
                   .then(() => {
                       console.log("success")
                       if(favoriteData.includes(value.id)) {
@@ -131,9 +124,9 @@ function KeeperDetail() {
     return (
         <>
             <GallerySider id={id} galleryData={galleryData}/>
-            <Container maxWidth="lg">
+            <Container maxWidth={customWidth}>
             {/* <div className="container pb-lg-5"> */}
-                <div className="row mx-auto col-12 movedown-transition">
+                <div className="row mx-auto col-10 movedown-transition">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="d-flex">

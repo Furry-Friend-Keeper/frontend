@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, IconButton, Radio, RadioGroup, Form } from "rsuite";
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -68,10 +69,8 @@ function ScheduleRequest(props) {
     const { register, handleSubmit, control } = useForm();
 
     const fetchRequests = async () => {
-        await axios
-            .get(import.meta.env.VITE_KEEPER_APPOINTMENT_ID + keeperId, {
-                headers: { Authorization: "Bearer " + accessToken },
-            })
+        await axiosAuth
+            .get(import.meta.env.VITE_KEEPER_APPOINTMENT_ID + keeperId)
             .then((res) => {
                 const response = res.data
                 // const responseFilter = response.map((item, index) => {
@@ -83,45 +82,29 @@ function ScheduleRequest(props) {
     };
 
     const PendingCompleted = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + value.id, "",
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        ).then(() => {
+        await axiosAuth.patch(
+            import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + value.id, "").then(() => {
             fetchRequests()
         })
     };
 
     const CancelCompleted = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "",
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }  
-        ).then(() => {
+        await axiosAuth.patch(
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "").then(() => {
             fetchRequests()
         });
     };
 
     const InCareCompleted = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + value.id, "",
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        ).then(() => {
+        await axiosAuth.patch(
+            import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + value.id, "").then(() => {
             fetchRequests()
         });
     };
 
     const KeeperCompleted = async (value) => {
-        await axios.patch(
-            import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + value.id, "",
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        ).then(() => {
+        await axiosAuth.patch(
+            import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + value.id, "").then(() => {
             fetchRequests()
         });
     };

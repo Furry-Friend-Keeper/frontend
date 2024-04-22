@@ -32,8 +32,8 @@ export const registerKeeper = createAsyncThunk(
                 { name, detail, contact, phone, categoryId, email, password, role, address }
             )
         } catch(error) {
-            if (error.response && error.response.data.message) {
-                return rejectWithValue(error.response.data.message)
+            if (error.response) {
+                return rejectWithValue(error.response.data)
               } else {
                 return rejectWithValue(error.message)
               }
@@ -58,16 +58,16 @@ export const registerOwner = createAsyncThunk(
     }
 )
 
-export const refreshToken = createAsyncThunk(
-    'auth/refreshToken',
-    async (_, { getState }) => {
-      const state = getState();
-      const { data } = await axios.get(import.meta.env.VITE_REFRESH_TOKEN, {
-        headers : {
-            'refreshToken': state.auth.userInfo.refreshToken
-        }
-      })
-      return data; // Should include the new access token
-    }
-  );
+// export const refreshToken = createAsyncThunk(
+//     'auth/refreshToken',
+//     async (_, { getState }) => {
+//       const state = getState();
+//       const { data } = await axios.get(import.meta.env.VITE_REFRESH_TOKEN, {
+//         headers : {
+//             'refreshToken': state.auth.userInfo.refreshToken
+//         }
+//       })
+//       return data; // Should include the new access token
+//     }
+//   );
 

@@ -18,6 +18,7 @@ import {
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -60,8 +61,8 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       const apiUrl = `${import.meta.env.VITE_OWNER_REVIEW_ID}${
         userInfo.id
       }?keeperId=${review.keeperId}`;
-      await axios
-        .get(apiUrl, { headers: { Authorization: "Bearer " + accessToken } })
+      await axiosAuth
+        .get(apiUrl)
         .then((response) => {
           const data = response.data;
           if (data) {
@@ -93,10 +94,8 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
   };
 
   const SaveOwnerComment = async (data, review) => {
-    await axios
-      .post(import.meta.env.VITE_OWNER_REVIEWS, data, {
-        headers: { Authorization: "Bearer " + accessToken },
-      })
+    await axiosAuth
+      .post(import.meta.env.VITE_OWNER_REVIEWS, data)
       .then(() => {
         console.log("success");
         checkReviews(review);
@@ -108,34 +107,25 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
   };
 
   const OwnerCompleted = async (value) => {
-    await axios
+    await axiosAuth
       .patch(
-        import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,
-        "",
-        {
-          headers: { Authorization: "Bearer " + accessToken },
-        }
-      )
+        import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,"")
       .then(() => {
         fetchRequests();
       });
   };
 
   const OwnerCancelled = async (value) => {
-    await axios
-      .patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "", {
-        headers: { Authorization: "Bearer " + accessToken },
-      })
+    await axiosAuth
+      .patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "")
       .then(() => {
         fetchRequests();
       });
   };
 
   const EditOwnerComment = async (data, review) => {
-    await axios
-      .patch(import.meta.env.VITE_OWNER_REVIEWS_EDIT + data.reviewId, data, {
-        headers: { Authorization: "Bearer " + accessToken },
-      })
+    await axiosAuth
+      .patch(import.meta.env.VITE_OWNER_REVIEWS_EDIT + data.reviewId, data)
       .then(() => {
         let datafilter = reviews.find(item => item.petKeeperId === review.keeperId)
         datafilter.comment = data.comment

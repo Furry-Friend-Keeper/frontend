@@ -3,10 +3,12 @@ import { Button, IconButton, styled, Snackbar, Alert, AlertTitle, Container } fr
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from 'react-redux';
 
 function GalleryEditer(props) {
+    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
     const { galleryData, keeperId, fetchData } = props
     const [ galleryContent, setGalleryContent] = useState(galleryData)
     const [galleryDelete, setGalleryDelete] = useState([]);
@@ -76,8 +78,8 @@ function GalleryEditer(props) {
             formData.append('file', emptyFile)
         }
         // galleryData.length === 0 ? formData.append('delete', '') : formData.append('file', null)
-        await axios.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
-            headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
+        await axiosAuth.patch(import.meta.env.VITE_KEEPERS_ID + keeperId + "/gallery", formData, {
+            headers: { 'content-type': 'multipart/form-data'}
         }).then((res) => {
             fetchData();
             setImageGallery([])
@@ -124,10 +126,10 @@ function GalleryEditer(props) {
             }
         </Alert>
     </Snackbar>
-    <Container maxWidth="lg">
+    <Container maxWidth={customWidth}>
 
     {/* <div className="container pt-lg-4"> */}
-        <div className="carousel col-md-12">
+        <div className="carousel col-md-10">
             <div className="m-4">
                 <div className="gallery-wrapper">
                 <div className="gallery">

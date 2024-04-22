@@ -6,6 +6,7 @@ import { Container } from "@mui/material";
 
 
 function GallerySider(props) {
+    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
     const { galleryData, id } = props
     const [slider1, setSlider1] = useState(null);
     const [slider2, setSlider2] = useState(null);
@@ -91,9 +92,9 @@ function GallerySider(props) {
 
   return (
     <>
-    <Container maxWidth="lg">
+    <Container maxWidth={customWidth}>
     {/* <div className="container pt-lg-4"> */}
-        <div className="carousel col-md-12">
+        <div className="carousel col-md-10">
             <div className="slider-for">
                 {galleryData.length > 0 && 
                 <Slider
