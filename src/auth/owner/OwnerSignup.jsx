@@ -7,7 +7,7 @@ import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
+import { Button as ButtonSuite } from 'rsuite';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
@@ -239,7 +239,7 @@ export default function BasicFormControl() {
                         {errors.petName && <small className="invalid-feedback">{errors.petName.message}</small>}
                     </div>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
                             style={{ width: '100%'}}
                             type="submit"
@@ -249,7 +249,15 @@ export default function BasicFormControl() {
                         >
                             Submit
                         </Button>
-                    </Box>
+                    </Box> */}
+                <div className="blue-btn mt-3">
+                    <ButtonSuite
+                    type="submit"
+                    appearance="primary" block
+                    >
+                    {loading ? <span>loading...</span> : <span>Submit</span>}
+                    </ButtonSuite>
+                </div>
             {/* <div className="grid justify-content-end">
                 <button type="submit" className="btn fw-semibold btn-primary">
                     Submit

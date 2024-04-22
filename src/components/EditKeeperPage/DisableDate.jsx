@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
+import {Button} from "rsuite";
 import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
 import { Box } from "@mui/material";
@@ -187,13 +187,11 @@ const DisableDate = ({ apiData, fetchData }) => {
                                     />
                                 )}
                             />
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                className="mt-2"
-                            >
+                            <div className="blue-btn mt-4">
+                                <Button type="submit" appearance="primary">
                                 Submit
-                            </Button>
+                                </Button>
+                            </div>
                         </div>
                     </Form>
                 </div>

@@ -4,6 +4,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 // import { useSelector, useDispatch } from "react-redux";
 // import { authActions } from "../store/AuthReducer";
 import { FormControlLabel, Checkbox, Link, Box, TextField, Button, Grid, Typography, InputAdornment, IconButton, Container, Paper , Alert} from "@mui/material";
+import { Button as ButtonSuite } from "rsuite";
 import { ErrorOutline } from "@mui/icons-material";
 import axios from "axios";
 import { Navigate   , useNavigate } from "react-router-dom";
@@ -80,7 +81,8 @@ function Login() {
             }}
           >
             <div className="d-flex justify-content-center align-items-center">
-              <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={50} />
+              <img src="/assets/logo.png" alt="" width={120} />
+              {/* <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={50} /> */}
             </div>
             <h4 className="fw-bold">Login</h4>
             {!!error &&
@@ -154,15 +156,22 @@ function Login() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              
-              <Button
+              <div className="blue-btn mb-2">
+                <ButtonSuite
+                  type="submit"
+                  appearance="primary" block
+                >
+                  {loading ? <span>loading...</span> : <span>Login</span>}
+                </ButtonSuite>
+              </div>
+              {/* <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 {loading ? <span>loading...</span> : <span>Login</span>}
-              </Button>
+              </Button> */}
               <Grid container>
                 <Grid item xs>
                   {/* <Link href="#" variant="body2">

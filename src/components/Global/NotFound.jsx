@@ -15,9 +15,11 @@ function NotFound() {
             <p className="error-page-subtitle text-muted ">
               We are sorry but the page you are looking for was not found
             </p>
-            <IconButton icon={<ArrowLeftLine />} appearance="primary" href="/at3/">
-              Take me home
-            </IconButton>
+            <div className='blue-btn'>
+              <IconButton icon={<ArrowLeftLine />} appearance="primary" href="/at3/">
+                Take me home
+              </IconButton>
+            </div>
           </div>
         </div>
       </div>

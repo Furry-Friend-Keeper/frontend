@@ -15,7 +15,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { useSelector } from "react-redux";
 
 function KeeperContents(props) {
-  const { search, distanceLookup, favorites, changeFavorit, distanceAll,setLoading } = props;
+  const { search, distanceLookup, favorites, changeFavorit, distanceAll,sortDistanceAsc, sortAscending } = props;
 
   const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [activePage, setActivePage] = useState(1);
@@ -36,9 +36,13 @@ function KeeperContents(props) {
     const endIndex = startIndex + limit;
     const distanceSort = distanceAll.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
     const distanceMap = new Map(distanceSort.map(item => [item.id, parseFloat(item.distance)]));
+    if(sortAscending || sortDistanceAsc) {
+      return search.slice(startIndex, endIndex);
+    }
     const sortData = [...search].sort((a, b) => distanceMap.get(a.id) - distanceMap.get(b.id));
     return sortData.slice(startIndex, endIndex);
-  }, [activePage, limit, search, distanceAll]);
+
+  }, [activePage, limit, search, distanceAll, sortAscending, sortDistanceAsc]);
 
   const handlePageChange = (page) => {
     setActivePage(page);

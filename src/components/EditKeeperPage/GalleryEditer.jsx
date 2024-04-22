@@ -179,7 +179,7 @@ function GalleryEditer(props) {
                 </div>
                     {/* <h4 className="error-message text-center">Image  (0/9)</h4> */}
                     <div className="text-center">
-                        <Button onClick={GalleryImageKeeper} className="rounded-5 py-3 px-4 fs-6" variant="contained" size="large" color="warning" startIcon={ <CollectionsIcon />}>
+                        <Button onClick={GalleryImageKeeper} className="rounded-5 py-3 px-4 fs-6 save-btn-red" variant="contained" size="large" startIcon={ <CollectionsIcon />}>
                             Save Gallery
                         </Button>
                     </div>

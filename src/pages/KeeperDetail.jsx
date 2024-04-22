@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Rating from "@mui/material/Rating";
 import axiosAuth from "../components/Global/AxiosService";
 import axios from "axios";
@@ -28,7 +28,7 @@ function KeeperDetail() {
     const [ isOwnerReview, setIsOwnerReview ] = useState(null);
     const [isMap, setMap] = useState([]);
     const [favoriteData, setFavoriteData] = useState([])
-
+    const cacheMap = useMemo(() => isMap,[isMap])
     const fetchData = async () => {
         try {
             const apiUrl = import.meta.env.VITE_KEEPERS_ID + id;
@@ -223,8 +223,8 @@ function KeeperDetail() {
 
                     <div className="col-lg col-12">
                         <div className="bg-shadow mt-4">
-                            {isMap.length > 0 && 
-                                <MapContainer isMap={isMap}/>
+                            {cacheMap.length > 0 && 
+                                <MapContainer isMap={cacheMap}/>
                             }
                             <div className="keeper-address p-md-2 bg-white">
                                 <div className="table">

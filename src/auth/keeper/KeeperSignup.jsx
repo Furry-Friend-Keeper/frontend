@@ -4,6 +4,7 @@ import { styled } from "@mui/system";
 // import clsx from "clsx";
 import { Controller, useForm } from "react-hook-form";
 import {Tooltip,Box, Button, Snackbar, Alert, AlertTitle, IconButton } from "@mui/material";
+import { Button as ButtonSuite } from "rsuite";
 import { Select, Chip, Option } from "@mui/joy";
 import InputAddress from "react-thailand-address-autocomplete";
 import axios from "axios";
@@ -436,11 +437,19 @@ export default function BasicFormControl() {
             </div>
           </div>
 
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <div className="blue-btn mt-3">
+            <ButtonSuite
+              type="submit"
+              appearance="primary" block
+            >
+              {loading ? <span>loading...</span> : <span>Submit</span>}
+            </ButtonSuite>
+          </div>
+          {/* <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Button style={{ width: '100%'}} type="submit" size="large" variant="contained" sx={{ mt: 3, ml: 1 }}>
             {loading ? <span>loading...</span> : <span>Submit</span>}
             </Button>
-          </Box>
+          </Box> */}
           {/* <div className="grid justify-content-end">
                 <button type="submit" className="btn fw-semibold btn-primary">
                     Submit

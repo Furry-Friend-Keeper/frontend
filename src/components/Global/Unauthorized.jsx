@@ -17,11 +17,13 @@ function Unauthorized() {
             <p className="error-page-subtitle text-muted ">
               The current page is unavailable or you do not have permission to access.
             </p>
-            {userInfo.role === "PetKeeper" ?
-              <IconButton icon={<ArrowLeftLine />} appearance="primary" href={`/at3/keeper-edit/${userInfo?.id}`}><span>Back to my store</span></IconButton>
-              :
-              <IconButton icon={<ArrowLeftLine />} appearance="primary" href={`/at3/owner/${userInfo?.id}`}><span>Back to my profile</span></IconButton>
-            }
+            <div className='blue-btn'>
+              {userInfo.role === "PetKeeper" ?
+                <IconButton icon={<ArrowLeftLine />} appearance="primary" href={`/at3/keeper-edit/${userInfo?.id}`}><span>Back to my store</span></IconButton>
+                :
+                <IconButton icon={<ArrowLeftLine />} appearance="primary" href={`/at3/owner/${userInfo?.id}`}><span>Back to my profile</span></IconButton>
+              }
+            </div>
           </div>
         </div>
       </div>

@@ -1,58 +1,67 @@
-import React from 'react'
-import FmdGoodIcon from '@mui/icons-material/FmdGood';
-import PhoneIcon from '@mui/icons-material/Phone';
-import MailIcon from '@mui/icons-material/Mail';
-import PetsIcon from '@mui/icons-material/Pets';
-import { Container } from '@mui/material';
+import React from "react";
+import FmdGoodIcon from "@mui/icons-material/FmdGood";
+import PhoneIcon from "@mui/icons-material/Phone";
+import MailIcon from "@mui/icons-material/Mail";
+import PetsIcon from "@mui/icons-material/Pets";
+import { Container } from "@mui/material";
 
 function Footer() {
-    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
+  const customWidth = import.meta.env.VITE_CUSTOM_WIDTH;
   return (
-    <footer className="footer-container mt-5">
-        <Container maxWidth={customWidth} className='py-4'>
-        {/* <div className="container py-4"> */}
-            <div className="row ">
-                <div className="col-lg-4 col-md-4 text-center">
-                <h5 className="footer-header mb-4">PRODUCT NAME</h5>
-                <div className="d-flex justify-content-center align-items-center mb-3">
-                <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={75} />
-                </div>
-                    <h6 className="footer-header">Furry Friend Keeper</h6>
-                    <p>Website for animal lover</p>
-                </div>
-                <div className="col-lg-3 col-md-4 ms-lg-5">
-                    <h5 className="footer-header mb-4">ANIMALS</h5>
-                    <ul className='list-unstyled'>
-                        <li><PetsIcon />Dog</li>
-                        <li><PetsIcon />Cat</li>
-                        <li><PetsIcon />Hamster</li>
-                        <li><PetsIcon />Hedgehog</li>
-                        <li><PetsIcon />Rabbit</li>
-                    </ul>
-                </div>
-                <div className="col-lg-4 col-md-4 ms-lg-5">
-                    <h5 className="footer-header mb-4">CONTACT</h5>
-                    <ul className="list-unstyled">
-                        <li>
-                            <FmdGoodIcon/> 
-                            <span>King Mongkut’s University of Technology Thonburi (KMUTT)</span>
-                        </li>
-                        <li><PhoneIcon />+66 99999 9999</li>
-                        <li><MailIcon />contact@mail.com</li>
-                        {/* <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li> */}
-                        {/* <li><a href="#">Services</a></li>
-                        <li><a href="#">Contact</a></li> */}
-                    </ul>
-                </div>
-            </div>
-        {/* </div> */}
-        </Container>
-    <div className="footer-warpper text-center p-3">
-        &copy; 2023 Furry Friend Keeper
-    </div>
-</footer>
-  )
+    <footer className="footer-distributed mt-5">
+      <div className="footer-left">
+        <img src="/assets/logo+sub.png" alt="" />
+      </div>
+
+      <div className="footer-center">
+        <div>
+          <i className="fa fa-map-marker"></i>
+          <p>King Mongkut’s University of Technology Thonburi (KMUTT)</p>
+        </div>
+
+        <div>
+          <i className="fa fa-phone"></i>
+          <p>+66 99999 9999</p>
+        </div>
+
+        <div>
+          <i className="fa fa-envelope"></i>
+          <p>
+            <a href="mailto:contact@mail.com">contact@mail.com</a>
+          </p>
+        </div>
+      </div>
+
+      <div className="footer-right">
+        <p className="footer-company-about">
+          <span>About the website</span>
+          เป็น Web Application
+          ที่สามารถค้นหาผู้รับฝากดูแลสัตว์เลี้ยงเพื่อฝากดูแลสัตว์เลี้ยงในเวลาที่ไม่ว่างหรือต้องเดินทางไกล
+          ส่วนผู้รับฝากดูแลสัตว์เลี้ยงสามารถกำหนดราคา สิ่งอำนวยความสะดวกต่างๆ
+          และเงื่อนไขที่สามารถรับฝากได้ตามที่ตกลงกับผู้ฝากสัตว์เลี้ยง
+        </p>
+        <div className="footer-icons">
+            <a href="https://www.sit.kmutt.ac.th/" target="_blank" rel="noreferrer">
+                <i className="bi bi-globe-americas"></i>
+            </a>
+        </div>
+        {/* <div className="footer-icons">
+          <a href="#">
+            <i className="fa fa-facebook"></i>
+          </a>
+          <a href="#">
+            <i className="fa fa-twitter"></i>
+          </a>
+          <a href="#">
+            <i className="fa fa-linkedin"></i>
+          </a>
+          <a href="#">
+            <i className="fa fa-github"></i>
+          </a>
+        </div> */}
+      </div>
+    </footer>
+  );
 }
 
-export default Footer
+export default Footer;

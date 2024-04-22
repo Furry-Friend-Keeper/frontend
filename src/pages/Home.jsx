@@ -34,6 +34,7 @@ function Home() {
     (state) => state?.location?.currentLocation
   );
   const [favoriteData, setFavoriteData] = useState([]);
+  const cacheApiData = useMemo(() => apiData, [apiData]);
 
   const fetchData = async () => {
     try {
@@ -81,7 +82,7 @@ function Home() {
   }, []);
 
   function getURL(start, end) {
-    return `http://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
+    return `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=false&alternatives=true&steps=true&hints=;`;
   }
 
   useEffect(() => {
@@ -119,7 +120,7 @@ function Home() {
             currentLocation.longitude
           );
           try {
-            const distance = await calculateDistance(latlng, current);
+            const distance = await calculateDistance(current, latlng);
             const distanceKm = (distance / 1000).toFixed(2);
             batchDistances.push({ id: data.id, distance: distanceKm });
 
@@ -172,7 +173,7 @@ function Home() {
   };
 
   useEffect(() => {
-    const filter = apiData.filter(
+    const filter = cacheApiData.filter(
       (item) =>
         item.reviewStars >= ratingScore &&
         selected.every((filter) => item.categories?.includes(filter))
@@ -183,7 +184,7 @@ function Home() {
     // if (filter.length > 0) {
     //   setLoading(true);
     // }
-  }, [selected, apiData, ratingScore]);
+  }, [selected, cacheApiData, ratingScore]);
 
   const handleCategory = (category) => {
     setSelected((prevSelected) => {
@@ -202,7 +203,7 @@ function Home() {
       //   item.title.toLowerCase().includes(searchInput.toLowerCase())
       // );
       // setSearch(filteredContent);
-      const filteredBySearch = apiData.filter((item) =>
+      const filteredBySearch = cacheApiData.filter((item) =>
         item.name?.toLowerCase().includes(searchInput?.toLowerCase())
       );
 
@@ -220,12 +221,6 @@ function Home() {
       setSearch(filteredByCategory);
     }
   };
-
-  // const handleFavorite = (index) => {
-  //   const updateContents = [...apiData]
-  //   updateContents[index].favorite = !updateContents[index].favorite
-  //   setApiData(updateContents);
-  // }
 
   const RatingTitle = () => (
     <div>
@@ -283,7 +278,7 @@ function Home() {
 
   const selectRatingRange = (range) => {
     setRatingScore(range);
-    const ratingRange = apiData.filter(
+    const ratingRange = cacheApiData.filter(
       (val) =>
         val.reviewStars >= range &&
         selected.every((filter) => val.categories.includes(filter))
@@ -305,21 +300,6 @@ function Home() {
     //reset filter categories
     setSelected([]);
   };
-
-  // const [locationAllowed, setLocationAllowed] = useState(false);
-
-  //   useEffect(() => {
-  //     if (!locationAllowed && navigator.geolocation) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         () => {
-  //           setLocationAllowed(true);
-  //         },
-  //         () => {
-  //           window.location.reload();
-  //         }
-  //       );
-  //     }
-  //   }, [locationAllowed]);
 
   return (
     <>
@@ -400,7 +380,7 @@ function Home() {
             <div className="row">
               {!loading ? (
                 <div className="grid-autofill">
-                  {Array.from(new Array(6)).map((item, index) => (
+                  {Array.from(new Array(8)).map((item, index) => (
                     <Box key={index}>
                       {" "}
                       {/* Add a unique key prop here */}
@@ -423,7 +403,8 @@ function Home() {
                   favorites={favoriteData}
                   changeFavorite={setFavoriteData}
                   distanceAll={distanceAll}
-                  setLoading={setLoading}
+                  sortDistanceAsc={sortDistanceAsc}
+                  sortAscending={sortAscending}
                 />
               ) : (
                 <div className="text-center fw-bold mt-5 fs-4">

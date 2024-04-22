@@ -101,17 +101,29 @@ function Navbar() {
         <Container maxWidth={customWidth}>
           <Link className="navbar-brand navbar-head" to="/at3">
             <div className="d-flex align-items-center">
-              <img
-                className="me-3 object-fit-contain"
-                src="https://i.imgur.com/ids0WFZ.png"
-                alt=""
-                width={50}
-              />
+              <div>
+                <img
+                  className="me-3 object-fit-contain logo-default"
+                  src="/assets/logo.png"
+                  // src="https://i.imgur.com/ids0WFZ.png"
+                  alt=""
+                  // width={450}
+                  width={100}
+                />
+                <img
+                  className="me-3 object-fit-contain logo-responsive"
+                  src="/assets/logo+sub.png"
+                  // src="https://i.imgur.com/ids0WFZ.png"
+                  alt=""
+                  width={450}
+                  // width={50}
+                />
+              </div>
               {/* <img src="/assets/animal-shelter (1).png" alt="" /> */}
-              <div className="logo-content">
+              {/* <div className="logo-content">
                 <div className="m-0">Furry Friend</div>
                 <div className="m-0">Keeper</div>
-              </div>
+              </div> */}
             </div>
             {/* <div className='d-flex align-items-center'>
             <img className="me-2 object-fit-contain" src="./assets/cat.png" alt="" width={50} />

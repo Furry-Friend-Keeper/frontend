@@ -74,7 +74,7 @@ function KeeperCategory(props) {
         </div>
       </div>
       <div className="pet-rating bg-shadow bg-white rounded-3 p-4 mt-4 p-lg-3 p-md-2 p-sm-2">
-        <h3 className="pb-2">Points</h3>
+        <h3 className="pb-2">Rating</h3>
         {/* <h3 className='mb-4'>Filter by</h3> */}
         <div className="rating-range">
           {Array.from({ length: 5 }, (_, i) => 5 - i).map((value) => (

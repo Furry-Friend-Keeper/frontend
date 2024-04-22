@@ -4,6 +4,7 @@ import axios from "axios";
 import { Container, TextField, Button, styled, IconButton, Rating, Select, Chip, Stack, Card, CardMedia, Box, Snackbar, Alert, AlertTitle, OutlinedInput, MenuItem, FormControl, InputLabel,
 } from "@mui/material";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
+import { Button as ButtonSuite } from "rsuite";
 import { useForm } from "react-hook-form";
 import ImageIcon from "@mui/icons-material/Image";
 import { useSelector } from "react-redux";
@@ -447,31 +448,11 @@ function EditKeeperDetail() {
                                                     {...register("detail")}
                                                 />
                                             </div>
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        justifyContent: "flex-end",
-                                                    }}
-                                                >
-                                                    {/* <Button
-                                                        variant="contained"
-                                                        style={{
-                                                            backgroundColor: "red",
-                                                            color: "white",
-                                                        }}
-                                                        onClick={() => setIsEditName(false)}
-                                                        sx={{ mt: 3, ml: 1 }}
-                                                    >
-                                                        Cancel
-                                                    </Button> */}
-                                                    <Button
-                                                        type="submit"
-                                                        variant="contained"
-                                                        sx={{ mt: 3, ml: 1 }}
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                                </Box>
+                                                <div className="blue-btn mt-4">
+                                                    <ButtonSuite type="submit" appearance="primary" block>
+                                                    Submit
+                                                    </ButtonSuite>
+                                                </div>
                                         </div>
                                     </div>
                                 </form>
@@ -543,31 +524,11 @@ function EditKeeperDetail() {
                                             </tr>
                                         </table>
                                     </div>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "flex-end",
-                                            }}
-                                        >
-                                            {/* <Button
-                                                variant="contained"
-                                                style={{
-                                                    backgroundColor: "red",
-                                                    color: "white",
-                                                }}
-                                                onClick={() => setIsEditContact(false)}
-                                                sx={{ mt: 3, ml: 1 }}
-                                            >
-                                                Cancel
-                                            </Button> */}
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                sx={{ mt: 3, ml: 1 }}
-                                            >
-                                                Submit
-                                            </Button>
-                                        </Box>
+                                    <div className="blue-btn mt-4">
+                                        <ButtonSuite type="submit" appearance="primary" block>
+                                        Submit
+                                        </ButtonSuite>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -637,31 +598,11 @@ function EditKeeperDetail() {
                                             </tr>
                                         </table>
                                     </div>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "flex-end",
-                                            }}
-                                        >
-                                            {/* <Button
-                                                variant="contained"
-                                                style={{
-                                                    backgroundColor: "red",
-                                                    color: "white",
-                                                }}
-                                                onClick={() => setIsEditAddress(false)}
-                                                sx={{ mt: 3, ml: 1 }}
-                                            >
-                                                Cancel
-                                            </Button> */}
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                sx={{ mt: 3, ml: 1 }}
-                                            >
-                                                Submit
-                                            </Button>
-                                        </Box>
+                                    <div className="blue-btn mt-4">
+                                        <ButtonSuite type="submit" appearance="primary" block>
+                                        Submit
+                                        </ButtonSuite>
+                                    </div>
                                 </form>
                             </div>
                         </div>
