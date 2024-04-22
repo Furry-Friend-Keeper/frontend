@@ -57,14 +57,14 @@ function RouterPage() {
           </Routes>
           </main>    
         <Footer />
-        <AxiosService />
+        {/* <AxiosService /> */}
       </Router>
   )
 }
 
 export default RouterPage
 
-// axios.defaults.baseURL = 'https://capstone23.sit.kmutt.ac.th/at3/api/';
+axios.defaults.baseURL = 'https://capstone23.sit.kmutt.ac.th/at3/api/';
 // // Axios interceptor for all requests
 // axios.interceptors.request.use(async (config) => {
 //   // Auto-refresh token before making any request

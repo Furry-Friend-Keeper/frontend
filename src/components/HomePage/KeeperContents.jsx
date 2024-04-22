@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import { Rating, Stack, Chip } from "@mui/material/";
@@ -14,7 +15,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { useSelector } from "react-redux";
 
 function KeeperContents(props) {
-  const { search, distanceLookup, favorites, changeFavorite } = props;
+  const { search, distanceLookup, favorites, changeFavorit, distanceAll,setLoading } = props;
 
   const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [activePage, setActivePage] = useState(1);
@@ -23,18 +24,21 @@ function KeeperContents(props) {
     parseInt(import.meta.env.VITE_LIMIT_PAGINATION)
   );
 
-  const limitOptions = [5, 10, 20];
+  const limitOptions = [6, 9, 12, 15];
   const size = "md";
   const maxButtons = 5;
   const total = search.length;
-  const layout = ["limit", "-", "pager", "skip"];
+  const layout = ["total", "-","limit", "|", "pager", "skip"];
 
   // Calculate the current page's items
   const paginatedItems = useMemo(() => {
     const startIndex = (activePage - 1) * limit;
     const endIndex = startIndex + limit;
-    return search.slice(startIndex, endIndex);
-  }, [activePage, limit, search]);
+    const distanceSort = distanceAll.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+    const distanceMap = new Map(distanceSort.map(item => [item.id, parseFloat(item.distance)]));
+    const sortData = [...search].sort((a, b) => distanceMap.get(a.id) - distanceMap.get(b.id));
+    return sortData.slice(startIndex, endIndex);
+  }, [activePage, limit, search, distanceAll]);
 
   const handlePageChange = (page) => {
     setActivePage(page);
@@ -53,12 +57,13 @@ function KeeperContents(props) {
             "petKeeperId": value.id
           }
           const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
-          await axios.put(apiUrl, data, 
-              {
-                  headers: {
-                  Authorization: "Bearer " + accessToken,
-              },
-              })
+          await axiosAuth.put(apiUrl, data, 
+              // {
+              //     headers: {
+              //     Authorization: "Bearer " + accessToken,
+              // },
+              // }
+            )
               .then(() => {
                   console.log("success")
                   if(favorites.includes(value.id)) {
@@ -80,7 +85,7 @@ function KeeperContents(props) {
         return (
           <div
             key={index}
-            className="col-xs-12 col-md-6 col-lg-4 col-xl-4 my-2 px-2 "
+            className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 px-2 "
           >
             <div className="keeper card bg-shadow text-center border-0 movedown-transition">
               {item.img ? (
@@ -131,7 +136,7 @@ function KeeperContents(props) {
                     )}
                   </div>
                   <div className="d-flex justify-content-center mb-2">
-                    <h5>
+                    <h5 className="text-overflow">
                       <Link
                         to={`/at3/keepers/${item.id}`}
                         className="text-black"

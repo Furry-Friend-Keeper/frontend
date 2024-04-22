@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerKeeper, userLogin, registerOwner, refreshToken } from './AuthAction'
+import { registerKeeper, userLogin, registerOwner } from './AuthAction'
 
 // initialize accessToken from local storage
 
@@ -29,6 +29,9 @@ const authSlice = createSlice({
           },
         changeImageProfile: (state, action) => {
           state.userInfo.img = action.payload
+        },
+        checkRefreshToken: (state, action) => {
+          state.accessToken = action.payload.accessToken
         }
     },
     extraReducers: (builder) => {
@@ -76,11 +79,11 @@ const authSlice = createSlice({
           });
 
           // refresh token
-          builder.addCase(refreshToken.fulfilled, (state, action) => {
-            state.accessToken = action.payload.accessToken;
-          });
+          // builder.addCase(refreshToken.fulfilled, (state, action) => {
+          //   state.accessToken = action.payload.accessToken;
+          // });
       },   
 })
 
-export const { logout, resetStore, changeImageProfile } = authSlice.actions
+export const { logout, resetStore, changeImageProfile, checkRefreshToken } = authSlice.actions
 export default authSlice.reducer;

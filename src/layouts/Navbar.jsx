@@ -21,7 +21,9 @@ import {
 } from "rsuite";
 import UserIcon from '@rsuite/icons/legacy/User';
 
+
 function Navbar() {
+  const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
   const settings = ["Profile", "Logout"];
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -96,7 +98,7 @@ function Navbar() {
   return (
     <>
       <nav className="navbar navbar-expand-lg">
-        <Container maxWidth="lg">
+        <Container maxWidth={customWidth}>
           <Link className="navbar-brand navbar-head" to="/at3">
             <div className="d-flex align-items-center">
               <img
@@ -105,6 +107,7 @@ function Navbar() {
                 alt=""
                 width={50}
               />
+              {/* <img src="/assets/animal-shelter (1).png" alt="" /> */}
               <div className="logo-content">
                 <div className="m-0">Furry Friend</div>
                 <div className="m-0">Keeper</div>
@@ -235,9 +238,9 @@ function Navbar() {
                       </Dropdown.Item>
                     )}
                     <Dropdown.Separator />
-                    <Dropdown.Item>
+                    <Dropdown.Item onClick={() => dispatch(logout())}>
                       <LogoutIcon className="profile-icon" />
-                      <span onClick={() => dispatch(logout())}>
+                      <span>
                         <a className="text-black" href="/at3">
                           Logout
                         </a>

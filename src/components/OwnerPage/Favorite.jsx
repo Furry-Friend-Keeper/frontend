@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useNavigate } from "react-router-dom";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 
 const Favorite = (props) => {
@@ -32,12 +33,7 @@ const Favorite = (props) => {
                 "petKeeperId": value.id
               }
               const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
-              await axios.put(apiUrl, data, 
-                  {
-                      headers: {
-                      Authorization: "Bearer " + accessToken,
-                  },
-                  })
+              await axiosAuth.put(apiUrl, data)
                   .then(() => {
                     console.log(favorites)
                     const filter = favvoriteData.filter(item => item.id !== value.id)

@@ -10,6 +10,7 @@ import {
     useToaster,
     Form,
 } from "rsuite";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
@@ -93,10 +94,8 @@ function UserProfile(props) {
         };
         console.log(result);
         if (!isError) {
-            await axios
-                .patch(import.meta.env.VITE_OWNER_ID + ownerId, result, {
-                    headers: { Authorization: "Bearer " + accessToken },
-                })
+            await axiosAuth
+                .patch(import.meta.env.VITE_OWNER_ID + ownerId, result)
                 .then((res) => {
                     handleClose()
                    
@@ -113,8 +112,8 @@ function UserProfile(props) {
         if(file !== undefined) {
             const formData = new FormData();
             formData.append("file", file)
-            await axios.patch(import.meta.env.VITE_OWNER_ID + ownerId + "/profile-img", formData, {
-                headers: { 'content-type': 'multipart/form-data', 'Authorization' : 'Bearer ' + accessToken}
+            await axiosAuth.patch(import.meta.env.VITE_OWNER_ID + ownerId + "/profile-img", formData, {
+                headers: { 'content-type': 'multipart/form-data' }
             }).then((res) => {
                 handleClose()
                 dispatch(changeImageProfile(data.upload[0].name))

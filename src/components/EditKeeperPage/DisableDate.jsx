@@ -14,6 +14,7 @@ import {
     Form,
 } from "rsuite";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -59,34 +60,23 @@ const DisableDate = ({ apiData, fetchData }) => {
         } else {
             StoreClose(true);
         }
-        await axios.patch(
+        await axiosAuth.patch(
             import.meta.env.VITE_KEEPERS_ID + "closed/" + keeperId,
-            value.selectedDays,
-            {
-                headers: { Authorization: "Bearer " + accessToken },
-            }
-        );
+            value.selectedDays);
     };
 
     const StoreClose = async (value) => {
-        await axios
+        await axiosAuth
             .patch(
-                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,
-                {},
-                {
-                    headers: { Authorization: "Bearer " + accessToken },
-                }
-            )
+                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,{})
             .then(() => {
                 setStoreStatus(value);
             });
     };
 
     const DeleteDateRange = async (value) => {
-        await axios
-            .delete(import.meta.env.VITE_SCHEDULE_ID + value.id, {
-                headers: { Authorization: "Bearer " + accessToken },
-            })
+        await axiosAuth
+            .delete(import.meta.env.VITE_SCHEDULE_ID + value.id)
             .then(() => {
                 const filterData = tableData.filter(
                     (item) => item.id !== value.id
@@ -103,10 +93,8 @@ const DisableDate = ({ apiData, fetchData }) => {
             };
 
             console.log(result);
-            await axios
-                .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result, {
-                    headers: { Authorization: "Bearer " + accessToken },
-                })
+            await axiosAuth
+                .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result)
                 .then(() => {
                     // setTableData()
                     fetchData();

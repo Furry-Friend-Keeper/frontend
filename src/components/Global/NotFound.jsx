@@ -1,14 +1,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { IconButton } from 'rsuite';
+import ArrowLeftLine from '@rsuite/icons/ArrowLeftLine';
 
 function NotFound() {
   return (
     <div className="container">
-    <div className="text-center mt-5">   
-        <h1>404 - Not Found</h1>
-            <Link className='btn btn-outline-primary' to="/at3/"><span>BACK TO HOME PAGE</span></Link>
-    </div>
-</div>
+      <div className="error-page">
+        <div className="item">
+          <img src="/assets/404.svg" alt="" />
+          <div className="text">
+            <h1 className="error-page-code">404</h1>
+            <p className="error-page-title">Oops… You just found an error page</p>
+            <p className="error-page-subtitle text-muted ">
+              We are sorry but the page you are looking for was not found
+            </p>
+            <IconButton icon={<ArrowLeftLine />} appearance="primary" href="/at3/">
+              Take me home
+            </IconButton>
+          </div>
+        </div>
+      </div>
+  </div>
   )
 }
 

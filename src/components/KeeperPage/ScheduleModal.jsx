@@ -6,6 +6,7 @@ import { Button as ButtonMui } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { TagPicker, SelectPicker } from "rsuite";
 import PhoneInput from "react-phone-input-2";
@@ -101,10 +102,8 @@ function ScheduleModal(props) {
       petOwnerId: userInfo?.id,
     };
 
-    await axios
-      .post(import.meta.env.VITE_APPOINTMENT_CREATE, result, {
-        headers: { Authorization: "Bearer " + accessToken },
-      })
+    await axiosAuth
+      .post(import.meta.env.VITE_APPOINTMENT_CREATE, result)
       .then((res) => {
         setType("success")
         toaster.push(message, { placement, duration })

@@ -6,12 +6,13 @@ import PetsIcon from '@mui/icons-material/Pets';
 import { Container } from '@mui/material';
 
 function Footer() {
+    const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
   return (
     <footer className="footer-container mt-5">
-        <Container maxWidth="lg" className='py-4'>
+        <Container maxWidth={customWidth} className='py-4'>
         {/* <div className="container py-4"> */}
             <div className="row ">
-                <div className="col-lg-5 col-md-4 text-center">
+                <div className="col-lg-4 col-md-4 text-center">
                 <h5 className="footer-header mb-4">PRODUCT NAME</h5>
                 <div className="d-flex justify-content-center align-items-center mb-3">
                 <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={75} />
@@ -19,7 +20,7 @@ function Footer() {
                     <h6 className="footer-header">Furry Friend Keeper</h6>
                     <p>Website for animal lover</p>
                 </div>
-                <div className="col-lg-3 col-md-4">
+                <div className="col-lg-3 col-md-4 ms-lg-5">
                     <h5 className="footer-header mb-4">ANIMALS</h5>
                     <ul className='list-unstyled'>
                         <li><PetsIcon />Dog</li>
@@ -29,7 +30,7 @@ function Footer() {
                         <li><PetsIcon />Rabbit</li>
                     </ul>
                 </div>
-                <div className="col-lg-4 col-md-4">
+                <div className="col-lg-4 col-md-4 ms-lg-5">
                     <h5 className="footer-header mb-4">CONTACT</h5>
                     <ul className="list-unstyled">
                         <li>
