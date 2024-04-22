@@ -17,6 +17,7 @@ import Footer from './layouts/Footer.jsx';
 import Unauthorized from './components/Global/Unauthorized.jsx';
 import NotFound from './components/Global/NotFound.jsx';
 import ScrollTop from './components/Global/ScrollTop.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 // const router = createBrowserRouter([
 //   {
 //     path : "/",
@@ -41,7 +42,8 @@ function App() {
         <Navbar />
           <main className="main-container">
           <Routes>
-            <Route index path="/at3" element={<Home />} />
+            <Route index path="/at3" element={<LandingPage />} />
+            <Route path="/at3/home" element={<Home />} />
             <Route path="/at3/login" element={<Login />} />
             <Route path="/at3/signup" element={<SignUp />} />
             <Route path="/at3/signup/owner" element={<OwnerSignup />} />
