@@ -10,7 +10,7 @@ function Footer() {
   return (
     <footer className="footer-distributed mt-5">
       <div className="footer-left">
-        <img src="/assets/logo+sub.png" alt="" />
+        <img src="./assets/logo+sub.png" alt="" />
       </div>
 
       <div className="footer-center">

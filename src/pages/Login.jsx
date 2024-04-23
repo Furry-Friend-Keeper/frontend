@@ -81,7 +81,7 @@ function Login() {
             }}
           >
             <div className="d-flex justify-content-center align-items-center">
-              <img src="/assets/logo.png" alt="" width={120} />
+              <img src="./assets/logo.png" alt="" width={120} />
               {/* <img src="https://i.imgur.com/ids0WFZ.png" alt="" width={50} /> */}
             </div>
             <h4 className="fw-bold">Login</h4>

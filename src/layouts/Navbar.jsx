@@ -6,8 +6,6 @@ import { logout, resetStore } from "../store/AuthSlice";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
-import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Container } from "@mui/material";
 import {
@@ -18,9 +16,13 @@ import {
   Popover,
   Whisper,
   ButtonToolbar,
+  Stack,
+  IconButton,
+  Badge,
+  List
 } from "rsuite";
 import UserIcon from '@rsuite/icons/legacy/User';
-
+import NoticeIcon from '@rsuite/icons/Notice';
 
 function Navbar() {
   const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
@@ -41,29 +43,101 @@ function Navbar() {
     dispatch(resetStore());
   }, [location]);
 
-  // const fetchOwner = async () => {
-  //   try {
-  //     if(isLogin) {
-  //       const apiUrl = import.meta.env.VITE_OWNER_ID + getId;
-  //       await axios
-  //         .get(apiUrl, {
-  //           headers: {
-  //             Authorization: "Bearer " + isLogin,
-  //           },
-  //         })
-  //         .then((response) => {
-  //           const data = response.data;
-  //           setOwnerData(data);
-  //         });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  const renderMenu = ({ onClose, left, top, className }, ref) => {
+    const handleSelect = eventKey => {
+      onClose();
+      console.log(eventKey);
+    };
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} title="Last updates" >
+        <List size="md" style={{ width: 300 }}>
+          <List.Item>
+            <Stack spacing={4} alignItems="center">
+              <Stack.Item><Badge /></Stack.Item>
+              <Stack.Item></Stack.Item>
+              <Stack.Item> <span>7 hours ago</span></Stack.Item>
+            </Stack>
+              <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
+          </List.Item>
+          <List.Item>
+            <Stack spacing={4} alignItems="center">
+              <Stack.Item><Badge /></Stack.Item>
+              <Stack.Item></Stack.Item>
+              <Stack.Item> <span>7 hours ago</span></Stack.Item>
+            </Stack>
+              <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
+          </List.Item>
+          <List.Item>
+            <Stack spacing={4} alignItems="center">
+              <Stack.Item><Badge /></Stack.Item>
+              <Stack.Item></Stack.Item>
+              <Stack.Item> <span>7 hours ago</span></Stack.Item>
+            </Stack>
+              <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
+          </List.Item>
+          <List.Item>
+            <Stack spacing={4} alignItems="center">
+              <Stack.Item><Badge /></Stack.Item>
+              <Stack.Item></Stack.Item>
+              <Stack.Item> <span>7 hours ago</span></Stack.Item>
+            </Stack>
+              <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
+          </List.Item>
+        </List>
+        <div className="text-center mt-4">
+          <Button appearance="default ">More notification</Button>
+        </div>
+      </Popover>
+    );
+  };
+  const imageURL = getImage ? getRole === "Owner" ? import.meta.env.VITE_OWNER_IMAGE + getId + "/" + getImage : import.meta.env.VITE_KEEPER_IMAGE + getId + "/" + getImage : null
 
-  // useEffect(() => {
-  //   fetchOwner()
-  // },[])
+  const renderToggle = ({ onClose, left, top, className }, ref) => {
+    const handleSelect = eventKey => {
+      onClose();
+      console.log(eventKey);
+    };
+    return (
+      <Popover ref={ref} className={className} style={{ left, top }} full>
+        <Dropdown.Menu onSelect={handleSelect}>
+          <Dropdown.Item panel style={{ padding: 10, width: 160 }}>
+              <p>Signed in as</p>
+              <strong>
+                {getName.charAt(0).toUpperCase() + getName.slice(1)}
+              </strong>
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          {getRole === "PetKeeper" ? (
+              <Dropdown.Item>
+                <StoreOutlinedIcon className="profile-icon" />
+                <Link
+                  className="text-black"
+                  to={"/at3/keeper-edit/" + getId}
+                >
+                  My Shop
+                </Link>
+              </Dropdown.Item>
+            ) : (
+              <Dropdown.Item>
+                <PersonIcon className="profile-icon" />
+                <Link className="text-black" to={`/at3/owner/${getId}`}>
+                  View profile
+                </Link>
+              </Dropdown.Item>
+            )}
+            <Dropdown.Separator />
+            <Dropdown.Item onClick={() => dispatch(logout())}>
+              <LogoutIcon className="profile-icon" />
+              <span>
+                <a className="text-black" href="/at3">
+                  Logout
+                </a>
+              </span>
+            </Dropdown.Item>
+        </Dropdown.Menu>
+      </Popover>
+    );
+  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -72,28 +146,6 @@ function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const imageURL = getImage ? getRole === "Owner" ? import.meta.env.VITE_OWNER_IMAGE + getId + "/" + getImage : import.meta.env.VITE_KEEPER_IMAGE + getId + "/" + getImage : null
-
-  const renderToggle = (props) => (
-    <Button
-      {...props}
-      appearance="subtle"
-      // onClick={handleOpenUserMenu}
-      sx={{ p: 0 }}
-    >
-      <Avatar
-        className="avatar-navbar"
-        circle
-        src={imageURL}
-        alt="@SevenOutman"
-      >
-        {!imageURL && <UserIcon />}
-      </Avatar>
-      {/* <span className="person-navbar">{getName.charAt(0).toUpperCase() + getName.slice(1)}</span> */}
-      <KeyboardArrowDownIcon />
-    </Button>
-  );
 
   return (
     <>
@@ -104,7 +156,7 @@ function Navbar() {
               <div>
                 <img
                   className="me-3 object-fit-contain logo-default"
-                  src="/assets/logo.png"
+                  src="./assets/logo.png"
                   // src="https://i.imgur.com/ids0WFZ.png"
                   alt=""
                   // width={450}
@@ -112,24 +164,14 @@ function Navbar() {
                 />
                 <img
                   className="me-3 object-fit-contain logo-responsive"
-                  src="/assets/logo+sub.png"
+                  src="./assets/logo+sub.png"
                   // src="https://i.imgur.com/ids0WFZ.png"
                   alt=""
                   width={450}
                   // width={50}
                 />
               </div>
-              {/* <img src="/assets/animal-shelter (1).png" alt="" /> */}
-              {/* <div className="logo-content">
-                <div className="m-0">Furry Friend</div>
-                <div className="m-0">Keeper</div>
-              </div> */}
             </div>
-            {/* <div className='d-flex align-items-center'>
-            <img className="me-2 object-fit-contain" src="./assets/cat.png" alt="" width={50} />
-            <p className="m-0">Furry Friend Keeper</p>
-          </div> */}
-            {/* Furry Friend Keeper */}
           </Link>
 
           <div className="dropdown">
@@ -223,42 +265,30 @@ function Navbar() {
               )}
               {isLogin && (
                 <li className="nav-item ">
-                  <Dropdown renderToggle={renderToggle} placement="bottomEnd">
-                    <Dropdown.Item panel style={{ padding: 10, width: 160 }}>
-                      <p>Signed in as</p>
-                      <strong>
-                        {getName.charAt(0).toUpperCase() + getName.slice(1)}
-                      </strong>
-                    </Dropdown.Item>
-                    <Dropdown.Separator />
-                    {getRole === "PetKeeper" ? (
-                      <Dropdown.Item>
-                        <StoreOutlinedIcon className="profile-icon" />
-                        <Link
-                          className="text-black"
-                          to={"/at3/keeper-edit/" + getId}
-                        >
-                          My Shop
-                        </Link>
-                      </Dropdown.Item>
-                    ) : (
-                      <Dropdown.Item>
-                        <PersonIcon className="profile-icon" />
-                        <Link className="text-black" to={`/at3/owner/${getId}`}>
-                          View profile
-                        </Link>
-                      </Dropdown.Item>
-                    )}
-                    <Dropdown.Separator />
-                    <Dropdown.Item onClick={() => dispatch(logout())}>
-                      <LogoutIcon className="profile-icon" />
-                      <span>
-                        <a className="text-black" href="/at3">
-                          Logout
-                        </a>
-                      </span>
-                    </Dropdown.Item>
-                  </Dropdown>
+                  <Stack spacing={8} >
+                  <Whisper preventOverflow placement="bottomEnd" trigger="click" speaker={renderMenu}>
+                    <IconButton appearance="subtle" size="lg" className="noti-icon" icon={<NoticeIcon />} />
+                  </Whisper>
+                  <Whisper preventOverflow placement="bottomEnd" trigger="click" speaker={renderToggle}>
+                    <Button
+                      appearance="subtle"
+                      size="md"
+                      sx={{ p: 0 }}
+                    >
+                      <Avatar
+                        className="avatar-navbar"
+                        bordered
+                        circle
+                        size="md"
+                        src={imageURL}
+                        alt={getName}
+                      >
+                        {!imageURL && <UserIcon />}
+                      </Avatar>
+                      <KeyboardArrowDownIcon />
+                    </Button>
+                  </Whisper>
+                  </Stack>
                 </li>
               )}
             </ul>

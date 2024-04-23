@@ -5,7 +5,7 @@ import axios from "axios";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import { Rating, Stack, Chip } from "@mui/material/";
 import StarIcon from "@mui/icons-material/Star";
-import { Pagination, Rate } from "rsuite";
+import { Pagination, Rate, useToaster, Message } from "rsuite";
 import Skeleton from "@mui/material/Skeleton";
 import L from "leaflet";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -13,9 +13,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useSelector } from "react-redux";
-
+import MessageLog from "../Global/MessageLog";
 function KeeperContents(props) {
-  const { search, distanceLookup, favorites, changeFavorit, distanceAll,sortDistanceAsc, sortAscending } = props;
+  const { search, distanceLookup, favorites, changeFavorite, distanceAll,sortDistanceAsc, sortAscending } = props;
 
   const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [activePage, setActivePage] = useState(1);
@@ -44,6 +44,23 @@ function KeeperContents(props) {
 
   }, [activePage, limit, search, distanceAll, sortAscending, sortDistanceAsc]);
 
+  const toaster = useToaster();
+  const placement = "topEnd";
+  const duration = 3000;
+
+  const message = (type, error) => {
+      return (
+      <Message
+        showIcon
+        type={type}
+        header={type === "warning" ? " Favorite Removed" : "Favorite Added"}
+        closable
+      >
+        <small className="text-black">{error}</small>
+      </Message>
+      )
+  }
+
   const handlePageChange = (page) => {
     setActivePage(page);
   };
@@ -61,19 +78,14 @@ function KeeperContents(props) {
             "petKeeperId": value.id
           }
           const apiUrl = import.meta.env.VITE_OWNER_FAVORITE_ID + userInfo.id;
-          await axiosAuth.put(apiUrl, data, 
-              // {
-              //     headers: {
-              //     Authorization: "Bearer " + accessToken,
-              // },
-              // }
-            )
+          await axiosAuth.put(apiUrl, data)
               .then(() => {
-                  console.log("success")
                   if(favorites.includes(value.id)) {
                     changeFavorite(favorites.filter(item => item !== value.id))
+                    toaster.push(message("warning", "Removed from favorite. 😔"), { placement, duration });
                   }else {
                     changeFavorite([...favorites, value.id])
+                    toaster.push(message("success", "Favorite added successfully! 🌟"), { placement, duration });
                   }
               });
         }

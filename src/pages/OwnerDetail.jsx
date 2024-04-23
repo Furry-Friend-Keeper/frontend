@@ -116,7 +116,7 @@ function OwnerDetail() {
                                         fetchRequests={fetchRequests}
                                     />
                                 ) : (
-                                    <div className="text-center mt-3 fs-4">
+                                    <div className="text-center mt-3 fs-4 fw-bold">
                                         DON'T HAVE AT THIS TIME
                                     </div>
                                 )}

@@ -37,22 +37,22 @@ function ScheduleModal(props) {
 
   const [petCategories, setPetCategories] = useState([]);
   const [petCategoriesRaw, setPetCategoriesRaw] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("")
-  const [type, setType] = useState("error");
   const placement = "topEnd";
   const duration = 3000;
   const toaster = useToaster();
 
-  const message = (
-    <Message showIcon type={type} header={type == "error" ? "Failed!" : "Success!"} closable>
-      {/* <h6><strong>Failed!</strong> </h6> */}
-      {type == "error" ?
-      <p className="text-black">{errorMessage}</p>
-      :
-      <p className="text-black">Booking Successfully.</p>
-      }
-    </Message>
-  );
+  const message = (type, errorMessage) => {
+    return (
+      <Message showIcon type={type} header={type == "error" ? "Failed!" : "Success!"} closable>
+        {/* <h6><strong>Failed!</strong> </h6> */}
+        {type == "error" ?
+        <small className="text-black">{errorMessage}</small>
+        :
+        <small className="text-black">Booking Successfully.</small>
+        }
+      </Message>
+    );
+  }
 
   const Ranges = [
     {
@@ -105,13 +105,10 @@ function ScheduleModal(props) {
     await axiosAuth
       .post(import.meta.env.VITE_APPOINTMENT_CREATE, result)
       .then((res) => {
-        setType("success")
-        toaster.push(message, { placement, duration })
+        toaster.push(message("success",""), { placement, duration })
         handleClose();
       }).catch((err) => {
-        setType("error")
-        setErrorMessage(err.response.data)
-        toaster.push(message, { placement, duration })
+        toaster.push(message("error", err.response.data), { placement, duration })
         console.log(err);
       })
 

@@ -10,7 +10,7 @@ function Unauthorized() {
     <div className="container">
       <div className="error-page">
         <div className="item">
-          <img src="/assets/403.svg" alt="" />
+          <img src="./assets/403.svg" alt="" />
           <div className="text">
             <h1 className="error-page-code">403</h1>
             <p className="error-page-title">Oops… You just found an error page</p>

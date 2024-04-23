@@ -4,20 +4,15 @@ import {
     Modal,
     Button,
     Uploader,
-    Rate,
     Message,
     Loader,
     useToaster,
     Form,
 } from "rsuite";
 import axiosAuth from "../Global/AxiosService";
-import axios from "axios";
 import Avatar from "@mui/material/Avatar";
-import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import PhoneInput from "react-phone-input-2";
 import { useSelector, useDispatch } from "react-redux";
-import Cropper from "react-easy-crop";
-import CameraRetroIcon from '@rsuite/icons/legacy/CameraRetro';
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { changeImageProfile } from "/src/store/AuthSlice";
@@ -47,6 +42,7 @@ const Field = ({ as: Component = Input, field, error, ...rest }) => {
 
 function UserProfile(props) {
     const { ownerId, ownerData } = props;
+    const [ownerDataList, setOwnerDataList] = useState({})
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
@@ -54,20 +50,36 @@ function UserProfile(props) {
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("true");
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => {
-        setOpen(false)
+    const handleModal = (bool) => {
+        setOpen(bool)
         setValue("upload", [
             {
-                url : import.meta.env.VITE_OWNER_IMAGE + ownerData.petOwnerId + "/" + ownerData?.img
+                url : import.meta.env.VITE_OWNER_IMAGE + ownerDataList.petOwnerId + "/" + ownerDataList?.img
             }
         ])
     };
     const toaster = useToaster();
+    const placement = "topEnd";
+    const duration = 3000;
+
+    const message = (type, error) => {
+        return (
+        <Message
+          showIcon
+          type={type}
+          header={type === "error" ? "Failed!" : "Success!"}
+          closable
+        >
+          <small className="text-black">{error}</small>
+        </Message>
+        )
+    }
 
     const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
 
     useEffect(() => {
+        setOwnerDataList(ownerData)
+
         if(Object.keys(ownerData).length !== 0) {
             const dataPhone = ownerData?.phone.replace(/^0/, "66").trim()
             setValue("firstName",ownerData?.firstName)
@@ -97,8 +109,7 @@ function UserProfile(props) {
             await axiosAuth
                 .patch(import.meta.env.VITE_OWNER_ID + ownerId, result)
                 .then((res) => {
-                    handleClose()
-                   
+                    handleModal(false)
                 })
                 .catch((err) => {
                 });
@@ -115,22 +126,20 @@ function UserProfile(props) {
             await axiosAuth.patch(import.meta.env.VITE_OWNER_ID + ownerId + "/profile-img", formData, {
                 headers: { 'content-type': 'multipart/form-data' }
             }).then((res) => {
-                handleClose()
+                handleModal(false)
                 dispatch(changeImageProfile(data.upload[0].name))
-                setTimeout(() => navigate(0), 500)
-                // setOpen(true)
-                // setAlertStatus('success')
-                // setIsError(false)
+                // console.log({...ownerDataList, img : file.name})
+                setOwnerDataList({...ownerDataList, img : file.name})
+                // setTimeout(() => navigate(0), 500)
+                toaster.push(message("success", res.data), { placement, duration });
                 isError = false
             }).catch((error) => {
-                if (error.response?.status === 413) {
-                    // Handle Payload Too Large error specifically
-                    setMessageLog("The file you are trying to upload is too large.");
-                }else if(error.message === "Network Error") {
-                    setMessageLog("The file you are trying to upload is too large.") 
-                }else {
-                    setMessageLog(error.message)
-                }
+                console.log(error)
+                if (error.response?.status === 413 || error.message === "Network Error") {
+                    toaster.push(message("error", "The file you are trying to upload is too large."), { placement, duration });
+                } else {
+                    toaster.push(message("error", error.message), { placement, duration });
+                  }
                 // setIsError(true)
                 // setOpen(true)
                 // setAlertStatus('error')
@@ -138,7 +147,6 @@ function UserProfile(props) {
             })
         }
 
-        console.log("test")
         EditOwner(data, isError)
     };
 
@@ -150,34 +158,6 @@ function UserProfile(props) {
 
     return (
         <>
-            {/* <Snackbar
-                open={open}
-                autoHideDuration={3000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            >
-                <Alert
-                    onClose={handleClose}
-                    severity={alertStatus === "success" ? "success" : "error"}
-                    elevation={6}
-                >
-                    {alertStatus === "success" ? (
-                        <div>
-                            <AlertTitle>
-                                <b>Success</b>
-                            </AlertTitle>
-                            Your data has been successfully save.
-                        </div>
-                    ) : (
-                        <div>
-                            <AlertTitle>
-                                <b>Failed</b>
-                            </AlertTitle>
-                            {messageLog}
-                        </div>
-                    )}
-                </Alert>
-            </Snackbar> */}
             <div className="col-md-4 ps-0">
                 <div className="bg-shadow rounded p-4 p-sm-3 p-lg-4 p-md-4 bg-white mt-4">
                     <div className="profile-info-container">
@@ -186,16 +166,16 @@ function UserProfile(props) {
                                 <SizedAvatar
                                     size="8"
                                     alt="Remy Sharp"
-                                    src={ownerData.img ? import.meta.env.VITE_OWNER_IMAGE + ownerId + "/" + ownerData.img : null}
+                                    src={ownerDataList.img ? import.meta.env.VITE_OWNER_IMAGE + ownerId + "/" + ownerDataList.img : null}
                                 />
                             </div>
                             <div className="profile-info-title-detail">
                                 <h5 className="text-break">
-                                    {ownerData.firstName} {ownerData.lastName}
+                                    {ownerDataList.firstName} {ownerDataList.lastName}
                                 </h5>
                                 <div className="blue-btn">
                                     <Button
-                                        onClick={handleOpen}
+                                        onClick={() => handleModal(true)}
                                         color="blue"
                                         appearance="primary"
                                     >
@@ -215,7 +195,7 @@ function UserProfile(props) {
                                             </td>
                                             <td>
                                                 <p className="info">
-                                                    {ownerData.email}
+                                                    {ownerDataList.email}
                                                 </p>
                                             </td>
                                         </tr>
@@ -225,7 +205,7 @@ function UserProfile(props) {
                                             </td>
                                             <td>
                                                 <p className="info">
-                                                    {ownerData.phone}
+                                                    {ownerDataList.phone}
                                                 </p>
                                             </td>
                                         </tr>
@@ -248,7 +228,7 @@ function UserProfile(props) {
                                             </td>
                                             <td>
                                                 <p className="info">
-                                                    {ownerData.petName}
+                                                    {ownerDataList.petName}
                                                 </p>
                                             </td>
                                         </tr>
@@ -266,7 +246,7 @@ function UserProfile(props) {
                 keyboard={false}
                 open={open}
                 size="sm"
-                onClose={handleClose}
+                onClose={() => handleModal(false)}
             >
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Modal.Header>
@@ -305,7 +285,7 @@ function UserProfile(props) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
                                     id="firstName"
                                     name="firstName"
                                     {...register("firstName", {
@@ -318,6 +298,7 @@ function UserProfile(props) {
                                         },
                                     })}
                                 />
+                                {errors.firstName && <small className="error-message">{errors.firstName.message}</small>}
                             </div>
                             <div className="mb-3">
                                 <label
@@ -328,7 +309,7 @@ function UserProfile(props) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
                                     id="lastName"
                                     name="lastName"
                                     {...register("lastName", {
@@ -341,6 +322,7 @@ function UserProfile(props) {
                                         },
                                     })}
                                 />
+                                {errors.lastName && <small className="error-message">{errors.lastName.message}</small>}
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="phone" className="form-label">
@@ -382,7 +364,7 @@ function UserProfile(props) {
                                 </label>
                                 <input
                                     type="text"
-                                    className="form-control"
+                                    className={`form-control ${errors.petName ? "is-invalid" : ""}`}
                                     id="petName"
                                     name="petName"
                                     {...register("petName", {
@@ -393,6 +375,7 @@ function UserProfile(props) {
                                         },
                                     })}
                                 />
+                                {errors.petName && <small className="error-message">{errors.petName.message}</small>}
                             </div>
                         </div>
                     </Modal.Body>
@@ -400,7 +383,7 @@ function UserProfile(props) {
                         <Button appearance="primary" type="submit">
                             Ok
                         </Button>
-                        <Button onClick={handleClose} appearance="subtle">
+                        <Button onClick={() => handleModal(false)} appearance="subtle">
                             Cancel
                         </Button>
                     </Modal.Footer>

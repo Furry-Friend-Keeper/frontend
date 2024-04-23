@@ -23,7 +23,7 @@ function LandingPage() {
             <a href="/at3/home" className='text-white  btn btn-primary mt-5'>Get Start</a>
           </div>
           <div className='right-box' data-aos="fade-right">
-            <img src="../../public/assets/banner_cat.jpg" />
+            <img src="./assets/banner_cat.jpg" />
           </div>
         </div>
       </section>
