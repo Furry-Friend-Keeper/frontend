@@ -85,7 +85,9 @@ function Navbar() {
           </List.Item>
         </List>
         <div className="text-center mt-4">
-          <Button appearance="default ">More notification</Button>
+          <Button appearance="default ">
+            <Link to={"/at3/owner/" + getId}>
+            Go to profile</Link></Button>
         </div>
       </Popover>
     );
