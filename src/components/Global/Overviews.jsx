@@ -124,11 +124,11 @@ function Overviews(props) {
                     <div className="d-flex align-items-center">
                         <Avatar
                             circle
-                            src={
+                            src={ reviewsData.petownerImg ?
                             import.meta.env.VITE_OWNER_IMAGE +
                             reviewsData.petownerId +
                             "/" +
-                            reviewsData.petownerImg
+                            reviewsData.petownerImg : ""
                             }
                             alt={reviewsData.petownerFirstname}
                         />
@@ -250,11 +250,11 @@ function Overviews(props) {
                         <div className="d-flex align-items-center">
                         <Avatar
                             circle
-                            src={
+                            src={ review.petownerImg ?
                             import.meta.env.VITE_OWNER_IMAGE +
                             review.petownerId +
                             "/" +
-                            review.petownerImg
+                            review.petownerImg : ""
                             }
                             alt={review.petownerFirstname}
                         />

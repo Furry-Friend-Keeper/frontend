@@ -1,13 +1,10 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import Rating from "@mui/material/Rating";
 import axiosAuth from "../components/Global/AxiosService";
 import axios from "axios";
 import { useNavigate, Navigate ,useParams } from "react-router-dom";
 import { Button, Chip, Stack, Card, CardMedia, Container  } from "@mui/material"
 import { useForm, Controller } from "react-hook-form";
-import { Textarea } from "@mui/joy";
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
-
 import MapContainer from "../components/KeeperPage/MapContainer";
 import GallerySider from "../components/KeeperPage/GallerySider";
 import { useSelector } from "react-redux";
@@ -104,23 +101,6 @@ function KeeperDetail() {
             }
       };
 
-    const [showPicker, setShowPicker] = useState(false);
-    const [dateRange, setDateRange] = useState([null, null]);
-
-    const handleOpen = () => {
-        setShowPicker(true);
-    };
-
-    const handleClose = () => {
-        setShowPicker(false);
-    };
-
-    const handleOk = () => {
-        // send dateRange to backend here
-        console.log(dateRange);
-        handleClose();
-    };
-
     return (
         <>
             <GallerySider id={id} galleryData={galleryData}/>
@@ -196,8 +176,9 @@ function KeeperDetail() {
                             <div className="title">
                                 <h4>Contact</h4>
                             </div>
-                            <div className="table">
+                            <div className="table table-keeper">
                                 <table className="w-100">
+                                    <tbody>
                                     <tr>
                                         <td>Name</td>
                                         <td className="text-end">
@@ -216,6 +197,7 @@ function KeeperDetail() {
                                             {apiData.phone}
                                         </td>
                                     </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -227,32 +209,34 @@ function KeeperDetail() {
                                 <MapContainer isMap={cacheMap}/>
                             }
                             <div className="keeper-address p-md-2 bg-white">
-                                <div className="table">
+                                <div className="table table-keeper">
                                     <table className="w-100">
-                                        <tr>
-                                            <td>Address 1</td>
-                                            <td className="text-end">
-                                                {apiData?.address?.address}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>District</td>
-                                            <td className="text-end">
-                                                {apiData?.address?.district}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Province</td>
-                                            <td className="text-end">
-                                                {apiData?.address?.province}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>PostalCode</td>
-                                            <td className="text-end">
-                                                {apiData?.address?.postalCode}
-                                            </td>
-                                        </tr>
+                                        <tbody>
+                                            <tr>
+                                                <td>Address 1</td>
+                                                <td className="text-end">
+                                                    {apiData?.address?.address}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>District</td>
+                                                <td className="text-end">
+                                                    {apiData?.address?.district}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Province</td>
+                                                <td className="text-end">
+                                                    {apiData?.address?.province}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>PostalCode</td>
+                                                <td className="text-end">
+                                                    {apiData?.address?.postalCode}
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -262,6 +246,7 @@ function KeeperDetail() {
                                 closedDays={apiData.closedDay} 
                                 availableStore={apiData.available}
                                 disableDate={apiData.disableAppointment}
+                                categoryData={apiData.categories}
                             />
                     </div>
                     <Overviews 

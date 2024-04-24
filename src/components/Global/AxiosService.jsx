@@ -1,18 +1,6 @@
- import { logout, checkRefreshToken } from '../../store/AuthSlice';
+ import { logout, checkRefreshToken, displaySessionExpire } from '../../store/AuthSlice';
 import axios from "axios";
 import store from "../../store/Store";
-// import { Notification, useToaster, ButtonToolbar, SelectPicker, Button } from 'rsuite';
-
-// const message = (
-//   <Notification type="warning" header="Warning!" closable>
-//     <p>Authentication Failed. Your session token has expired.</p>
-//     <hr />
-//     <ButtonToolbar>
-//       <Button onClick={() => store.dispatch(logout())} appearance="primary">Login</Button>
-//       <Button appearance="default">Close</Button>
-//     </ButtonToolbar>
-//   </Notification>
-// );
 
 const axiosInstance = axios.create({
   baseURL: 'https://capstone23.sit.kmutt.ac.th/at3/api/',
@@ -39,7 +27,7 @@ axiosInstance.interceptors.response.use(
         // console.log(auth)
         const response = await axios.get(import.meta.env.VITE_REFRESH_TOKEN, {
           headers : {
-              'refreshToken': auth.userInfo.refreshToken
+            'refreshToken': auth.userInfo.refreshToken
           }
         });
         const { accessToken, refreshToken } = response.data;
@@ -47,12 +35,13 @@ axiosInstance.interceptors.response.use(
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (_error) {
-        // Notification.open({
-        //   placement: 'topCenter',
-        //   duration: 5000, // Optional duration for how long the notification should be visible
-        //   description: message, // Using the previously defined message
+        console.log(_error)
+        // Notification.error({
+        //   title: 'Error',
+        //   description: error.message || 'An error occurred.',
         // });
         store.dispatch(logout());
+        // store.dispatch(displaySessionExpire());
         return Promise.reject(_error);
       }
     }

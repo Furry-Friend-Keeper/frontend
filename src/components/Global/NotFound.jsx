@@ -8,7 +8,7 @@ function NotFound() {
     <div className="container">
       <div className="error-page">
         <div className="item">
-          <img src="./assets/404.svg" alt="" />
+          <img src={`${import.meta.env.VITE_PROJECT_URL}404.svg`} alt="" />
           <div className="text">
             <h1 className="error-page-code">404</h1>
             <p className="error-page-title">Oops… You just found an error page</p>

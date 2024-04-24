@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { registerKeeper, userLogin, registerOwner } from './AuthAction'
-
 // initialize accessToken from local storage
 
 const initialState = {
@@ -9,6 +8,7 @@ const initialState = {
     accessToken: null,
     error: null,
     success: false,
+    sessionExpire: false
 }
 
 const authSlice = createSlice({
@@ -22,6 +22,7 @@ const authSlice = createSlice({
             state.accessToken = null
             state.error = null
             state.success = false
+            window.location.href = '/at3/login';
           },
           resetStore: (state) => {
             state.error = null; // Resetting error to null
@@ -32,6 +33,10 @@ const authSlice = createSlice({
         },
         checkRefreshToken: (state, action) => {
           state.accessToken = action.payload.accessToken
+        },
+        displaySessionExpire: (state) => {
+          state.sessionExpire = true;
+          // state.sessionExpire = true;
         }
     },
     extraReducers: (builder) => {
@@ -85,5 +90,5 @@ const authSlice = createSlice({
       },   
 })
 
-export const { logout, resetStore, changeImageProfile, checkRefreshToken } = authSlice.actions
+export const { logout, resetStore, changeImageProfile, checkRefreshToken, displaySessionExpire } = authSlice.actions
 export default authSlice.reducer;

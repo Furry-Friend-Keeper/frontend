@@ -13,7 +13,7 @@ import PhoneInput from "react-phone-input-2";
 import { Message, useToaster } from "rsuite";
 
 function ScheduleModal(props) {
-  const { keeperId, closedDays, availableStore, disableDate } = props;
+  const { keeperId, closedDays, availableStore, disableDate, categoryData } = props;
   const { loading, userInfo, error, success, accessToken } = useSelector(
     (state) => state.auth
   );
@@ -70,7 +70,7 @@ function ScheduleModal(props) {
 
   useEffect(() => {
     PetKeeperCategories();
-  }, []);
+  }, [categoryData]);
 
   const clearModalContent = () => {
     setValue("dateRange", "");
@@ -108,7 +108,7 @@ function ScheduleModal(props) {
         toaster.push(message("success",""), { placement, duration })
         handleClose();
       }).catch((err) => {
-        toaster.push(message("error", err.response.data), { placement, duration })
+        toaster.push(message("error", "Can't select a date that the store has closed. Please try again."), { placement, duration })
         console.log(err);
       })
 
@@ -120,13 +120,14 @@ function ScheduleModal(props) {
       .get(import.meta.env.VITE_KEEPER_CATEGORIES)
       .then((res) => {
         const response = res.data;
-        const data = response.map((item) => item.name);
+        const response_filter = response.filter(item => categoryData?.includes(item.name))
+        const data = response_filter.map((item) => item.name);
         const rsite_data = data.map((item) => ({
           label: item,
           value: item,
         }));
         setPetCategories(rsite_data);
-        setPetCategoriesRaw(response);
+        setPetCategoriesRaw(response_filter);
       })
       .catch((err) => {
         console.log(err);
@@ -183,17 +184,6 @@ function ScheduleModal(props) {
       "Saturday",
     ].indexOf(day)
   );
-
-  const disableDateRange = [
-    {
-      startDate: moment("2024-04-17T12:30:00+07:00"),
-      endDate: moment("2024-04-27T16:30:00+07:00"),
-    },
-    {
-      startDate: moment("2024-05-17T12:30:00+07:00"),
-      endDate: moment("2024-05-27T16:30:00+07:00"),
-    },
-  ];
 
   const disableDays = (date) => {
     const momentDate = moment(date);
@@ -288,7 +278,7 @@ function ScheduleModal(props) {
                     <DateRangePicker
                       {...field}
                       className={`${errors.dateRange ? "border-error" : ""}`}
-                      format="dd MMMM yyyy"
+                      format="dd MMMM yyyy HH:mm"
                       appearance="default"
                       placeholder="Select Booking Period"
                       block
@@ -297,7 +287,6 @@ function ScheduleModal(props) {
                       shouldDisableDate={disableDays}
                       ranges={Ranges}
                       showOk
-                      showOneCalendar
                       placement="bottomEnd"
                       preventOverflow
                       onChange={(value) => {

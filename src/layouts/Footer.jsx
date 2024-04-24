@@ -10,7 +10,7 @@ function Footer() {
   return (
     <footer className="footer-distributed mt-5">
       <div className="footer-left">
-        <img src="./assets/logo+sub.png" alt="" />
+        <img src={`${import.meta.env.VITE_PROJECT_URL}logo+sub.png`} alt="" />
       </div>
 
       <div className="footer-center">
@@ -45,20 +45,6 @@ function Footer() {
                 <i className="bi bi-globe-americas"></i>
             </a>
         </div>
-        {/* <div className="footer-icons">
-          <a href="#">
-            <i className="fa fa-facebook"></i>
-          </a>
-          <a href="#">
-            <i className="fa fa-twitter"></i>
-          </a>
-          <a href="#">
-            <i className="fa fa-linkedin"></i>
-          </a>
-          <a href="#">
-            <i className="fa fa-github"></i>
-          </a>
-        </div> */}
       </div>
     </footer>
   );

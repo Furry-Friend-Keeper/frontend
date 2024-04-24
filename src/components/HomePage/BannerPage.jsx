@@ -5,8 +5,8 @@ import { Container } from "@mui/material";
 function BannerPage() {
     const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
     return (
-        <Container maxWidth={customWidth} className="banner">
-            {/* <div className="container banner"> */}
+        // <Container maxWidth={customWidth} className="banner">
+        <div className="container-fluid banner g-0">
             <div className="page-banner">
                 <div className="keeper-title">
                     <h1 className="banner-content">Furry Friend Keeper</h1>
@@ -22,8 +22,8 @@ function BannerPage() {
                     </div>
                 </div>
             </div>
-            {/* </div> */}
-        </Container>
+        </div>
+        // </Container>
     );
 }
 
