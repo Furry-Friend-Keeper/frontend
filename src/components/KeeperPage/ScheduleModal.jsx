@@ -33,7 +33,7 @@ function ScheduleModal(props) {
   const handleClose = () => {
     setShow(false)
     clearModalContent()
-};
+  };
 
   const [petCategories, setPetCategories] = useState([]);
   const [petCategoriesRaw, setPetCategoriesRaw] = useState([]);
@@ -46,9 +46,9 @@ function ScheduleModal(props) {
       <Message showIcon type={type} header={type == "error" ? "Failed!" : "Success!"} closable>
         {/* <h6><strong>Failed!</strong> </h6> */}
         {type == "error" ?
-        <small className="text-black">{errorMessage}</small>
-        :
-        <small className="text-black">Booking Successfully.</small>
+          <small className="text-black">{errorMessage}</small>
+          :
+          <small className="text-black">Booking Successfully.</small>
         }
       </Message>
     );
@@ -105,7 +105,7 @@ function ScheduleModal(props) {
     await axiosAuth
       .post(import.meta.env.VITE_APPOINTMENT_CREATE, result)
       .then((res) => {
-        toaster.push(message("success",""), { placement, duration })
+        toaster.push(message("success", ""), { placement, duration })
         handleClose();
       }).catch((err) => {
         toaster.push(message("error", "Can't select a date that the store has closed. Please try again."), { placement, duration })
@@ -213,6 +213,8 @@ function ScheduleModal(props) {
     return false;
   };
 
+  console.log();
+
   return (
     <>
       <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
@@ -267,13 +269,18 @@ function ScheduleModal(props) {
             {/* <Placeholder.Paragraph /> */}
             <div className="modal-body">
               <div className="mb-3">
+                {closedDays === null ? <div className="mb-3">
+                  Closed Day: <span className="text-danger">No close day</span>
+                </div> : <div className="mb-3">
+                  Closed Day: <span className="text-danger">{closedDays}</span>
+                </div>}
                 <label htmlFor="message" className="form-label">
                   Booking Period
                 </label>
                 <Controller
                   name="dateRange"
                   control={control}
-                  rules={{ required: "Please enter your booking period."}}
+                  rules={{ required: "Please enter your booking period." }}
                   render={({ field: { ref, ...field } }) => (
                     <DateRangePicker
                       {...field}
@@ -306,7 +313,7 @@ function ScheduleModal(props) {
                 <Controller
                   name="tags"
                   control={control}
-                  rules={{ required: "Please enter your pet category."}}
+                  rules={{ required: "Please enter your pet category." }}
                   render={({ field: { ref, ...field } }) => (
                     <SelectPicker
                       {...field}
