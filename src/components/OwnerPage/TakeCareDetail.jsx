@@ -116,10 +116,13 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
   };
 
   const OwnerCancelled = async (value) => {
+    console.log(value);
     await axiosAuth
-      .patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "")
+      .patch(import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, value.message)
       .then(() => {
         fetchRequests();
+        handleClose();
+        setValue("message", "")
       });
   };
 
@@ -181,7 +184,8 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       return (
         <ButtonGroup className="w-100">
           <Button
-            onClick={() => OwnerCancelled(data)}
+            onClick={() => handleOpen(data)}
+            // onClick={() => OwnerCancelled(data)}
             className="col-12 col-md-6"
             appearance="primary"
             color="red"
@@ -374,7 +378,16 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                           .format("DD/MM/YYYY, HH:mm:ss")}
                       </Typography>
                     </div>
+                    
                   </Sheet>
+                  <Typography
+                    level="body-sm"
+                    fontWeight="lg"
+                    textColor="text.tertiary"
+                    className="mb-3 text-break"
+                  >
+                    Message : {item.message}
+                  </Typography>
                   <Box
                     sx={{
                       display: "flex",
@@ -383,7 +396,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                     }}
                   >
                     {buttonStatus(item)}
-                    <Modal
+                    {/* <Modal
                       className="position-absolute top-50 start-50 translate-middle mt-0"
                       backdrop={backdrop}
                       keyboard={false}
@@ -402,7 +415,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                             defaultValue={item?.keeperId}
                           />
                           <div className="modal-body">
-                            <div className="mb-3">
+                            <div className="mt-3">
                               <Controller
                                 name="star"
                                 control={control}
@@ -433,7 +446,6 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                                 rows={5}
                                 maxLength={200}
                                 {...register("comment", {
-                                  // required: "Please enter message before OK",
                                   maxLength: {
                                     value: 200,
                                     message:
@@ -461,8 +473,65 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                           </Button>
                         </Modal.Footer>
                       </Form>
+                    </Modal> */}
+                    <Modal
+                      className="position-absolute top-50 start-50 translate-middle mt-0"
+                      backdrop={backdrop}
+                      keyboard={false}
+                      open={open}
+                      onClose={handleClose}
+                    >
+                      <Form onSubmit={handleSubmit(OwnerCancelled)}>
+                        <Modal.Header>
+                          <Modal.Title className="overflow-visible">Message</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                          <input
+                            type="hidden"
+                            {...register("keeperId")}
+                            defaultValue={item?.keeperId}
+                          />
+                          <div className="modal-body">
+                            <div className="mt-3">
+                              <textarea
+                                className="form-control"
+                                id="message"
+                                name="message"
+                                rows={5}
+                                maxLength={200}
+                                {...register("message", {
+                                  required: "Please enter message before OK",
+                                  maxLength: {
+                                    value: 200,
+                                    message:
+                                      "Message must not more than 200 characters",
+                                  },
+                                })}
+                              ></textarea>
+                            </div>
+                          </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            // onClick={handleClose}
+                            type="submit"
+                            appearance="primary"
+                          >
+                            Ok
+                          </Button>
+                          <Button
+                            onClick={handleClose}
+                            appearance="subtle"
+                            className="ms-2"
+                          >
+                            Cancel
+                          </Button>
+                        </Modal.Footer>
+                      </Form>
                     </Modal>
                   </Box>
+                  
                 </CardContent>
               </Card>
             </Box>
