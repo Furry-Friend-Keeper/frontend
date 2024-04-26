@@ -6,11 +6,13 @@ import {
 // import AuthReducer from './AuthReducer'
 import AuthReducer from './AuthSlice';
 import LocationSlice from './LocationSlice';
+import SearchSlice from './SearchSlice';
 
 const store = configureStore({
     reducer : {
         auth : AuthReducer,
-        location : LocationSlice
+        location : LocationSlice,
+        search: SearchSlice
     },
     middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware().concat(localStorageMiddleware),

@@ -3,7 +3,7 @@ import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useDispatch } from "react-redux";
-import { logout } from "../../store/AuthSlice";
+import { logout } from "../store/AuthSlice";
 
 function HamburgerBar(props) {
   const { handleDropdown, isDropdownOpen, getName, isLogin, getRole, getId } =props;
@@ -40,7 +40,9 @@ function HamburgerBar(props) {
           <li>
             <a className="dropdown-item" href={`/at3/keeper-edit/${getId}`}>
               <StoreOutlinedIcon className="profile-icon" />
+              <span>
               My Shop
+              </span>
             </a>
           </li>
         ) : (
@@ -49,7 +51,9 @@ function HamburgerBar(props) {
             <li>
               <a className="dropdown-item" href={`/at3/owner/${getId}`}>
                 <PersonIcon className="profile-icon" />
+                <span>
                 View profile
+                </span>
               </a>
             </li>
           )
@@ -57,7 +61,9 @@ function HamburgerBar(props) {
         {!isLogin && (
           <li>
             <a className="dropdown-item" href="/at3/login">
+              <span>
               Login
+              </span>
             </a>
           </li>
         )}
@@ -67,14 +73,18 @@ function HamburgerBar(props) {
           <li onClick={() => dispatch(logout())}>
             <a className="dropdown-item" href="/at3">
               <LogoutIcon className="profile-icon" />
+              <span>
               Logout
+              </span>
             </a>
           </li>
         )}
         {!isLogin && (
           <li>
             <a className="dropdown-item" href="/at3/signup">
+              <span>
               Sign up
+              </span>
             </a>
           </li>
         )}

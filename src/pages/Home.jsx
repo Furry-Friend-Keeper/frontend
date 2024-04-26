@@ -5,25 +5,23 @@ import KeeperContents from "../components/HomePage/KeeperContents";
 import axiosAuth from "../components/Global/AxiosService";
 import axios from "axios";
 import L from "leaflet";
-import { Input, InputGroup, Dropdown, useToaster, Message } from "rsuite";
-import SearchIcon from "@rsuite/icons/Search";
-import CloseIcon from "@rsuite/icons/Close";
+import { Dropdown, useToaster, Tag } from "rsuite";
+import { findSearch } from "../store/SearchSlice";
 import Skeleton from "@mui/material/Skeleton";
 import { Box } from "@mui/material";
 import { Container } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setLocation } from "../store/LocationSlice";
-import { Tag, TagGroup } from "rsuite";
+import SortIcon from '@mui/icons-material/Sort';
 
 function Home() {
   let customWidth = import.meta.env.VITE_CUSTOM_WIDTH;
   const { userInfo, accessToken } = useSelector((state) => state.auth);
   const [apiData, setApiData] = useState([]);
   const [distanceAll, setDistanceAll] = useState([]);
-  const [ratingScore, setRatingScore] = useState(0);
+  const [ratingScore, setRatingScore] = useState([0, 5]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
   const [selected, setSelected] = useState([]);
   const [sortAscending, setSortAscending] = useState("");
   const [sortDistanceAsc, setSortDistanceAsc] = useState("");
@@ -164,20 +162,13 @@ function Home() {
     }, {});
   }, [distanceAll]);
 
-  const handleSearchInput = (value) => {
-    setSearchInput(value);
-  };
-
-  const handleClearSearch = () => {
-    setSearchInput("");
-  };
-
   useEffect(() => {
     const filter = cacheApiData.filter(
-      (item) =>
-        item.reviewStars >= ratingScore &&
+      (item) => 
+      item.reviewStars >= ratingScore[0] && item.reviewStars <= ratingScore[1] &&
         selected.every((filter) => item.categories?.includes(filter))
     );
+    // console.log(cacheApiData)
 
     // console.log(filter)
     setSearch(filter);
@@ -196,60 +187,22 @@ function Home() {
     });
   };
 
-  const handleSearch = (event) => {
-    if (event.key === "Enter") {
-      // event.preventDefault()
-      // const filteredContent = contents.filter((item) =>
-      //   item.title.toLowerCase().includes(searchInput.toLowerCase())
-      // );
-      // setSearch(filteredContent);
-      const filteredBySearch = cacheApiData.filter((item) =>
-        item.name?.toLowerCase().includes(searchInput?.toLowerCase())
-      );
+  const [sortTitle, setSortTitle] = useState("Sort")
 
-      const filteredByCategory = filteredBySearch.filter((item) => {
-        if (selected.length > 0) {
-          if (item.categories !== null) {
-            return item.categories.some((category) =>
-              selected.includes(category)
-            );
-          }
-        } else {
-          return item;
-        }
-      });
-      setSearch(filteredByCategory);
+  const handleSelect = (eventKey, event) => {
+    // console.log(event.target.innerText)
+    setSortTitle(event.target.innerText)
+    setSortAscending(eventKey)
+    if(eventKey === "RatingDes" || eventKey === "RatingAsc") {
+      SortReviewStar(eventKey)
+    }else if(eventKey === "DistanceDes" || eventKey === "DistanceAsc") {
+      SortDistance(eventKey)
     }
-  };
-
-  const RatingTitle = () => (
-    <div>
-      Rating
-      {sortTitles !== "" && (
-        <span>
-          : <Tag color="blue">{sortTitles}</Tag>
-        </span>
-      )}
-    </div>
-  );
-  const DistanceTitle = () => (
-    <div>
-      Distance
-      {distanceTitle !== "" && (
-        <span>
-          : <Tag color="blue">{distanceTitle}</Tag>
-        </span>
-      )}
-    </div>
-  );
+  }
 
   const SortReviewStar = (isSort) => {
-    setSortAscending(isSort);
-    setSortTitles(isSort === "Des" ? "High to Low" : "Low to High");
-    setDistanceTitle("");
-    setSortDistanceAsc("");
     const sortStar = [...search].sort((a, b) =>
-      isSort === "Des"
+      isSort === "RatingDes"
         ? b.reviewStars - a.reviewStars
         : a.reviewStars - b.reviewStars
     );
@@ -263,13 +216,8 @@ function Home() {
     const distanceMap = new Map(
       distanceSort.map((item) => [item.id, parseFloat(item.distance)])
     );
-
-    setSortDistanceAsc(isSort);
-    setDistanceTitle(isSort === "Des" ? "High to Low" : "Low to High");
-    setSortTitles("");
-    setSortAscending("");
     const sortData = [...search].sort((a, b) =>
-      isSort === "Des"
+      isSort === "DistanceDes"
         ? distanceMap.get(b.id) - distanceMap.get(a.id)
         : distanceMap.get(a.id) - distanceMap.get(b.id)
     );
@@ -279,8 +227,8 @@ function Home() {
   const selectRatingRange = (range) => {
     setRatingScore(range);
     const ratingRange = cacheApiData.filter(
-      (val) =>
-        val.reviewStars >= range &&
+      (val) => 
+      item.reviewStars >= range[0] && item.reviewStars <= range[1] &&
         selected.every((filter) => val.categories.includes(filter))
     );
     setSearch(ratingRange);
@@ -296,9 +244,10 @@ function Home() {
     setSortDistanceAsc("");
     setDistanceTitle("");
     // reset filter rating
-    setRatingScore(0);
+    setRatingScore([0,5]);
     //reset filter categories
     setSelected([]);
+    dispatch(findSearch(""))
   };
 
   return (
@@ -319,56 +268,33 @@ function Home() {
             resetfilter={resetFilter}
           />
           <div className="keeper-list">
-            <div className="d-flex justify-content-between mb-3 mx-sm-3 mx-lg-0">
+            <div className="d-flex justify-content-end mb-3 mx-sm-3 mx-lg-0">
+                {/* <h4>All Pet Keeper</h4> */}
               <div className="keeper-list-filter d-flex">
-                <InputGroup inside className="search-keeper">
-                  <InputGroup.Button>
-                    <SearchIcon />
-                  </InputGroup.Button>
-                  <Input
-                    placeholder="Search by name"
-                    value={searchInput}
-                    onChange={handleSearchInput}
-                    onKeyUp={handleSearch}
-                  />
-                  {searchInput && (
-                    <InputGroup.Button onClick={handleClearSearch}>
-                      <CloseIcon />
-                    </InputGroup.Button>
-                  )}
-                </InputGroup>
                 <div className="sort-list">
-                  <Dropdown title={<RatingTitle />} activeKey={sortAscending}>
+                  <Dropdown className="sort-dropdown" onSelect={handleSelect} placement="bottomEnd" appearance="default" title={sortTitle} icon={<SortIcon />} activeKey={sortAscending}>
                     <Dropdown.Item
-                      onClick={() => SortReviewStar("Des")}
-                      eventKey="Des"
+                      eventKey="RatingDes"
                     >
-                      High to Low
+                      Rating: High to Low
                     </Dropdown.Item>
+                    <Dropdown.Separator />
                     <Dropdown.Item
-                      onClick={() => SortReviewStar("Asc")}
-                      eventKey="Asc"
+                      eventKey="RatingAsc"
                     >
-                      Low to High
+                      Rating: Low to High
                     </Dropdown.Item>
-                  </Dropdown>
-                </div>
-                <div className="distance-list">
-                  <Dropdown
-                    title={<DistanceTitle />}
-                    activeKey={sortDistanceAsc}
-                  >
+                    <Dropdown.Separator />
                     <Dropdown.Item
-                      onClick={() => SortDistance("Des")}
-                      eventKey="Des"
+                      eventKey="DistanceDes"
                     >
-                      High to Low
+                      Distance: High to Low
                     </Dropdown.Item>
+                    <Dropdown.Separator />
                     <Dropdown.Item
-                      onClick={() => SortDistance("Asc")}
-                      eventKey="Asc"
+                      eventKey="DistanceAsc"
                     >
-                      Low to High
+                      Distance: Low to High
                     </Dropdown.Item>
                   </Dropdown>
                 </div>
@@ -396,7 +322,7 @@ function Home() {
                     </Box>
                   ))}
                 </div>
-              ) : loading && search.length > 0 ? (
+              ) :
                 <KeeperContents
                   search={search}
                   distanceLookup={distanceLookup}
@@ -405,12 +331,7 @@ function Home() {
                   distanceAll={distanceAll}
                   sortDistanceAsc={sortDistanceAsc}
                   sortAscending={sortAscending}
-                />
-              ) : (
-                <div className="text-center fw-bold mt-5 fs-4">
-                  NO PET KEEPER FOUND
-                </div>
-              )}
+                />}
               {/* <KeeperContents search={search} /> */}
             </div>
             {/* <PaginationButton /> */}
