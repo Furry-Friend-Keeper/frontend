@@ -11,8 +11,9 @@ import {
 import StarIcon from "@mui/icons-material/Star";
 import { Button, ButtonGroup } from "rsuite";
 import axios from "axios";
-import { Rate } from "rsuite";
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { Rate, Slider, RangeSlider } from "rsuite";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
 function KeeperCategory(props) {
   const {
@@ -40,67 +41,149 @@ function KeeperCategory(props) {
       });
   };
 
+  const test = (event) => {
+    console.log(event);
+  };
+
   return (
-    <div className="filter-panel">
-      <div className="pet-category bg-shadow p-4 bg-white rounded-3">
-        <h3 className="pb-2">Categories</h3>
-        {/* <h3 className='mb-4'>Filter by</h3> */}
-        <div className="pet-category-list">
-          {/* <h4>Category</h4> */}
-          <div className="category-list">
-            {petCategories.map((category) => (
-              <FormGroup key={category.id}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      sx={{
-                        "&:hover": {
-                          bgcolor: "transparent",
-                        },
-                      }}
-                      disableRipple
-                      color="default"
-                      checkedIcon={<BpCheckedIcon />}
-                      icon={<BpIcon />}
-                      checked={selected.includes(category.name)}
-                      onChange={() => handlecategory(category.name)}
-                    />
-                  }
-                  label={category.name}
-                />
-              </FormGroup>
+    <>
+      <div className="filter-panel">
+        <h4 className="mb-4 mx-sm-3 mx-lg-0">All Pet Keeper</h4>
+        <div className="filter-pannel-body p-4 p-xl-4 p-lg-3 p-md-2 p-sm-2">
+          <div className="filter-header">
+            <h4>Filter</h4>
+            <div className="border my-3"></div>
+          </div>
+          <div className="filter-category">
+            <h4>Category</h4>
+            <div className="filter-category-list mt-2">
+              {petCategories.map((category) => (
+                <FormGroup key={category.id}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{
+                          "&:hover": {
+                            bgcolor: "transparent",
+                          },
+                        }}
+                        disableRipple
+                        color="default"
+                        checkedIcon={<BpCheckedIcon />}
+                        icon={<BpIcon />}
+                        checked={selected.includes(category.name)}
+                        onChange={() => handlecategory(category.name)}
+                      />
+                    }
+                    label={category.name}
+                  />
+                </FormGroup>
+              ))}
+            </div>
+          </div>
+          <div className="border my-2"></div>
+          <div className="filter-rating">
+            <h4>Rating</h4>
+            <div className="filter-rating-range mt-3 mx-sm-0 mx-mb-4 mx-lg-3 mx-xl-2">
+              <RangeSlider
+                value={ratingscore}
+                onChangeCommitted={selectratingrange}
+                min={0}
+                step={1}
+                max={5}
+                defaultValue={ratingscore}
+                graduated
+                constraint={([start, end]) => start !== end }
+                renderMark={(mark) => {
+                  return (
+                    <span>
+                      <StarRoundedIcon fontSize="small" />
+                      {mark}
+                    </span>
+                  );
+                }}
+              />
+              {/* {Array.from({ length: 5 }, (_, i) => 5 - i).map((value) => (
+              <div
+                key={value}
+                className={`d-flex mb-2 rating-icon pointer ${
+                  ratingscore === value ? "rating-active" : ""
+                }`}
+                onClick={() => selectratingrange(value)}
+              >
+                <Rate defaultValue={value} size="xs" color="yellow" readOnly />
+                {value !== 5 && <KeyboardDoubleArrowUpIcon />}
+              </div>
+            ))} */}
+            </div>
+          </div>
+        </div>
+        <div className="blue-btn mt-4">
+          <Button
+            appearance="primary"
+            className="w-100 fs-6"
+            onClick={resetfilter}
+          >
+            Reset Filter
+          </Button>
+        </div>
+        {/* <div className="pet-category bg-shadow p-4 bg-white rounded-3">
+          <h3 className="pb-2">Categories</h3>
+          <div className="pet-category-list">
+            <div className="category-list">
+              {petCategories.map((category) => (
+                <FormGroup key={category.id}>
+                  <FormGroupFormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{
+                          "&:hover": {
+                            bgcolor: "transparent",
+                          },
+                        }}
+                        disableRipple
+                        color="default"
+                        checkedIcon={<BpCheckedIcon />}
+                        icon={<BpIcon />}
+                        checked={selected.includes(category.name)}
+                        onChange={() => handlecategory(category.name)}
+                      />
+                    }
+                    label={category.name}
+                  />
+                </FormGroup>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="pet-rating bg-shadow bg-white rounded-3 p-4 mt-4 p-lg-3 p-md-2 p-sm-2">
+          <h3 className="pb-2">Rating</h3>
+          <div className="rating-range">
+            {Array.from({ length: 5 }, (_, i) => 5 - i).map((value) => (
+              <div
+                key={value}
+                className={`d-flex mb-2 rating-icon pointer ${
+                  ratingscore === value ? "rating-active" : ""
+                }`}
+                onClick={() => selectratingrange(value)}
+              >
+                <Rate defaultValue={value} size="xs" color="yellow" readOnly />
+                {value !== 5 && <KeyboardDoubleArrowUpIcon />}
+              </div>
             ))}
           </div>
         </div>
+        <div className="blue-btn mt-4">
+          <Button
+            appearance="primary"
+            className="w-100 fs-6"
+            onClick={resetfilter}
+          >
+            Reset Filter
+          </Button>
+        </div> */}
       </div>
-      <div className="pet-rating bg-shadow bg-white rounded-3 p-4 mt-4 p-lg-3 p-md-2 p-sm-2">
-        <h3 className="pb-2">Rating</h3>
-        {/* <h3 className='mb-4'>Filter by</h3> */}
-        <div className="rating-range">
-          {Array.from({ length: 5 }, (_, i) => 5 - i).map((value) => (
-            <div
-              key={value}
-              className={`d-flex mb-2 rating-icon pointer ${
-                ratingscore === value ? "rating-active" : ""
-              }`}
-              onClick={() => selectratingrange(value)}
-            >
-              <Rate defaultValue={value} size="xs" color="yellow" readOnly />
-              {value !== 5 && <KeyboardDoubleArrowUpIcon />}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="blue-btn mt-4">
-        <Button
-          appearance="primary"
-          className="w-100 fs-6"
-          onClick={resetfilter}
-        >
-          Reset Filter
-        </Button>
-      </div>
-    </div>
+    </>
   );
 }
 

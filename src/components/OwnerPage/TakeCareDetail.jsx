@@ -396,7 +396,6 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                         </Modal.Header>
 
                         <Modal.Body>
-                          {/* <Placeholder.Paragraph /> */}
                           <input
                             type="hidden"
                             {...register("keeperId")}
@@ -442,14 +441,12 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                                   },
                                 })}
                               ></textarea>
-                              {/* {errors.comment && <small className="error-message">{errors.comment.message}</small>} */}
                             </div>
                           </div>
                         </Modal.Body>
 
                         <Modal.Footer>
                           <Button
-                            // onClick={handleClose}
                             type="submit"
                             appearance="primary"
                           >

@@ -18,9 +18,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
-import { Link } from "react-router-dom";
+import { Link, NavLink  } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../store/AuthSlice";
+import { logout } from "../store/AuthSlice";
 
 function NavbarContent({ notification }) {
     const getRole = useSelector((state) => state.auth.userInfo.role);
@@ -28,6 +28,17 @@ function NavbarContent({ notification }) {
     const getName = useSelector((state) => state.auth.userInfo.name) || "";
     const getImage = useSelector((state) => state.auth.userInfo.img) || "";
     const dispatch = useDispatch();
+
+    const newLink = (props) => { 
+      const { 
+          href, children, ...rest 
+      } = props; 
+      return ( 
+          <Link to={href} {...rest}> 
+                  {children} 
+          </Link> 
+      ); 
+  }; 
 
     const imageURL = getImage ? getRole === "Owner" ? import.meta.env.VITE_OWNER_IMAGE + getId + "/" + getImage : import.meta.env.VITE_KEEPER_IMAGE + getId + "/" + getImage : null
     const renderMenu = ({ onClose, left, top, className }, ref) => {
@@ -94,21 +105,20 @@ function NavbarContent({ notification }) {
               </Dropdown.Item>
               <Dropdown.Separator />
               {getRole === "PetKeeper" ? (
-                  <Dropdown.Item>
+                  <Dropdown.Item as={newLink} href={"/at3/keeper-edit/" + getId}>
                     <StoreOutlinedIcon className="profile-icon" />
-                    <Link
+                    <span
                       className="text-black"
-                      to={"/at3/keeper-edit/" + getId}
                     >
                       My Shop
-                    </Link>
+                    </span>
                   </Dropdown.Item>
                 ) : (
-                  <Dropdown.Item>
+                  <Dropdown.Item as={newLink} href={`/at3/owner/${getId}`}>
                     <PersonIcon className="profile-icon" />
-                    <Link className="text-black" to={`/at3/owner/${getId}`}>
+                    <span className="text-black">
                       View profile
-                    </Link>
+                    </span>
                   </Dropdown.Item>
                 )}
                 <Dropdown.Separator />

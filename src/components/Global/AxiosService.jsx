@@ -24,7 +24,6 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const { auth } = store.getState();
-        // console.log(auth)
         const response = await axios.get(import.meta.env.VITE_REFRESH_TOKEN, {
           headers : {
             'refreshToken': auth.userInfo.refreshToken
@@ -36,10 +35,6 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (_error) {
         console.log(_error)
-        // Notification.error({
-        //   title: 'Error',
-        //   description: error.message || 'An error occurred.',
-        // });
         store.dispatch(logout());
         // store.dispatch(displaySessionExpire());
         return Promise.reject(_error);
