@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, IconButton, Radio, RadioGroup, Form } from "rsuite";
+import { Table, Button, IconButton, Radio, RadioGroup, Form, Modal } from "rsuite";
+import Box from "@mui/joy/Box";
+import { useForm, Controller } from "react-hook-form";
 import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
 import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { useForm } from "react-hook-form";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -57,6 +58,8 @@ const renderRowExpanded = (rowData) => {
 
 function ScheduleRequest(props) {
     const { keeperId } = props;
+    const [open, setOpen] = useState(false);
+    const [backdrop, setBackdrop] = useState("static");
     const [expandedRowKeys, setExpandedRowKeys] = useState([]);
     const [requests, setRequests] = useState([]);
     const [statusRequests, setStatusRequests] = useState([]);
@@ -65,8 +68,15 @@ function ScheduleRequest(props) {
     );
     const [radioChange, setRadioChange] = useState("Pending");
     const [loading, setLoading] = useState(false);
+    const [AppointmentId, setAppointmentId] = useState(null)
+    const { register, handleSubmit, control, setValue } = useForm();
 
-    const { register, handleSubmit, control } = useForm();
+    const handleOpen = (id) => {
+        setAppointmentId(id)
+        setOpen(true)
+    };
+    const handleClose = () => setOpen(false);
+
 
     const fetchRequests = async () => {
         await axiosAuth
@@ -84,29 +94,31 @@ function ScheduleRequest(props) {
     const PendingCompleted = async (value) => {
         await axiosAuth.patch(
             import.meta.env.VITE_APPOINTMENT_CONFIRM_ID + value.id, "").then(() => {
-            fetchRequests()
-        })
+                fetchRequests()
+            })
     };
 
     const CancelCompleted = async (value) => {
         await axiosAuth.patch(
-            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + value.id, "").then(() => {
-            fetchRequests()
-        });
+            import.meta.env.VITE_APPOINTMENT_CANCEL_ID + AppointmentId.id, value.message).then(() => {
+                fetchRequests()
+                handleClose()
+                setValue("message", "")
+            });
     };
 
     const InCareCompleted = async (value) => {
         await axiosAuth.patch(
             import.meta.env.VITE_APPOINTMENT_IN_CARE_ID + value.id, "").then(() => {
-            fetchRequests()
-        });
+                fetchRequests()
+            });
     };
 
     const KeeperCompleted = async (value) => {
         await axiosAuth.patch(
             import.meta.env.VITE_APPOINTMENT_KEEPER_COMPLETED_ID + value.id, "").then(() => {
-            fetchRequests()
-        });
+                fetchRequests()
+            });
     };
 
     useEffect(() => {
@@ -155,6 +167,7 @@ function ScheduleRequest(props) {
                 <Radio value="Pending">Incoming Request</Radio>
                 <Radio value="Scheduled">Scheduled</Radio>
                 <Radio value="In Care">In Care</Radio>
+                <Radio value="Cancelled">Cancelled</Radio>
             </RadioGroup>
             <Table
                 className="mt-3"
@@ -218,29 +231,31 @@ function ScheduleRequest(props) {
                     <Column width={80} fixed="right">
                         <HeaderCell>...</HeaderCell>
                         <Cell style={{ padding: "6px" }}>
-                        {(rowData) => (
+                            {(rowData) => (
                                 <Button
-                                appearance="link"
-                                onClick={() => CancelCompleted(rowData)}
-                            >
+                                    appearance="link"
+                                    // onClick={() => CancelCompleted(rowData)}
+                                    onClick={() => handleOpen(rowData)}
+                                >
                                     Cancel
                                 </Button>
-                                 )}
+                            )}
                         </Cell>
                     </Column>
                 )}
+                {radioChange !== "Cancelled" && 
                 <Column width={90} fixed="right">
                     <HeaderCell>...</HeaderCell>
                     <Cell style={{ padding: "6px" }}>
-                    {(rowData) => (
-                        <div>
+                        {(rowData) => (
+                            <div>
                                 {radioChange === "Pending" ? (
                                     <Button
-                                    appearance="link"
-                                    onClick={() => {
-                                        PendingCompleted(rowData);
-                                    }}
-                                >
+                                        appearance="link"
+                                        onClick={() => {
+                                            PendingCompleted(rowData);
+                                        }}
+                                    >
                                         Confirm
                                     </Button>
                                 ) : radioChange === "Scheduled" ? (
@@ -256,17 +271,81 @@ function ScheduleRequest(props) {
                                     <Button
                                         appearance="link"
                                         onClick={() => {
-                                            KeeperCompleted(rowData);
+                                            InCareCompleted(rowData);
                                         }}
                                     >
                                         Completed
                                     </Button>
                                 )}
-                                </div>
-                                )}
+                            </div>
+                        )}
                     </Cell>
                 </Column>
+                }
             </Table>
+            <Box
+                sx={{
+                    display: "flex",
+                    gap: 1.5,
+                    "& > button": { flex: 1 },
+                }}
+            >
+                <Modal
+                    className="position-absolute top-50 start-50 translate-middle mt-0"
+                    backdrop={backdrop}
+                    keyboard={false}
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <Form onSubmit={handleSubmit(CancelCompleted)}>
+                        <Modal.Header>
+                            <Modal.Title className="overflow-visible">Message</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {/* <Placeholder.Paragraph /> */}
+                            {/* <input
+                                                type="hidden"
+                                                {...register("id")}
+                                            /> */}
+                            <div className="modal-body">
+                                <div className="mt-3">
+                                    <textarea
+                                        className="form-control"
+                                        id="message"
+                                        name="message"
+                                        rows={5}
+                                        maxLength={200}
+                                        {...register("message", {
+                                            required: "Please enter message before OK",
+                                            maxLength: {
+                                                value: 200,
+                                                message:
+                                                    "Message must not more than 200 characters",
+                                            },
+                                        })}
+                                    ></textarea>
+                                    {/* {errors.message && <small className="error-message">{errors.message.message}</small>} */}
+                                </div>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                type="submit"
+                                appearance="primary"
+                            >
+                                Ok
+                            </Button>
+                            <Button
+                                onClick={handleClose}
+                                appearance="subtle"
+                                className="ms-2"
+                            >
+                                Cancel
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+            </Box>
         </div>
     );
 }

@@ -7,6 +7,7 @@ import NavbarContent from "../components/Global/NavbarContent";
 import HamburgerBar from "../components/Global/HamburgerBar";
 import { Notification, useToaster, ButtonToolbar, SelectPicker, Button } from 'rsuite';
 import Stomp from 'stompjs';
+import { Mail } from "@mui/icons-material";
 
 function Navbar() {
   const customWidth = import.meta.env.VITE_CUSTOM_WIDTH;
@@ -15,6 +16,7 @@ function Navbar() {
   const getRole = useSelector((state) => state.auth.userInfo.role);
   const getId = useSelector((state) => state.auth.userInfo.id);
   const getName = useSelector((state) => state.auth.userInfo.name) || "";
+  const getUserId = useSelector((state) => state.auth.userInfo.userId) || "";
   // const getSessionExpire = useSelector((state) => state.auth.error);
   const location = useLocation();
   // const [ownerData, setOwnerData] = useState({})
@@ -48,33 +50,36 @@ function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    var socket = new SockJS('https://capstone23.sit.kmutt.ac.th/at3-socket/api/web-s');
-    const client = Stomp.over(socket);
-    client.connect({}, () => {
+    if(isLogin) {
+      var socket = new SockJS(`https://capstone23.sit.kmutt.ac.th/at3-socket/api/web-s?userId=${getUserId}`);
+      const client = Stomp.over(socket);
+      client.connect({}, () => {
         client.subscribe('/topic/global-notifications', function (message) {
-            setNotificationCount(prevCount => prevCount + 1);
-            console.log(JSON.parse(message.body).content)
-            // updateNotificationDisplay();
+          setNotificationCount(prevCount => prevCount + 1);
+          console.log(JSON.parse(message.body).content)
+          // updateNotificationDisplay();
         });
 
         client.subscribe('/user/topic/private-notifications', function (message) {
-            setNotificationCount(prevCount => prevCount + 1);
-            console.log(JSON.parse(message.body).content)
-            // updateNotificationDisplay();
-            // showMessage(JSON.parse(message.body).content);
+          setNotificationCount(prevCount => prevCount + 1);
+          console.log(JSON.parse(message.body).content)
+          // updateNotificationDisplay();
+          // showMessage(JSON.parse(message.body).content);
         });
+      }
+      
+        // , function(error) {
+        //     console.error('Connection failed: ' + error);
+        //     // Handle connection failure here
+        // }
+      );
     }
-    // , function(error) {
-    //     console.error('Connection failed: ' + error);
-    //     // Handle connection failure here
-    // }
-  );
-  }, [])
+  }, [isLogin])
 
 
   useEffect(() => {
     console.log(notificationCount)
-  },[notificationCount])
+  }, [notificationCount])
 
   const connect = () => {
     console.log("test")
@@ -82,37 +87,37 @@ function Navbar() {
     const client = Stomp.over(socket);
     client.connect({}, () => {
       console.log("test1")
-        // console.log('Connected: ' + frame);
+      // console.log('Connected: ' + frame);
+      // updateNotificationDisplay();
+      // client.subscribe('/topic/messages', function (message) {
+      //   console.log(JSON.parse(message.body).content)
+      //     // showMessage(JSON.parse(message.body).content);
+      // });
+
+      // client.subscribe('/user/topic/private-messages', function (message) {
+      //   console.log(JSON.parse(message.body).content)
+      //     // showMessage(JSON.parse(message.body).content);
+      // });
+
+      client.subscribe('/topic/global-notifications', function (message) {
+        setNotificationCount(prevCount => prevCount + 1);
+        console.log(JSON.parse(message.body).content)
         // updateNotificationDisplay();
-        // client.subscribe('/topic/messages', function (message) {
-        //   console.log(JSON.parse(message.body).content)
-        //     // showMessage(JSON.parse(message.body).content);
-        // });
+      });
 
-        // client.subscribe('/user/topic/private-messages', function (message) {
-        //   console.log(JSON.parse(message.body).content)
-        //     // showMessage(JSON.parse(message.body).content);
-        // });
-
-        client.subscribe('/topic/global-notifications', function (message) {
-            setNotificationCount(prevCount => prevCount + 1);
-            console.log(JSON.parse(message.body).content)
-            // updateNotificationDisplay();
-        });
-
-        client.subscribe('/user/topic/private-notifications', function (message) {
-            setNotificationCount(prevCount => prevCount + 1);
-            console.log(JSON.parse(message.body).content)
-            // updateNotificationDisplay();
-            // showMessage(JSON.parse(message.body).content);
-        });
+      client.subscribe('/user/topic/private-notifications', function (message) {
+        setNotificationCount(prevCount => prevCount + 1);
+        console.log(JSON.parse(message.body).content)
+        // updateNotificationDisplay();
+        // showMessage(JSON.parse(message.body).content);
+      });
     }
-    // , function(error) {
-    //     console.error('Connection failed: ' + error);
-    //     // Handle connection failure here
-    // }
-  );
-};
+      // , function(error) {
+      //     console.error('Connection failed: ' + error);
+      //     // Handle connection failure here
+      // }
+    );
+  };
 
   return (
     <>
@@ -135,7 +140,7 @@ function Navbar() {
                   // src="https://i.imgur.com/ids0WFZ.png"
                   alt=""
                   width={450}
-                  // width={50}
+                // width={50}
                 />
               </div>
             </div>
