@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Rating, Stack, Chip } from "@mui/material/";
-import { Rate } from "rsuite";
+import { Rate, Tag, TagGroup } from "rsuite";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useNavigate } from "react-router-dom";
 import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import Slider from "react-slick";
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 const Favorite = (props) => {
     const { favorites } = props
@@ -46,6 +49,16 @@ const Favorite = (props) => {
             }
       };
 
+      const settings = {
+        dots: false,
+        infinite: false,
+        arrows: false,
+        speed: 500,
+        variableWidth: true,
+        slidesToShow: 2,
+        slidesToScroll: 2
+      };
+
 
     return (
         <>
@@ -59,30 +72,46 @@ const Favorite = (props) => {
                                 <div key={favorite.id} className="movedown-transition">
                                     <div className="profile-favorite-list">
                                         <div className="profile-favorite-imge" onClick={() => linkToKeeper(favorite)}>
-                                        <img
-                                            src={
-                                                import.meta.env.VITE_KEEPER_IMAGE +
-                                                favorite.id +
-                                                "/" +
-                                                favorite.img
-                                            }
-                                            alt={favorite.title}
-                                        />
+                                        {favorite.img ? (
+                                            <img
+                                                src={
+                                                    import.meta.env.VITE_KEEPER_IMAGE +
+                                                    favorite.id +
+                                                    "/" +
+                                                    favorite.img
+                                                }
+                                                alt={favorite.title}
+                                            />
+                                        ) : (
+                                            <div className="notimage-width">
+                                                <ImageNotSupportedIcon className="notImage" />
+                                            </div>
+                                        )
+                                    }
+                                            <div className="profile-favorite-rating">
+                                                <StarRoundedIcon /> 
+                                                <span>{favorite.reviewStars.toFixed(1)}</span>
+                                            </div>   
                                         </div>
                                         <div className="profile-favorite-content">
                                             <div className="favorite-name">
-                                                <h5>{favorite.name}</h5>
+                                                <h5 className="text-overflow">{favorite.name}</h5>
+                                                <div className="favorite-icon">
+                                                    <FavoriteIcon onClick={() => handleFavorite(favorite)} />
+                                                </div>
                                             </div>
-                                            <div className="favorite-star mt-2">
-                                                <Rate
-                                                    defaultValue={favorite.reviewStars}
-                                                    allowHalf
-                                                    size="xs"
-                                                    color="yellow"
-                                                    readOnly
-                                                />
+                                            <div className="profile-favorite-tags">
+                                                <TagGroup className="m-0">
+                                                    <Slider {...settings}>
+                                                        {favorite.categories &&
+                                                        favorite.categories.map((category, i) => (
+                                                            <Tag key={i}>{category}</Tag>
+                                                        ))}
+                                                    </Slider>
+                                                    
+                                                </TagGroup>
                                             </div>
-                                            <div className="favorite-tags mt-2">
+                                            {/* <div className="favorite-tags mt-2">
                                                 <Stack
                                                     direction="row"
                                                     spacing={1}
@@ -102,11 +131,11 @@ const Favorite = (props) => {
                                                             )
                                                             }
                                                 </Stack>
-                                            </div>
+                                            </div> */}
                                         </div>
-                                        <div className="favorite-icon">
+                                        {/* <div className="favorite-icon">
                                             <FavoriteIcon onClick={() => handleFavorite(favorite)} />
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             ))} 

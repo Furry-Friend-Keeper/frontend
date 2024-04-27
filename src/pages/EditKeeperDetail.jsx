@@ -282,7 +282,7 @@ function EditKeeperDetail() {
                 fetchData={fetchData}
             />
             <Container maxWidth={customWidth}>
-                <div className="row mx-auto col-10">
+                <div className="row mx-auto col-11">
                     <div className="col-lg-12">
                         <ScheduleRequest keeperId={keeperId} />
                     </div>

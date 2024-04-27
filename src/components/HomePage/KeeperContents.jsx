@@ -132,6 +132,14 @@ function KeeperContents(props) {
             <div className="keeper-card">
             <Link to={`/at3/keepers/${item.id}`} className="image-status">
               <div className="keeper-card-image">
+              {!item.img ? (
+                <div className="img-close-status">
+                  {item.available === false && <div className="bg-tranparency">Closed</div>}
+                  <ImageNotSupportedIcon className="notImage" />
+                </div>
+              ) : (
+                <div className="img-close-status">
+                  {item.available === false && <div className="bg-tranparency">Closed</div>}
                   <img 
                     src={
                         import.meta.env.VITE_KEEPER_IMAGE +
@@ -140,6 +148,8 @@ function KeeperContents(props) {
                         item.img
                       }
                     alt="" />
+                </div>
+              )}
                 <div className="keeper-card-rating">
                   <StarRoundedIcon /> 
                   <span>{item.reviewStars.toFixed(1)}</span>
@@ -176,21 +186,6 @@ function KeeperContents(props) {
                       </Slider>
                       
                     </TagGroup>
-                  {/* <Stack
-                       direction="row"
-                       spacing={1}
-                       className="justify-content-center d-block"
-                     >
-                       {item.categories &&
-                         item.categories.map((category, i) => (
-                           <Chip
-                             className="keeper-tag"
-                             key={i}
-                             label={category}
-                             size="small"
-                           />
-                         ))}
-                     </Stack> */}
                   </div>
               </div>
             </div>

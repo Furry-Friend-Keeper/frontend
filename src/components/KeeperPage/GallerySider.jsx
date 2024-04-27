@@ -94,7 +94,7 @@ function GallerySider(props) {
     <>
     <Container maxWidth={customWidth}>
     {/* <div className="container pt-lg-4"> */}
-        <div className="carousel col-md-10">
+        <div className="carousel col-md-11">
             <div className="slider-for">
                 {galleryData.length > 0 && 
                 <Slider

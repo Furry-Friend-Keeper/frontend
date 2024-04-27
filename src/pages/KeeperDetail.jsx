@@ -106,7 +106,7 @@ function KeeperDetail() {
             <GallerySider id={id} galleryData={galleryData}/>
             <Container maxWidth={customWidth}>
             {/* <div className="container pb-lg-5"> */}
-                <div className="row mx-auto col-10 movedown-transition">
+                <div className="row mx-auto col-11 movedown-transition">
                     <div className="col-lg-8">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <div className="d-flex">

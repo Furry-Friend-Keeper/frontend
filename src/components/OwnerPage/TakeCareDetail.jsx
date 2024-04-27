@@ -21,6 +21,7 @@ import { useForm, Controller } from "react-hook-form";
 import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 const TakeCareDetail = ({ requests, fetchRequests }) => {
   const [open, setOpen] = useState(false);
@@ -316,17 +317,23 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                   maxHeight={182}
                   sx={{ minWidth: 182 }}
                 >
-                  <img
-                    src={
-                      item.keeperImg
-                        ? import.meta.env.VITE_KEEPER_IMAGE +
-                          item.keeperId +
-                          "/" +
-                          item.keeperImg
-                        : null
-                    }
-                    loading="lazy"
-                  />
+                  {item.keeperImg ? (
+                    <img
+                      src={
+                        item.keeperImg
+                          ? import.meta.env.VITE_KEEPER_IMAGE +
+                            item.keeperId +
+                            "/" +
+                            item.keeperImg
+                          : null
+                      }
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="take-care-notimage">
+                      <ImageNotSupportedIcon className="notImage" />
+                    </div>
+                  )}
                 </AspectRatio>
                 <CardContent>
                   <Typography fontSize="xl" fontWeight="lg">

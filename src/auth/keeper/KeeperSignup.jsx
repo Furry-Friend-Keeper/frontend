@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { registerKeeper } from "../../store/AuthAction";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Message, useToaster } from 'rsuite';
+import { CheckPicker } from 'rsuite';
 
 export default function BasicFormControl() {
   const [subdistrict, setSubdistrict] = useState("");
@@ -30,9 +31,10 @@ export default function BasicFormControl() {
   const [showPassword2, setShowPassword2] = useState(false);
   const [getLocation, setLocation] = useState("")
   const [addressLabel, setAddressLabel] = useState("")
+  const [listAll, setListAll] = useState([])
   const navigate = useNavigate();
 
-  const { register, handleSubmit, watch, control, formState: { errors } } = useForm();
+  const { register, handleSubmit, setValue, watch, control, formState: { errors } } = useForm();
 
   const { loading, userInfo, error, success } = useSelector(
     (state) => state.auth
@@ -72,7 +74,8 @@ export default function BasicFormControl() {
       .get(import.meta.env.VITE_KEEPER_CATEGORIES)
       .then((res) => {
         const response = res.data;
-        setPetCategories(response);
+        const updatedResponse = response.map(({ id, name }) => ({ label: name, value: id }));
+        setPetCategories(updatedResponse);
       })
       .catch((err) => {
         console.log(err);
@@ -80,6 +83,7 @@ export default function BasicFormControl() {
   };
 
   const onSubmit = (data) => {
+    console.log(data)
     const address = {
       address: addressLabel,
       district: district,
@@ -87,9 +91,9 @@ export default function BasicFormControl() {
       postalCode: zipcode,
       map: getLocation,
     };
-    if (data.petCategories !== "") {
-      data.petCategories = JSON.parse(data.petCategories);
-    }
+    // if (data.petCategories !== "") {
+    //   data.petCategories = JSON.parse(data.petCategories);
+    // }
 
     const phoneNumber = (data.phone).replace(/^66/, "0").trim()
     const result = {
@@ -258,7 +262,27 @@ export default function BasicFormControl() {
           </div>
           <div className="col-md-6 pb-4">
             <Label>Pet Category</Label>
-              <Select
+            <Controller
+                name="petCategories"
+                control={control}
+                rules={{ required: 'Please select at least one option' }}
+                render={({ field: { ref, ...field } }) => (
+                  <>
+                    <CheckPicker
+                      {...field}
+                      className={`${errors.petCategories ? "border-error" : ""}`}
+                      data={petCategories}
+                      style={{ width: "100%" }} // Adjust the style as needed
+                      onSelect={(value, item) => field.onChange(value)}
+                      onClean={() => field.onChange([])}
+                    />
+                    {errors.petCategories && (
+                      <small className="error-message">{errors.petCategories.message}</small>
+                    )}
+                  </>
+                )}
+              />
+              {/* <Select
                 multiple
                 placeholder="select pet category"
                 {...register("petCategories")}
@@ -288,7 +312,7 @@ export default function BasicFormControl() {
                     {category.name}
                   </Option>
                 ))}
-              </Select>
+              </Select> */}
           </div>
           <div className="col-md-6 pb-4">
             <Label>Phone</Label>

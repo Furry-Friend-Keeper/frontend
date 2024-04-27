@@ -54,10 +54,11 @@ function GalleryEditer(props) {
         const updatedPreviews = [...galleryPreviews];
         updatedPreviews[index] = '';
         setGalleryPreviews(updatedPreviews);
+        setImageGallery(imageGallery.slice(1))
     };
 
     const removeImageGallery = (data) => {
-        console.log(galleryContent)
+        console.log(data)
         setGalleryContent(galleryContent.filter(image => image !== data))
         setGalleryDelete([...galleryDelete,data])
     }
@@ -67,9 +68,14 @@ function GalleryEditer(props) {
         galleryDelete.forEach(image => {
             formData.append('delete', image)
         })
-        imageGallery.forEach((preview) => {
-            formData.append(`file`, preview);
-        });
+        console.log(galleryDelete)
+        console.log(galleryPreviews)
+        console.log(imageGallery)
+        if(imageGallery.length !== 0) {
+            imageGallery.forEach((preview) => {
+                formData.append(`file`, preview);
+            });
+        }
         if( galleryDelete.length === 0 ) {
             formData.append('delete', '')
         }
@@ -84,6 +90,7 @@ function GalleryEditer(props) {
             fetchData();
             setImageGallery([])
             setGalleryPreviews(Array(maxGallery).fill(''))
+            setGalleryDelete([])
             setOpen(true)
             setAlertStatus('success')
         }).catch((error) => {
@@ -129,7 +136,7 @@ function GalleryEditer(props) {
     <Container maxWidth={customWidth}>
 
     {/* <div className="container pt-lg-4"> */}
-        <div className="carousel col-md-10">
+        <div className="carousel col-md-11">
             <div className="m-4">
                 <div className="gallery-wrapper">
                 <div className="gallery">

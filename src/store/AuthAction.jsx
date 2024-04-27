@@ -32,6 +32,7 @@ export const registerKeeper = createAsyncThunk(
                 { name, detail, contact, phone, categoryId, email, password, role, address }
             )
         } catch(error) {
+            console.log(error)
             if (error.response) {
                 return rejectWithValue(error.response.data)
               } else {

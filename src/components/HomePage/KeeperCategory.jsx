@@ -84,7 +84,7 @@ function KeeperCategory(props) {
           <div className="border my-2"></div>
           <div className="filter-rating">
             <h4>Rating</h4>
-            <div className="filter-rating-range mt-3 mx-sm-0 mx-mb-4 mx-lg-3 mx-xl-2">
+            <div className="filter-rating-range mt-3 mx-sm-3 mx-mb-4 mx-lg-3 mx-xl-2">
               <RangeSlider
                 value={ratingscore}
                 onChangeCommitted={selectratingrange}

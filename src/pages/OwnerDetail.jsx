@@ -99,17 +99,17 @@ function OwnerDetail() {
         <>
             {/* <div className="container pt-lg-4"> */}
             <Container maxWidth={customWidth}>
-                <div className="col-md-10 mx-auto">
+                <div className="col-md-11 mx-auto">
                     <div className="row mx-auto col-12 px-0">
                         <UserProfile ownerId={ownerId} ownerData={ownerData} />
                         <Favorite favorites={filterFavorites} />
                     </div>
                 </div>
-                <div className="col-md-10 mx-auto">
+                <div className="col-md-11 mx-auto">
                     <div className=" mx-auto col-12 px-0">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
-                            <h4>Taking care of my pet</h4>
-                            <div className="p-4 movedown-transition">
+                            <h4 className="mb-4">Taking care of my pet</h4>
+                            <div className="px-3 movedown-transition take-care-list">
                                 {requests.length > 0 ? (
                                     <TakeCareDetail
                                         requests={requests}
