@@ -49,6 +49,7 @@ function EditKeeperDetail() {
                 .then((response) => {
                     const data = response.data;
                     setApiData(data);
+                    console.log(data)
                     setValue("name", data.name);
                     setValue("detail", data.detail);
                     setValue("contact", data.contact);
