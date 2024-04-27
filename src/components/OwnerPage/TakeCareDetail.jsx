@@ -24,26 +24,35 @@ import { useNavigate } from "react-router-dom";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 const TakeCareDetail = ({ requests, fetchRequests }) => {
+  const [openReview, setOpenReview] = useState(false);
   const [open, setOpen] = useState(false);
   const [backdrop, setBackdrop] = useState("static");
+  const [modelDetail, setModelDetail] = useState({});
   const { userInfo, error, success, accessToken } = useSelector(
     (state) => state.auth
   );
   const navigate = useNavigate();
 
-    const handleOpen = (item) => {
-        let filter = reviews.find(review => review.petKeeperId === item.keeperId) || null
-        if(filter){
-            setValue("keeperId", item.keeperId);
-            setValue("star", filter.stars);
-            setValue("comment", filter.comment);
-        } else {
-            setValue("keeperId", item.keeperId);
-            setValue("star", "");
-            setValue("comment","");
-        }
-        setOpen(true)
-    };
+  const handleOpenReview = (item) => {
+    // console.log(item);
+    let filter = reviews.find(review => review.petKeeperId === item.keeperId) || null
+    if (filter) {
+      setValue2("keeperId", item.keeperId);
+      setValue2("star", filter.stars);
+      setValue2("comment", filter.comment);
+    } else {
+      setValue2("keeperId", item.keeperId);
+      setValue2("star", "");
+      setValue2("comment", "");
+    }
+    setOpenReview(true)
+  };
+
+  const handleCloseReview = () => setOpenReview(false);
+  const handleOpen = (data) => {
+    setModelDetail(data)
+    setOpen(true)
+  };
   const handleClose = () => setOpen(false);
 
   const {
@@ -53,15 +62,23 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const {
+    register: register2,
+    control: control2,
+    setValue: setValue2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm();
+
   const [loading, setLoading] = useState(false);
   const [reviewsId, setReviewsId] = useState([]);
   const [reviews, setReviews] = useState([])
 
   const checkReviews = async (review) => {
     try {
-      const apiUrl = `${import.meta.env.VITE_OWNER_REVIEW_ID}${
-        userInfo.id
-      }?keeperId=${review.keeperId}`;
+      const apiUrl = `${import.meta.env.VITE_OWNER_REVIEW_ID}${userInfo.id
+        }?keeperId=${review.keeperId}`;
       await axiosAuth
         .get(apiUrl)
         .then((response) => {
@@ -100,7 +117,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       .then(() => {
         console.log("success");
         checkReviews(review);
-        handleClose();
+        handleCloseReview();
       })
       .catch((err) => {
         console.log(err);
@@ -110,7 +127,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
   const OwnerCompleted = async (value) => {
     await axiosAuth
       .patch(
-        import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id,"")
+        import.meta.env.VITE_APPOINTMENT_OWNER_COMPLETED_ID + value.id, "")
       .then(() => {
         fetchRequests();
       });
@@ -136,7 +153,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
         datafilter.stars = data.star
         console.log(datafilter)
         setReviews([...reviews, datafilter])
-        handleClose();
+        handleCloseReview();
         // data.date = moment(data.date).unix();
         // setReviewsData({ ...reviewsData, ...data });
         // setIsEditComment(false);
@@ -145,15 +162,15 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
         console.log(err);
       });
   };
-//   const onEditSubmit = (data) => {
-//     const result = {
-//       reviewId: parseInt(data.reviewId),
-//       comment: data.comment,
-//       star: data.rating,
-//       date: moment().format(),
-//     };
-//     EditOwnerComment(result);
-//   };
+  //   const onEditSubmit = (data) => {
+  //     const result = {
+  //       reviewId: parseInt(data.reviewId),
+  //       comment: data.comment,
+  //       star: data.rating,
+  //       date: moment().format(),
+  //     };
+  //     EditOwnerComment(result);
+  //   };
 
   const onSubmit = (data) => {
     console.log(data)
@@ -166,16 +183,16 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       star: data.star,
       date: moment().format(),
     };
-    if(!filter){
-        SaveOwnerComment(result, data);
-    }else {
-        const resultEdit = {
-            reviewId: parseInt(filter.reviewId, 10),
-            comment: data.comment,
-            star: data.star,
-            date: moment().format(),
-        };
-        EditOwnerComment(resultEdit, data);
+    if (!filter) {
+      SaveOwnerComment(result, data);
+    } else {
+      const resultEdit = {
+        reviewId: parseInt(filter.reviewId, 10),
+        comment: data.comment,
+        star: data.star,
+        date: moment().format(),
+      };
+      EditOwnerComment(resultEdit, data);
     }
   };
 
@@ -240,7 +257,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
             appearance="primary"
             color="green"
             className="col-12 col-md-6"
-            onClick={() => handleOpen(data)}
+            onClick={() => handleOpenReview(data)}
           >
             {" "}
             Edit Review{" "}
@@ -257,7 +274,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
       );
     } else if (data.status === "Completed") {
       return (
-        <Button appearance="primary" color="green" onClick={() => handleOpen(data)}>
+        <Button appearance="primary" color="green" onClick={() => handleOpenReview(data)}>
           {" "}
           Review{" "}
         </Button>
@@ -385,7 +402,7 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                           .format("DD/MM/YYYY, HH:mm:ss")}
                       </Typography>
                     </div>
-                    
+
                   </Sheet>
                   <Typography
                     level="body-sm"
@@ -403,148 +420,149 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
                     }}
                   >
                     {buttonStatus(item)}
-                    {/* <Modal
-                      className="position-absolute top-50 start-50 translate-middle mt-0"
-                      backdrop={backdrop}
-                      keyboard={false}
-                      open={open}
-                      onClose={handleClose}
-                    >
-                      <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Modal.Header>
-                          <Modal.Title>Review</Modal.Title>
-                        </Modal.Header>
 
-                        <Modal.Body>
-                          <input
-                            type="hidden"
-                            {...register("keeperId")}
-                            defaultValue={item?.keeperId}
-                          />
-                          <div className="modal-body">
-                            <div className="mt-3">
-                              <Controller
-                                name="star"
-                                control={control}
-                                rules={{
-                                  required: "Please enter star",
-                                }}
-                                render={({ field: { onChange, value } }) => (
-                                  <Rate
-                                    value={value}
-                                    onChange={(newValue) => onChange(newValue)}
-                                    size="md"
-                                    color="yellow"
-                                  />
-                                )}
-                              />
-                              <br />
-                              {errors.star && (
-                                <small className="error-message">
-                                  {errors.star.message}
-                                </small>
-                              )}
-                            </div>
-                            <div className="mb-3">
-                              <textarea
-                                className="form-control"
-                                id="comment"
-                                name="comment"
-                                rows={5}
-                                maxLength={200}
-                                {...register("comment", {
-                                  maxLength: {
-                                    value: 200,
-                                    message:
-                                      "Message must not more than 200 characters",
-                                  },
-                                })}
-                              ></textarea>
-                            </div>
-                          </div>
-                        </Modal.Body>
-
-                        <Modal.Footer>
-                          <Button
-                            type="submit"
-                            appearance="primary"
-                          >
-                            Ok
-                          </Button>
-                          <Button
-                            onClick={handleClose}
-                            appearance="subtle"
-                            className="ms-2"
-                          >
-                            Cancel
-                          </Button>
-                        </Modal.Footer>
-                      </Form>
-                    </Modal> */}
-                    <Modal
-                      className="position-absolute top-50 start-50 translate-middle mt-0"
-                      backdrop={backdrop}
-                      keyboard={false}
-                      open={open}
-                      onClose={handleClose}
-                    >
-                      <Form onSubmit={handleSubmit(OwnerCancelled)}>
-                        <Modal.Header>
-                          <Modal.Title className="overflow-visible">Message</Modal.Title>
-                        </Modal.Header>
-
-                        <Modal.Body>
-                          <input
-                            type="hidden"
-                            {...register("keeperId")}
-                            defaultValue={item?.keeperId}
-                          />
-                          <div className="modal-body">
-                            <div className="mt-3">
-                              <textarea
-                                className="form-control"
-                                id="message"
-                                name="message"
-                                rows={5}
-                                maxLength={200}
-                                {...register("message", {
-                                  required: "Please enter message before OK",
-                                  maxLength: {
-                                    value: 200,
-                                    message:
-                                      "Message must not more than 200 characters",
-                                  },
-                                })}
-                              ></textarea>
-                            </div>
-                          </div>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            // onClick={handleClose}
-                            type="submit"
-                            appearance="primary"
-                          >
-                            Ok
-                          </Button>
-                          <Button
-                            onClick={handleClose}
-                            appearance="subtle"
-                            className="ms-2"
-                          >
-                            Cancel
-                          </Button>
-                        </Modal.Footer>
-                      </Form>
-                    </Modal>
                   </Box>
-                  
                 </CardContent>
               </Card>
             </Box>
           </div>
+
         );
       })}
+      <Modal
+        className="position-absolute top-50 start-50 translate-middle mt-0"
+        backdrop={backdrop}
+        keyboard={false}
+        open={openReview}
+        onClose={handleCloseReview}
+      >
+        <Form onSubmit={handleSubmit2(onSubmit)}>
+          <Modal.Header>
+            <Modal.Title>Review</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="hidden"
+              {...register2("keeperId")}
+              // defaultValue={item?.keeperId}
+            />
+            <div className="modal-body">
+              <div className="mb-3">
+                <Controller
+                  name="star"
+                  control={control2}
+                  rules={{
+                    required: "Please enter star",
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Rate
+                      value={value}
+                      onChange={(newValue) => onChange(newValue)}
+                      size="md"
+                      color="yellow"
+                    />
+                  )}
+                />
+                <br />
+                {errors.star && (
+                  <small className="error-message">
+                    {errors.star.message}
+                  </small>
+                )}
+              </div>
+              <div className="mb-3">
+                <textarea
+                  className="form-control"
+                  id="comment"
+                  name="comment"
+                  rows={5}
+                  maxLength={200}
+                  {...register2("comment", {
+                    // required: "Please enter message before OK",
+                    maxLength: {
+                      value: 200,
+                      message:
+                        "Message must not more than 200 characters",
+                    },
+                  })}
+                ></textarea>
+              </div>
+            </div>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button
+              type="submit"
+              appearance="primary"
+            >
+              Ok
+            </Button>
+            <Button
+              onClick={handleCloseReview}
+              appearance="subtle"
+              className="ms-2"
+            >
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      <Modal
+        className="position-absolute top-50 start-50 translate-middle mt-0"
+        backdrop={backdrop}
+        keyboard={false}
+        open={open}
+        onClose={handleClose}
+      >
+        <Form onSubmit={handleSubmit(OwnerCancelled)}>
+          <Modal.Header>
+            <Modal.Title className="overflow-visible">Message</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="hidden"
+              {...register("id")}
+              defaultValue={modelDetail.id}
+            />
+            <div className="modal-body">
+              <div className="mt-3">
+                <textarea
+                  className="form-control"
+                  id="message"
+                  name="message"
+                  rows={5}
+                  maxLength={200}
+                  {...register("message", {
+                    required: "Please enter message before OK",
+                    maxLength: {
+                      value: 200,
+                      message:
+                        "Message must not more than 200 characters",
+                    },
+                  })}
+                ></textarea>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              // onClick={handleClose}
+              type="submit"
+              appearance="primary"
+            >
+              Ok
+            </Button>
+            <Button
+              onClick={handleClose}
+              appearance="subtle"
+              className="ms-2"
+            >
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {Button} from "rsuite";
+import { Button } from "rsuite";
 import { styled } from "@mui/system";
 import { useForm, Controller } from "react-hook-form";
 import { Box } from "@mui/material";
@@ -12,8 +12,11 @@ import {
     Whisper,
     Toggle,
     Form,
+    IconButton
 } from "rsuite";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
+import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -21,6 +24,10 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
+
+const rowKey = "id";
+
+
 
 const DisableDate = ({ apiData, fetchData }) => {
     const days = [
@@ -34,6 +41,8 @@ const DisableDate = ({ apiData, fetchData }) => {
     ].map((item) => ({ label: item, value: item }));
 
     const { register, handleSubmit, control, setValue } = useForm();
+    const { control: control2,
+        handleSubmit: handleSubmit2 } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
@@ -43,6 +52,59 @@ const DisableDate = ({ apiData, fetchData }) => {
     const [selectedDays, setSelectedDays] = useState([]);
     const [storeStatus, setStoreStatus] = useState(false);
     const [tableData, setTableData] = useState([]);
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+    const ExpandCell = ({
+        rowData,
+        dataKey,
+        expandedRowKeys,
+        onChange,
+        ...props
+    }) => (
+        <Cell {...props} style={{ padding: 5 }}>
+            <IconButton
+                appearance="subtle"
+                onClick={() => {
+                    onChange(rowData);
+                }}
+                icon={
+                    expandedRowKeys.some((key) => key === rowData[rowKey]) ? (
+                        <CollaspedOutlineIcon />
+                    ) : (
+                        <ExpandOutlineIcon />
+                    )
+                }
+            />
+        </Cell>
+    );
+    
+    const renderRowExpanded = (rowData) => {
+        return (
+            <div className="request-size text-break">
+                <p>Message: {rowData.message}</p>
+                {/* <p>Message: aspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsas</p> */}
+            </div>
+        );
+    };
+    
+    const handleExpanded = (rowData, dataKey) => {
+        let open = false;
+        const nextExpandedRowKeys = [];
+    
+        expandedRowKeys.forEach((key) => {
+            if (key === rowData[rowKey]) {
+                open = true;
+            } else {
+                nextExpandedRowKeys.push(key);
+            }
+        });
+    
+        if (!open) {
+            nextExpandedRowKeys.push(rowData[rowKey]);
+        }
+    
+        setExpandedRowKeys(nextExpandedRowKeys);
+    };
 
     useEffect(() => {
         setStoreStatus(apiData?.available);
@@ -68,7 +130,7 @@ const DisableDate = ({ apiData, fetchData }) => {
     const StoreClose = async (value) => {
         await axiosAuth
             .patch(
-                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId,{})
+                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId, {})
             .then(() => {
                 setStoreStatus(value);
             });
@@ -90,22 +152,22 @@ const DisableDate = ({ apiData, fetchData }) => {
             const result = {
                 startDate: moment(data.dateRange[0]).format("yyyy-MM-DD") || 0,
                 endDate: moment(data.dateRange[1]).format("yyyy-MM-DD") || 0,
+                message: data.message
             };
-
             console.log(result);
             await axiosAuth
                 .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result)
                 .then(() => {
-                    // setTableData()
                     fetchData();
                     setValue("dateRange", "");
+                    setValue("message", "");
                 });
         }
     };
 
     const onSubmit = (data) => {
-        EditDateRange(data);
         EditDisableDays(data);
+        EditDateRange(data);
         console.log(data);
     };
 
@@ -129,42 +191,48 @@ const DisableDate = ({ apiData, fetchData }) => {
                 </div>
             </div>
             <div className="row">
+                <Form className="mt-3" onSubmit={handleSubmit2(onSubmit)}>
+                    <Label className="pb-3">Select closed days</Label>
+                    <Form.HelpText tooltip>
+                        วันที่ร้านปิดเป็นประจำ
+                    </Form.HelpText>
+                    <Stack
+                        spacing={10}
+                        direction="column"
+                        alignItems="flex-start"
+                        data
+                    >
+                        <Controller
+                            name="selectedDays"
+                            control={control2}
+                            render={({ field }) => (
+                                <CheckPicker
+                                    {...field}
+                                    data={days}
+                                    // value={disableDays}
+                                    searchable={false}
+                                    style={{ width: 300 }}
+                                    placeholder="Select days"
+                                    onChange={(value) => {
+                                        field.onChange(value);
+                                    }}
+                                />
+                            )}
+                        />
+                    </Stack>
+                    <div className="blue-btn mt-4">
+                        <Button type="submit" appearance="primary">
+                            Submit
+                        </Button>
+                    </div>
+                </Form>
+            </div>
+            <div className="border mt-3 mb-3" />
+            <div className="row">
                 <div className="col-6">
-                    <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                        <Label className="pb-3">Select Close Days</Label>
-                        <Form.HelpText tooltip>
-                            วันที่ร้านปิดเป็นประจำ
-                        </Form.HelpText>
-                        <div className="row">
-                            <div className="col-6">
-                                <Stack
-                                    spacing={10}
-                                    direction="column"
-                                    alignItems="flex-start"
-                                    data
-                                >
-                                    <Controller
-                                        name="selectedDays"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <CheckPicker
-                                                {...field}
-                                                data={days}
-                                                // value={disableDays}
-                                                searchable={false}
-                                                style={{ width: 300 }}
-                                                placeholder="Select days"
-                                                onChange={(value) => {
-                                                    field.onChange(value);
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Stack>
-                            </div>
-                        </div>
-                        <Label className="pb-3 mt-3">
-                            Select Closed Period
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Label>
+                            Select closed period
                         </Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
@@ -187,66 +255,106 @@ const DisableDate = ({ apiData, fetchData }) => {
                                     />
                                 )}
                             />
+                            <div className="mt-3">
+                                <Label>
+                                    Message
+                                </Label>
+                                <Form.HelpText tooltip>
+                                    รายละเอียดของวันและเวลาปิดร้านชั่วคราว
+                                </Form.HelpText>
+                                <div>
+                                    <textarea
+                                        className="form-control"
+                                        id="message"
+                                        name="message"
+                                        rows={5}
+                                        maxLength={200}
+                                        {...register("message", {
+                                            required: "Please enter message before OK",
+                                            maxLength: {
+                                                value: 200,
+                                                message:
+                                                    "Message must not more than 200 characters",
+                                            },
+                                        })}
+                                    ></textarea>
+                                </div>
+                            </div>
                             <div className="blue-btn mt-4">
                                 <Button type="submit" appearance="primary">
-                                Submit
+                                    Submit
                                 </Button>
                             </div>
                         </div>
                     </Form>
                 </div>
                 <div className="col-6">
-                    <div className="mt-2">
-                        <Label className="pb-3">Closed Period</Label>
-                        <Table
-                            height={200}
-                            data={tableData}
-                            onRowClick={(rowData) => {
-                                console.log(rowData);
-                            }}
-                        >
-                            <Column width={140}>
-                                <HeaderCell>Start Date</HeaderCell>
-                                <Cell>
-                                    {(rowData) => (
-                                        <span>
-                                            {moment
-                                                .unix(rowData.startDate)
-                                                .format("DD MMMM YYYY")}
-                                        </span>
-                                    )}
-                                </Cell>
-                            </Column>
-
-                            <Column width={140}>
-                                <HeaderCell>End Date</HeaderCell>
-                                <Cell>
-                                    {(rowData) => (
-                                        <span>
-                                            {moment
-                                                .unix(rowData.endDate)
-                                                .format("DD MMMM YYYY")}
-                                        </span>
-                                    )}
-                                </Cell>
-                            </Column>
-                            <Column width={100} fixed="right">
-                                <HeaderCell>...</HeaderCell>
-                                <Cell style={{ padding: "6px" }}>
-                                    {(rowData) => (
-                                        <Button
-                                            appearance="link"
-                                            onClick={() =>
-                                                DeleteDateRange(rowData)
-                                            }
-                                        >
-                                            Cancel
-                                        </Button>
-                                    )}
-                                </Cell>
-                            </Column>
-                        </Table>
-                    </div>
+                    <Label>Closed period</Label>
+                    <Form.HelpText tooltip>
+                        รายการวันและเวลาปิดร้านชั่วคราว
+                    </Form.HelpText>
+                    <Table
+                        height={200}
+                        data={tableData}
+                        className="mt-3"
+                        shouldUpdateScroll={false}
+                        rowKey={rowKey}
+                        expandedRowKeys={expandedRowKeys}
+                        loading={loading}
+                        renderRowExpanded={renderRowExpanded}
+                        rowExpandedHeight={120}
+                        onRowClick={(rowData) => {
+                            console.log(rowData);
+                        }}
+                    >
+                        <Column width={70} align="center">
+                            <HeaderCell>#</HeaderCell>
+                            <ExpandCell
+                                dataKey="id"
+                                expandedRowKeys={expandedRowKeys}
+                                onChange={handleExpanded}
+                            />
+                        </Column>
+                        <Column width={140}>
+                            <HeaderCell>Start Date</HeaderCell>
+                            <Cell>
+                                {(rowData) => (
+                                    <span>
+                                        {moment
+                                            .unix(rowData.startDate)
+                                            .format("DD MMMM YYYY")}
+                                    </span>
+                                )}
+                            </Cell>
+                        </Column>
+                        <Column width={140}>
+                            <HeaderCell>End Date</HeaderCell>
+                            <Cell>
+                                {(rowData) => (
+                                    <span>
+                                        {moment
+                                            .unix(rowData.endDate)
+                                            .format("DD MMMM YYYY")}
+                                    </span>
+                                )}
+                            </Cell>
+                        </Column>
+                        <Column width={100} fixed="right">
+                            <HeaderCell>...</HeaderCell>
+                            <Cell style={{ padding: "6px" }}>
+                                {(rowData) => (
+                                    <Button
+                                        appearance="link"
+                                        onClick={() =>
+                                            DeleteDateRange(rowData)
+                                        }
+                                    >
+                                        Cancel
+                                    </Button>
+                                )}
+                            </Cell>
+                        </Column>
+                    </Table>
                 </div>
             </div>
         </div>
