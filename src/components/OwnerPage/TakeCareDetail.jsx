@@ -433,7 +433,6 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
           <Modal.Header>
             <Modal.Title>Review</Modal.Title>
           </Modal.Header>
-
           <Modal.Body>
             <input
               type="hidden"

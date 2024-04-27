@@ -278,8 +278,8 @@ function ScheduleModal(props) {
                   Booking Period
                 </label>
                 <Form.HelpText tooltip>
-                                   ระบุช่วงวันที่และเวลาฝากสัตว์เลี้ยง
-                                </Form.HelpText>
+                  ระบุช่วงวันที่และเวลาฝากสัตว์เลี้ยง
+                </Form.HelpText>
                 <Controller
                   name="dateRange"
                   control={control}
@@ -314,8 +314,8 @@ function ScheduleModal(props) {
                   Pet Category
                 </label>
                 <Form.HelpText tooltip>
-                                   ระบุประเภทสัตว์เลี้ยง
-                                </Form.HelpText>
+                  ระบุประเภทสัตว์เลี้ยง
+                </Form.HelpText>
                 <Controller
                   name="tags"
                   control={control}
@@ -347,8 +347,8 @@ function ScheduleModal(props) {
                   Pet Name (Optional)
                 </label>
                 <Form.HelpText tooltip>
-                                   ชื่อสัตว์เลี้ยง (เลือกกรอก)
-                                </Form.HelpText>
+                  ชื่อสัตว์เลี้ยง (เลือกกรอก)
+                </Form.HelpText>
                 <input
                   type="text"
                   className={`form-control ${errors.petName ? "is-invalid" : ""}`}
@@ -371,8 +371,8 @@ function ScheduleModal(props) {
                   Message
                 </label>
                 <Form.HelpText tooltip>
-                                   ข้อความที่ต้องการแจ้งผู้รับดูแลสัตว์เลี้ยง
-                                </Form.HelpText>
+                  ข้อความที่ต้องการแจ้งผู้รับดูแลสัตว์เลี้ยง
+                </Form.HelpText>
                 <textarea
                   className={`form-control ${errors.message ? "is-invalid" : ""}`}
                   id="message"
@@ -402,8 +402,8 @@ function ScheduleModal(props) {
                   Owner Phone
                 </label>
                 <Form.HelpText tooltip>
-                                   เบอร์โทร (ประเทษไทย)
-                                </Form.HelpText>
+                  เบอร์โทร (ประเทษไทย)
+                </Form.HelpText>
                 <Controller
                   control={control}
                   name="phone"

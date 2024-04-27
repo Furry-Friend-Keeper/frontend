@@ -157,14 +157,14 @@ export default function BasicFormControl() {
           <h5 className="mb-5">Please complete all information below:</h5>
           <div className="col-md-6 pb-4">
             <Label>
-              Keeper Name
-              <Tooltip title="Name of store">
-                <HelpOutlineIcon fontSize="small"/>
+              Pet keeper name &nbsp;
+              <Tooltip title="ชื่อร้าน">
+                 <HelpOutlineIcon fontSize="inherit"/>
               </Tooltip>
             </Label>
             <input
               className={`form-control ${errors.keeperName ? "is-invalid" : ""} py-2`}
-              placeholder="Pet Farm"
+              placeholder="Name"
               {...register("keeperName", {
                 required: "Please enter your keeper name.",
                 maxLength: {
@@ -227,7 +227,7 @@ export default function BasicFormControl() {
             </div>
           </div>
           <div className="col-md-6 pb-4">
-            <Label>Confirm Password</Label>
+            <Label>Confirm password</Label>
             <div className="form-password">
               <input
                 className={`form-control ${
@@ -257,10 +257,10 @@ export default function BasicFormControl() {
             </div>
           </div>
           <div className="col-md-6 pb-4">
-            <Label>Pet Category</Label>
+            <Label>Pet category</Label>
               <Select
                 multiple
-                placeholder="select pet category"
+                placeholder="Select pet category"
                 {...register("petCategories")}
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", gap: "0.25rem" }}>
@@ -341,13 +341,11 @@ export default function BasicFormControl() {
             )}
           </div>
           <div className="col-md-12 pb-4">
-            <Label>Detail (Optional)</Label>
-              {/* <Textarea
-                minRows={4}
-                className="bg-white"
-                placeholder="Write your Detail here"
-                {...register("detail", { maxLength: 1000 })}
-              /> */}
+            <Label>Detail (Optional) &nbsp;
+            <Tooltip title="รายละเอียดของร้าน (เลือกกรอก)">
+                 <HelpOutlineIcon fontSize="inherit"/>
+              </Tooltip>
+              </Label>
 
                 <textarea
                     id="message"
@@ -366,22 +364,11 @@ export default function BasicFormControl() {
                 <Label>Address</Label>
                 <input
                 className={`form-control py-2`}
-                placeholder="Street Address"
+                placeholder="Street address"
                 value={addressLabel}
                 onChange={(event) => setAddressLabel(event.target.value)}
                 required
-                // {...register("address", {
-                //     required: "Please enter your address.",
-                //     maxLength: {
-                //     value: 200,
-                //     message: "Name must not more than 200 characters",
-                //     },
-                // })}
                 />
-                {/* {!addressLabel && (
-                <small className="invalid-feedback">Please enter your address.</small>
-                // <small className="invalid-feedback">{errors.address.message}</small>
-                )} */}
             </div>
             <div className="col-md-6 pb-4">
                 <Label>Subdistrict</Label>
@@ -445,16 +432,6 @@ export default function BasicFormControl() {
               {loading ? <span>loading...</span> : <span>Submit</span>}
             </ButtonSuite>
           </div>
-          {/* <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button style={{ width: '100%'}} type="submit" size="large" variant="contained" sx={{ mt: 3, ml: 1 }}>
-            {loading ? <span>loading...</span> : <span>Submit</span>}
-            </Button>
-          </Box> */}
-          {/* <div className="grid justify-content-end">
-                <button type="submit" className="btn fw-semibold btn-primary">
-                    Submit
-                </button>
-            </div> */}
         </div>
       </div>
     </form>

@@ -121,7 +121,7 @@ export default function BasicFormControl() {
                 <div className="row">
                     <h5 className="mb-5">Please complete all information below:</h5>
                     <div className="col-md-6 pb-4">
-                        <Label>Firstname</Label>
+                        <Label>First name</Label>
                         <input className={`form-control ${errors.firstName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Firstname here"
                             {...register("firstName", { required: "Please enter your firstname.", maxLength: {
@@ -132,7 +132,7 @@ export default function BasicFormControl() {
                         {errors.firstName && <small className="invalid-feedback">{errors.firstName.message}</small>}
                     </div>
                     <div className="col-md-6 pb-4">
-                        <Label>Lastname</Label>
+                        <Label>Last name</Label>
                         <input className={`form-control ${errors.lastName ? "is-invalid" : ""} py-2`}
                             placeholder="Write your Lastname here"
                             {...register("lastName", { required: "Please enter your lastname.", maxLength: {
@@ -189,7 +189,7 @@ export default function BasicFormControl() {
                         <Label>Password</Label>
                         <div className="form-password">
                             <input className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
-                                placeholder="Write your Password here"
+                                placeholder="Write your password here"
                                 type={showPassword1 ? "text" : "password"}
                                 {...register("password", { required: "Please enter your password.", minLength: {
                                     value: 8,
@@ -208,7 +208,7 @@ export default function BasicFormControl() {
                         </div>
                     </div>
                     <div className="col-md-12 pb-4">
-                        <Label>Confirm Password</Label>
+                        <Label>Confirm password</Label>
                         <div className="form-password">
                             <input                 
                             type={showPassword2 ? "text" : "password"}
@@ -228,9 +228,9 @@ export default function BasicFormControl() {
                     </div>
                     
                     <div className="col-md-12 pb-4">
-                        <Label>Petname</Label>
+                        <Label>Pet name</Label>
                         <input className={`form-control ${errors.petName ? "is-invalid" : ""} py-2`}
-                            placeholder="Write your Petname here"
+                            placeholder="Write your pet name here"
                             {...register("petName", { maxLength: {
                                 value: 200,
                                 message: "Pet name must not more than 200 characters"

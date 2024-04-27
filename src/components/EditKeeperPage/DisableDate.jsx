@@ -12,8 +12,11 @@ import {
     Whisper,
     Toggle,
     Form,
+    IconButton
 } from "rsuite";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import CollaspedOutlineIcon from "@rsuite/icons/CollaspedOutline";
+import ExpandOutlineIcon from "@rsuite/icons/ExpandOutline";
 import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -21,6 +24,10 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 
 const { Column, HeaderCell, Cell } = Table;
+
+const rowKey = "id";
+
+
 
 const DisableDate = ({ apiData, fetchData }) => {
     const days = [
@@ -34,6 +41,8 @@ const DisableDate = ({ apiData, fetchData }) => {
     ].map((item) => ({ label: item, value: item }));
 
     const { register, handleSubmit, control, setValue } = useForm();
+    const { control: control2,
+        handleSubmit: handleSubmit2 } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
@@ -43,6 +52,59 @@ const DisableDate = ({ apiData, fetchData }) => {
     const [selectedDays, setSelectedDays] = useState([]);
     const [storeStatus, setStoreStatus] = useState(false);
     const [tableData, setTableData] = useState([]);
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+    const ExpandCell = ({
+        rowData,
+        dataKey,
+        expandedRowKeys,
+        onChange,
+        ...props
+    }) => (
+        <Cell {...props} style={{ padding: 5 }}>
+            <IconButton
+                appearance="subtle"
+                onClick={() => {
+                    onChange(rowData);
+                }}
+                icon={
+                    expandedRowKeys.some((key) => key === rowData[rowKey]) ? (
+                        <CollaspedOutlineIcon />
+                    ) : (
+                        <ExpandOutlineIcon />
+                    )
+                }
+            />
+        </Cell>
+    );
+    
+    const renderRowExpanded = (rowData) => {
+        return (
+            <div className="request-size text-break">
+                <p>Message: {rowData.message}</p>
+                {/* <p>Message: aspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsaspdkaspdkapsdkalsas</p> */}
+            </div>
+        );
+    };
+    
+    const handleExpanded = (rowData, dataKey) => {
+        let open = false;
+        const nextExpandedRowKeys = [];
+    
+        expandedRowKeys.forEach((key) => {
+            if (key === rowData[rowKey]) {
+                open = true;
+            } else {
+                nextExpandedRowKeys.push(key);
+            }
+        });
+    
+        if (!open) {
+            nextExpandedRowKeys.push(rowData[rowKey]);
+        }
+    
+        setExpandedRowKeys(nextExpandedRowKeys);
+    };
 
     useEffect(() => {
         setStoreStatus(apiData?.available);
@@ -90,22 +152,22 @@ const DisableDate = ({ apiData, fetchData }) => {
             const result = {
                 startDate: moment(data.dateRange[0]).format("yyyy-MM-DD") || 0,
                 endDate: moment(data.dateRange[1]).format("yyyy-MM-DD") || 0,
+                message: data.message
             };
-
             console.log(result);
             await axiosAuth
                 .post(import.meta.env.VITE_SCHEDULE_ID + keeperId, result)
                 .then(() => {
-                    // setTableData()
                     fetchData();
                     setValue("dateRange", "");
+                    setValue("message", "");
                 });
         }
     };
 
     const onSubmit = (data) => {
-        EditDateRange(data);
         EditDisableDays(data);
+        EditDateRange(data);
         console.log(data);
     };
 
@@ -129,8 +191,8 @@ const DisableDate = ({ apiData, fetchData }) => {
                 </div>
             </div>
             <div className="row">
-                <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                    <Label className="pb-3">Select Close Days</Label>
+                <Form className="mt-3" onSubmit={handleSubmit2(onSubmit)}>
+                    <Label className="pb-3">Select closed days</Label>
                     <Form.HelpText tooltip>
                         วันที่ร้านปิดเป็นประจำ
                     </Form.HelpText>
@@ -142,7 +204,7 @@ const DisableDate = ({ apiData, fetchData }) => {
                     >
                         <Controller
                             name="selectedDays"
-                            control={control}
+                            control={control2}
                             render={({ field }) => (
                                 <CheckPicker
                                     {...field}
@@ -170,7 +232,7 @@ const DisableDate = ({ apiData, fetchData }) => {
                 <div className="col-6">
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Label>
-                            Select Closed Period
+                            Select closed period
                         </Label>
                         <Form.HelpText tooltip>
                             วันและเวลาปิดร้านชั่วคราว
@@ -198,7 +260,7 @@ const DisableDate = ({ apiData, fetchData }) => {
                                     Message
                                 </Label>
                                 <Form.HelpText tooltip>
-                                    เหตุผลของวันและเวลาปิดร้านชั่วคราว
+                                    รายละเอียดของวันและเวลาปิดร้านชั่วคราว
                                 </Form.HelpText>
                                 <div>
                                     <textarea
@@ -227,17 +289,32 @@ const DisableDate = ({ apiData, fetchData }) => {
                     </Form>
                 </div>
                 <div className="col-6">
-                    <Label>Closed Period</Label>
+                    <Label>Closed period</Label>
                     <Form.HelpText tooltip>
                         รายการวันและเวลาปิดร้านชั่วคราว
                     </Form.HelpText>
                     <Table
                         height={200}
                         data={tableData}
+                        className="mt-3"
+                        shouldUpdateScroll={false}
+                        rowKey={rowKey}
+                        expandedRowKeys={expandedRowKeys}
+                        loading={loading}
+                        renderRowExpanded={renderRowExpanded}
+                        rowExpandedHeight={120}
                         onRowClick={(rowData) => {
                             console.log(rowData);
                         }}
                     >
+                        <Column width={70} align="center">
+                            <HeaderCell>#</HeaderCell>
+                            <ExpandCell
+                                dataKey="id"
+                                expandedRowKeys={expandedRowKeys}
+                                onChange={handleExpanded}
+                            />
+                        </Column>
                         <Column width={140}>
                             <HeaderCell>Start Date</HeaderCell>
                             <Cell>
@@ -250,7 +327,6 @@ const DisableDate = ({ apiData, fetchData }) => {
                                 )}
                             </Cell>
                         </Column>
-
                         <Column width={140}>
                             <HeaderCell>End Date</HeaderCell>
                             <Cell>
