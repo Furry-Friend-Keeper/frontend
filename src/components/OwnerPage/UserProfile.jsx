@@ -281,7 +281,7 @@ function UserProfile(props) {
                                     htmlFor="firstName"
                                     className="form-label"
                                 >
-                                    First Name
+                                    First name
                                 </label>
                                 <input
                                     type="text"
@@ -290,11 +290,11 @@ function UserProfile(props) {
                                     name="firstName"
                                     {...register("firstName", {
                                         required:
-                                            "Firstname is required",
+                                            "First name is required",
                                         maxLength: {
                                             value: 200,
                                             message:
-                                                "Firstname must not more than 200 characters",
+                                                "First name must not more than 200 characters",
                                         },
                                     })}
                                 />
@@ -305,7 +305,7 @@ function UserProfile(props) {
                                     htmlFor="lastName"
                                     className="form-label"
                                 >
-                                    Last Name
+                                    Last name
                                 </label>
                                 <input
                                     type="text"
@@ -314,11 +314,11 @@ function UserProfile(props) {
                                     name="lastName"
                                     {...register("lastName", {
                                         required:
-                                            "Lastname is required",
+                                            "Last name is required",
                                         maxLength: {
                                             value: 200,
                                             message:
-                                                "Lastname must not more than 200 characters",
+                                                "Last name must not more than 200 characters",
                                         },
                                     })}
                                 />
@@ -360,7 +360,7 @@ function UserProfile(props) {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="petName" className="form-label">
-                                    Pet Name
+                                    Pet name
                                 </label>
                                 <input
                                     type="text"

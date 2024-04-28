@@ -161,7 +161,7 @@ function EditKeeperDetail() {
         if (isImg !== undefined) {
             const formData = new FormData();
             formData.append("file", isImg);
-            await axios
+            await axiosAuth
                 .patch(
                     import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img",
                     formData,

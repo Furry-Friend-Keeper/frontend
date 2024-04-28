@@ -226,12 +226,14 @@ function ScheduleModal(props) {
     return false;
   };
 
+  console.log(closedDays?.split(","));
+
   return (
     <>
       <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
         <div className="title">
           <h4 className="mb-2">Schedule</h4>
-          <p>For the purpose of reserving a pet boarding period and <span className="text-danger"> can not select date that overlap </span>store close dates.</p>
+          <p>For the purpose of reserving a pet boarding period and <span className="text-danger"> can not select date that overlap </span>store close dates. In the calendar, it will <span className="text-danger"> disable next three dates</span>, and can book after that to send a request for approval by the Pet keeper.</p>
         </div>
         {!accessToken ? (
           <div className="mt-3 d-flex justify-content-center align-items-center">
@@ -283,7 +285,7 @@ function ScheduleModal(props) {
                 {closedDays === "" || closedDays === null ? <div className="mb-3">
                   Closed day: <span className="text-danger">There is no closing date.</span>
                 </div> : <div className="mb-3">
-                  Closed day: <span className="text-danger">{closedDays}</span>
+                  Closed day: <span className="text-danger">{closedDays?.split(",")}</span>
                 </div>}
                 <div className="mb-3">
                   {displayDate}

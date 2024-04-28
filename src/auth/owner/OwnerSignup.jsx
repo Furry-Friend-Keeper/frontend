@@ -34,11 +34,7 @@ export default function BasicFormControl() {
     const navigate = useNavigate();
 
       useEffect(() => {
-        // redirect user to login page if registration was successful
         if (success) {
-        //   setTimeout(() => {
-        //     navigate("/at3/login");
-        //   }, 3000);
           navigate('/at3/login', { replace: true })
         }
       }, [success])
@@ -47,29 +43,6 @@ export default function BasicFormControl() {
     const [alertStatus, setAlertStatus] = useState("");
     const [showPassword1, setShowPassword1] = useState(false);
     const [showPassword2, setShowPassword2] = useState(false);
-
-    // const SignUpForm = async (data) => {
-    //     const result = {
-    //         "firstname": data.firstName,
-    //         "lastname": data.lastName,
-    //         "phone": data.phone,
-    //         "petname": data.petName,
-    //         "email":data.email,
-    //         "password": data.password,
-    //         "role": 2
-    //       } 
-    //     await axios.post(import.meta.env.VITE_OWNER_SIGNUP, result).then((res) => {
-    //         setOpen(true)
-    //         setAlertStatus('success')
-    //         setTimeout(() =>{
-    //             navigate('/at3/login')
-    //         },3000)
-    //     }).catch((err) => {
-    //         setOpen(true)
-    //         setAlertStatus('error')
-    //         console.log(err.message)
-    //     })
-    // }
 
     const onSubmit = (data) => {
         const phoneNumber = (data.phone).replace(/^66/, "0") 
@@ -85,9 +58,7 @@ export default function BasicFormControl() {
             role : 2
           } 
         console.log(result)
-        // SignUpForm(data)
         dispatch(registerOwner(result))
-        // SignUpForm(data);
     };
 
     const password = useRef({});
@@ -123,8 +94,8 @@ export default function BasicFormControl() {
                     <div className="col-md-6 pb-4">
                         <Label>First name</Label>
                         <input className={`form-control ${errors.firstName ? "is-invalid" : ""} py-2`}
-                            placeholder="Write your Firstname here"
-                            {...register("firstName", { required: "Please enter your firstname.", maxLength: {
+                            placeholder="Write your first name here"
+                            {...register("firstName", { required: "Please enter your first name.", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}
@@ -134,8 +105,8 @@ export default function BasicFormControl() {
                     <div className="col-md-6 pb-4">
                         <Label>Last name</Label>
                         <input className={`form-control ${errors.lastName ? "is-invalid" : ""} py-2`}
-                            placeholder="Write your Lastname here"
-                            {...register("lastName", { required: "Please enter your lastname.", maxLength: {
+                            placeholder="Write your last name here"
+                            {...register("lastName", { required: "Please enter your last name.", maxLength: {
                                 value: 200,
                                 message: "Name must not more than 200 characters"
                             }})}
@@ -145,7 +116,7 @@ export default function BasicFormControl() {
                     <div className="col-md-12 pb-4">
                         <Label>Email</Label>
                         <input className={`form-control ${errors.email ? "is-invalid" : ""} py-2`}
-                            placeholder="Example@mail.com"
+                            placeholder="Ex. example@mail.com"
                             {...register("email", { required: "Please enter your email.", maxLength: 100, pattern: {
                                 value: /\S+@\S+\.\S+/,
                                 message: "Entered value does not match email format",
@@ -171,12 +142,12 @@ export default function BasicFormControl() {
                                         ref,
                                         required: true,
                                         autoFocus: true,
-                                        // className: "form-control py-2"
                                     }}
                                     masks={{th: '.. ... ....', }}
                                     inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
                                     inputStyle={{ width: "100%"}}
                                     specialLabel={""}
+                                    disableDropdown={true}
                                     country={"th"}
                                     countryCodeEditable={false}
                                     placeholder="Enter phone number"

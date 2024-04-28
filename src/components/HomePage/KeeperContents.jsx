@@ -159,7 +159,7 @@ function KeeperContents(props) {
                       )}
                     </div>
                   </div>
-                  <div className="keeper-card-detail">
+                  <div className="keeper-card-detail text-break">
                     <p>{item.detail.slice(0, 75)}...</p>
                   </div>
                   <div className="keeper-card-distance">
