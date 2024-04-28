@@ -97,7 +97,6 @@ function UserProfile(props) {
 
     const EditOwner = async (data, isError) => {
         const phoneNumber = (data.phone).replace(/^66/, "0").trim()
-        setOwnerDataList(ownerData)
         const result = {
             firstName: data.firstName,
             lastName: data.lastName,
@@ -111,7 +110,6 @@ function UserProfile(props) {
                 .patch(import.meta.env.VITE_OWNER_ID + ownerId, result)
                 .then((res) => {
                     handleModal(false)
-                    ownerData()
                 })
 
         }
@@ -128,7 +126,6 @@ function UserProfile(props) {
                 headers: { 'content-type': 'multipart/form-data' }
             }).then((res) => {
                 handleModal(false)
-                ownerData()
                 dispatch(changeImageProfile(data.upload[0].name))
                 // console.log({...ownerDataList, img : file.name})
                 setOwnerDataList({...ownerDataList, img : file.name})
