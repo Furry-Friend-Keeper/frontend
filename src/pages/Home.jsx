@@ -88,8 +88,8 @@ function Home() {
 
     async function calculateDistance(start, end) {
       const cacheKey = `${start.lat},${start.lng}-${end.lat},${end.lng}`;
-      const cachedDistance = sessionStorage.getItem(cacheKey);
-      if (cachedDistance) return parseFloat(cachedDistance);
+      let distances = JSON.parse(localStorage.getItem("location_list")) || {};
+      if (distances[cacheKey]) return parseFloat(distances[cacheKey]);
 
       //`http://router.project-osrm.org/route/v1/driving/
       //${start.lng},${start.lat};${end.lng},${end.lat}?overview=false`;
@@ -98,7 +98,8 @@ function Home() {
         const response = await fetch(apiUrl);
         const data = await response.json();
         const distance = data.routes[0].distance;
-        sessionStorage.setItem(cacheKey, distance);
+        distances[cacheKey] = distance;
+        localStorage.setItem("location_list", JSON.stringify(distances));
         return distance;
       } catch (error) {
         console.error("Error fetching data from OSRM:", error);
