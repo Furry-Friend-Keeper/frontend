@@ -129,7 +129,7 @@ function KeeperContents(props) {
         const distance = distanceLookup[item.id];
         return (
           <div key={index} className="col-xs-12 col-md-6 col-lg-4 col-xl-4 mb-3 px-2 ">
-            <div className="keeper-card">
+            <div className="keeper-card movedown-transition">
             <Link to={`/at3/keepers/${item.id}`} className="image-status">
               <div className="keeper-card-image">
               {!item.img ? (

@@ -137,6 +137,7 @@ function OwnerDetail() {
                                 <Radio value="Pending">Pending</Radio>
                                 <Radio value="Scheduled">Scheduled</Radio>
                                 <Radio value="In Care">In Care</Radio>
+                                <Radio value="Keeper Completed">Get a pet</Radio>
                                 <Radio value="Completed">Completed</Radio>
                                 <Radio value="Cancelled">Cancelled</Radio>
                             </RadioGroup>
