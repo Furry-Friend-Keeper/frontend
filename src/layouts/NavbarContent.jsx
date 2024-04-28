@@ -41,53 +41,6 @@ function NavbarContent({ notification }) {
   }; 
 
     const imageURL = getImage ? getRole === "Owner" ? import.meta.env.VITE_OWNER_IMAGE + getId + "/" + getImage : import.meta.env.VITE_KEEPER_IMAGE + getId + "/" + getImage : null
-    const renderMenu = ({ onClose, left, top, className }, ref) => {
-        const handleSelect = eventKey => {
-          onClose();
-          console.log(eventKey);
-        };
-        return (
-          <Popover ref={ref} className={className} style={{ left, top }} title="Last updates" >
-            <List size="md" style={{ width: 300 }}>
-              <List.Item>
-                <Stack spacing={4} alignItems="center">
-                  <Stack.Item><Badge /></Stack.Item>
-                  <Stack.Item></Stack.Item>
-                  <Stack.Item> <span>7 hours ago</span></Stack.Item>
-                </Stack>
-                  <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
-              </List.Item>
-              <List.Item>
-                <Stack spacing={4} alignItems="center">
-                  <Stack.Item><Badge /></Stack.Item>
-                  <Stack.Item></Stack.Item>
-                  <Stack.Item> <span>7 hours ago</span></Stack.Item>
-                </Stack>
-                  <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
-              </List.Item>
-              <List.Item>
-                <Stack spacing={4} alignItems="center">
-                  <Stack.Item><Badge /></Stack.Item>
-                  <Stack.Item></Stack.Item>
-                  <Stack.Item> <span>7 hours ago</span></Stack.Item>
-                </Stack>
-                  <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
-              </List.Item>
-              <List.Item>
-                <Stack spacing={4} alignItems="center">
-                  <Stack.Item><Badge /></Stack.Item>
-                  <Stack.Item></Stack.Item>
-                  <Stack.Item> <span>7 hours ago</span></Stack.Item>
-                </Stack>
-                  <p className="">The charts of the dashboard have been fully upgraded and are more visually pleasing.</p>
-              </List.Item>
-            </List>
-            <div className="text-center mt-4">
-              <Button appearance="default">More notification</Button>
-            </div>
-          </Popover>
-        );
-      };
 
       const renderToggle = ({ onClose, left, top, className }, ref) => {
         const handleSelect = eventKey => {
@@ -136,28 +89,25 @@ function NavbarContent({ notification }) {
       };
   return (
     <Stack spacing={8} >
-    <Whisper preventOverflow placement="bottomEnd" trigger="click" speaker={renderMenu}>
-        <IconButton appearance="subtle" size="lg" className="noti-icon" icon={<Badge content={notification == 0 ? false : notification}><NoticeIcon /></Badge>} />
-    </Whisper>
-    <Whisper preventOverflow placement="bottomEnd" trigger="click" speaker={renderToggle}>
-      <Button
-        appearance="subtle"
-        size="md"
-        sx={{ p: 0 }}
-      >
-        <Avatar
-          className="avatar-navbar"
-          bordered
-          circle
+      <Whisper preventOverflow placement="bottomEnd" trigger="click" speaker={renderToggle}>
+        <Button
+          appearance="subtle"
           size="md"
-          src={imageURL}
-          alt={getName}
+          sx={{ p: 0 }}
         >
-          {!imageURL && <UserIcon />}
-        </Avatar>
-        <KeyboardArrowDownIcon />
-      </Button>
-    </Whisper>
+          <Avatar
+            className="avatar-navbar"
+            bordered
+            circle
+            size="md"
+            src={imageURL}
+            alt={getName}
+          >
+            {!imageURL && <UserIcon />}
+          </Avatar>
+          <KeyboardArrowDownIcon />
+        </Button>
+      </Whisper>
     </Stack>
   )
 }

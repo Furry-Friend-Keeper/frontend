@@ -283,17 +283,6 @@ const TakeCareDetail = ({ requests, fetchRequests }) => {
   };
   return (
     <>
-      {/* <RadioGroup
-                name="radio-group-inline-picker"
-                inline
-                appearance="picker"
-                value={radioChange}
-                onChange={(value) => setRadioChange(value)}
-                className="mb-3"
-            >
-                <Radio value="Pending">In Progress</Radio>
-                <Radio value="Completed">Completed</Radio>
-            </RadioGroup> */}
       {requests.map((item, index) => {
         return (
           <div key={index} className="mb-3">

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import axiosAuth from "../components/Global/AxiosService";
 import axios from "axios";
+import { Radio, RadioGroup } from "rsuite";
 
 function OwnerDetail() {
     const customWidth = import.meta.env.VITE_CUSTOM_WIDTH
@@ -18,19 +19,35 @@ function OwnerDetail() {
     );
     const navigate = useNavigate();
     const [requests, setRequests] = useState([]);
+    const [requestsFilter, setRequestsFilter] = useState([]);
     const [ownerData, setOwnerData] = useState({});
     const [keeperData, setKeeperData] = useState([]);
     const [favoriteData, setFavoriteData] = useState([]);
-
+    const [radioChange, setRadioChange] = useState("Pending");
+    
     const fetchRequests = async () => {
         await axiosAuth
-            .get(import.meta.env.VITE_OWNER_APPOINTMENT_ID + ownerId, {
-                // headers: { Authorization: "Bearer " + accessToken },
-            })
-            .then((response) => {
-                setRequests(response.data);
-            });
+        .get(import.meta.env.VITE_OWNER_APPOINTMENT_ID + ownerId, {
+            // headers: { Authorization: "Bearer " + accessToken },
+        })
+        .then((response) => {
+            setRequests(response.data);
+        });
     };
+    const cacheRequest = useMemo(() => requests, [requests]);
+
+    useEffect(() => {
+        const filter = cacheRequest.filter(req => req.status === radioChange)
+        const sortFilter = filter.sort((a, b) => a.startDate - b.startDate)
+        setRequestsFilter(sortFilter) 
+    }, [cacheRequest, radioChange])
+    
+    const handleRadio = (value) => {
+        // const filter = cacheRequest.filter(req => req.status === value)
+        // // console.log(cacheRequest.filter(req => req.status === value))
+        // setRequestsFilter(filter)
+        setRadioChange(value)
+    }
 
     const fetchOwner = async () => {
         try {
@@ -109,10 +126,24 @@ function OwnerDetail() {
                     <div className=" mx-auto col-12 px-0">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <h4 className="mb-4">Taking care of my pet</h4>
-                            <div className="px-3 movedown-transition take-care-list">
-                                {requests.length > 0 ? (
+                            <RadioGroup
+                                className="mb-3"
+                                name="radio-group-inline-picker"
+                                inline
+                                appearance="picker"
+                                value={radioChange}
+                                onChange={handleRadio}
+                            >
+                                <Radio value="Pending">Pending</Radio>
+                                <Radio value="Scheduled">Scheduled</Radio>
+                                <Radio value="In Care">In Care</Radio>
+                                <Radio value="Completed">Completed</Radio>
+                                <Radio value="Cancelled">Cancelled</Radio>
+                            </RadioGroup>
+                            <div className="pe-3 movedown-transition take-care-list">
+                                {requestsFilter.length > 0 ? (
                                     <TakeCareDetail
-                                        requests={requests}
+                                        requests={requestsFilter}
                                         fetchRequests={fetchRequests}
                                     />
                                 ) : (

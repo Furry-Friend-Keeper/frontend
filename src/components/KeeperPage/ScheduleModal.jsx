@@ -195,11 +195,11 @@ function ScheduleModal(props) {
       return true;
     }
     // Enable dates if selected dates range between disabled date range
-    if (dateRange[0] && dateRange[1]) {
-      if (momentDate.isBetween(dateRange[0], dateRange[1], "day", "[]")) {
-        return false;
-      }
-    }
+    // if (dateRange[0] && dateRange[1]) {
+    //   if (momentDate.isBetween(dateRange[0], dateRange[1], "day", "[]")) {
+    //     return false;
+    //   }
+    // }
     // Check if the date is a disabled weekday
     if (disabledWeekdays.includes(momentDate.day())) {
       return true;

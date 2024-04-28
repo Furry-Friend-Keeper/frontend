@@ -9,26 +9,34 @@ import HamburgerBar from "./HamburgerBar";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import CloseIcon from "@rsuite/icons/Close";
-import { Notification, useToaster, ButtonToolbar, SelectPicker, Button } from 'rsuite';
-import Stomp from 'stompjs';
+import { IconButton, Badge, Drawer, Placeholder, Button, Tag, List } from "rsuite";
+import Stomp from "stompjs";
+import NoticeIcon from "@rsuite/icons/Notice";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Mail } from "@mui/icons-material";
+import axiosAuth from "../components/Global/AxiosService"
+import moment from "moment/moment";
 
 function Navbar() {
   const customWidth = import.meta.env.VITE_CUSTOM_WIDTH;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [notiMessage, setNotiMessage] = useState([])
   const isLogin = useSelector((state) => state.auth.accessToken);
   const getRole = useSelector((state) => state.auth.userInfo.role);
   const getId = useSelector((state) => state.auth.userInfo.id);
   const getName = useSelector((state) => state.auth.userInfo.name) || "";
   const getUserId = useSelector((state) => state.auth.userInfo.userId) || "";
   // const getSessionExpire = useSelector((state) => state.auth.error);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
-  // const [ownerData, setOwnerData] = useState({})
+  const dispatch = useDispatch();
+
   const handleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  const dispatch = useDispatch();
   // const toaster = useToaster()
   // const message = (
   //   <Notification type="warning" header="Warning!" closable>
@@ -40,8 +48,6 @@ function Navbar() {
   //     </ButtonToolbar>
   //   </Notification>
   // );
-  const [searchInput, setSearchInput] = useState("");
-  const [expanded, setExpanded] = useState(false);
 
   const handleExpandSearch = () => {
     setExpanded(!expanded);
@@ -57,15 +63,48 @@ function Navbar() {
 
   const handleSearch = (event) => {
     if (event.key === "Enter") {
-      navigate("/at3/")
+      navigate("/at3/");
       dispatch(findSearch(searchInput));
       setSearchInput("");
     }
   };
 
+  const getNotification = async () => {
+      let notiURL = getRole === "Owner" ? import.meta.env.VITE_NOTIFICATION_OWNER_ALL : import.meta.env.VITE_NOTIFICATION_KEEPER_ALL
+      await axiosAuth.get(notiURL + getId).then(response => {
+        console.log(response)
+        setNotiMessage(response.data)
+      }).catch((error) => {
+        console.log(error.message)
+      })
+  }
+
+  useEffect(() => {
+    if(isLogin){
+      // getNotification()
+    }
+  }, [isLogin])
+
+    const getTagClassName = (status) => {
+      switch (status) {
+        case 'Pending':
+          return 'tag-pending';
+        case 'Scheduled':
+          return 'tag-scheduled';
+        case 'In Care':
+          return 'tag-in-care';
+        case 'Completed':
+          return 'tag-completed';
+        case 'Cancelled':
+          return 'tag-cancelled';
+        default:
+          return '';
+      }
+    }
+
   useEffect(() => {
     dispatch(resetStore());
-  }, [location]);
+  }, [location, dispatch]);
 
   // useEffect(() => {
   //   console.log(getSessionExpire)
@@ -76,76 +115,39 @@ function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    if(isLogin) {
-      var socket = new SockJS(`https://capstone23.sit.kmutt.ac.th/at3-socket/api/web-s?userId=${getUserId}`);
+    if (isLogin) {
+      const socket = new SockJS(
+        `https://capstone23.sit.kmutt.ac.th/at3-socket/api/web-s?userId=${getUserId}`
+      );
       const client = Stomp.over(socket);
-      client.connect({}, () => {
-        client.subscribe('/topic/global-notifications', function (message) {
-          setNotificationCount(prevCount => prevCount + 1);
-          console.log(JSON.parse(message.body).content)
-          // updateNotificationDisplay();
-        });
+      client.connect(
+        {},
+        () => {
+          client.subscribe("/topic/global-notifications", function (message) {
+            setNotificationCount((prevCount) => prevCount + 1);
+            console.log(JSON.parse(message.body).content);
+            // updateNotificationDisplay();
+          });
 
-        client.subscribe('/user/topic/private-notifications', function (message) {
-          setNotificationCount(prevCount => prevCount + 1);
-          console.log(JSON.parse(message.body).content)
-          // updateNotificationDisplay();
-          // showMessage(JSON.parse(message.body).content);
-        });
-      }
-      
+          client.subscribe(
+            "/user/topic/private-notifications",
+            function (message) {
+              setNotificationCount((prevCount) => prevCount + 1);
+              console.log(JSON.parse(message.body).content);
+              // updateNotificationDisplay();
+              // showMessage(JSON.parse(message.body).content);
+            }
+          );
+        }
+
         // , function(error) {
         //     console.error('Connection failed: ' + error);
         //     // Handle connection failure here
         // }
       );
     }
-  }, [isLogin])
+  }, [isLogin]);
 
-
-  useEffect(() => {
-    console.log(notificationCount)
-  }, [notificationCount])
-
-  const connect = () => {
-    console.log("test");
-    var socket = new SockJS(
-      "https://capstone23.sit.kmutt.ac.th/at3-socket/api/web-s"
-    );
-    const client = Stomp.over(socket);
-    client.connect({}, () => {
-      console.log("test1")
-      // console.log('Connected: ' + frame);
-      // updateNotificationDisplay();
-      // client.subscribe('/topic/messages', function (message) {
-      //   console.log(JSON.parse(message.body).content)
-      //     // showMessage(JSON.parse(message.body).content);
-      // });
-
-      // client.subscribe('/user/topic/private-messages', function (message) {
-      //   console.log(JSON.parse(message.body).content)
-      //     // showMessage(JSON.parse(message.body).content);
-      // });
-
-      client.subscribe('/topic/global-notifications', function (message) {
-        setNotificationCount(prevCount => prevCount + 1);
-        console.log(JSON.parse(message.body).content)
-        // updateNotificationDisplay();
-      });
-
-      client.subscribe('/user/topic/private-notifications', function (message) {
-        setNotificationCount(prevCount => prevCount + 1);
-        console.log(JSON.parse(message.body).content)
-        // updateNotificationDisplay();
-        // showMessage(JSON.parse(message.body).content);
-      });
-    }
-      // , function(error) {
-      //     console.error('Connection failed: ' + error);
-      //     // Handle connection failure here
-      // }
-    );
-  };
 
   return (
     <>
@@ -168,7 +170,7 @@ function Navbar() {
                   // src="https://i.imgur.com/ids0WFZ.png"
                   alt=""
                   width={450}
-                // width={50}
+                  // width={50}
                 />
               </div>
             </div>
@@ -255,6 +257,104 @@ function Navbar() {
           </div>
         </Container>
       </nav>
+      {isLogin &&
+      <div className="noti-drawer" onClick={() => setOpen(true)}>
+        <Badge className="noti-count"  content={notificationCount == 0 ? false : notificationCount}>
+          <NotificationsIcon className="fs-5" />
+        </Badge>
+        <span className="noti-content">Notifaications</span>
+      </div>
+      }
+      <Drawer open={open} onClose={() => setOpen(false)}>
+        <Drawer.Header>
+          <Drawer.Title>Notification</Drawer.Title>
+        </Drawer.Header>
+        <Drawer.Body>
+          {/* <Placeholder.Paragraph /> */}
+          <List hover>
+            <List.Item>
+            <div className="noti-drawer-body">
+              <div className="drawer-tag">
+                  <Tag className={getTagClassName("Pending")}>Pending</Tag>
+              </div>
+              <div className="noti-drawer-content">
+                  <h5>Mr.Beast</h5>
+                  <div className="noti-drawer-message">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor in minus laboriosam repudiandae ipsa debitis, eius dolorum necessitatibus quod consectetur maxime quibusdam culpa eum ut architecto tenetur? Qui, ex. Id!
+                  </div>
+                  <div className="noti-drawer-time">
+                    <small>{moment().format('DD/MM/YYYY HH:mm ')}</small>
+                  </div>
+              </div>
+            </div>
+            </List.Item>
+            <List.Item>
+            <div className="noti-drawer-body">
+              <div className="drawer-tag">
+                  <Tag className={getTagClassName("Scheduled")}>Scheduled</Tag>
+              </div>
+              <div className="noti-drawer-content">
+                  <h5>Mr.Beast</h5>
+                  <div className="noti-drawer-message">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor in minus laboriosam repudiandae ipsa debitis, eius dolorum necessitatibus quod consectetur maxime quibusdam culpa eum ut architecto tenetur? Qui, ex. Id!
+                  </div>
+                  <div className="noti-drawer-time">
+                    <small>{moment().format('DD/MM/YYYY HH:mm ')}</small>
+                  </div>
+              </div>
+            </div>
+            </List.Item>
+            <List.Item>
+            <div className="noti-drawer-body">
+              <div className="drawer-tag">
+                  <Tag className={getTagClassName("In Care")}>In Care</Tag>
+              </div>
+              <div className="noti-drawer-content">
+                  <h5>Mr.Beast</h5>
+                  <div className="noti-drawer-message">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor in minus laboriosam repudiandae ipsa debitis, eius dolorum necessitatibus quod consectetur maxime quibusdam culpa eum ut architecto tenetur? Qui, ex. Id!
+                  </div>
+                  <div className="noti-drawer-time">
+                    <small>{moment().format('DD/MM/YYYY HH:mm ')}</small>
+                  </div>
+              </div>
+            </div>
+            </List.Item>
+            <List.Item>
+            <div className="noti-drawer-body">
+              <div className="drawer-tag">
+                  <Tag className={getTagClassName("Completed")}>Completed</Tag>
+              </div>
+              <div className="noti-drawer-content">
+                  <h5>Mr.Beast</h5>
+                  <div className="noti-drawer-message">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor in minus laboriosam repudiandae ipsa debitis, eius dolorum necessitatibus quod consectetur maxime quibusdam culpa eum ut architecto tenetur? Qui, ex. Id!
+                  </div>
+                  <div className="noti-drawer-time">
+                    <small>{moment().format('DD/MM/YYYY HH:mm ')}</small>
+                  </div>
+              </div>
+            </div>
+            </List.Item>
+            <List.Item>
+            <div className="noti-drawer-body">
+              <div className="drawer-tag">
+                  <Tag className={getTagClassName("Cancelled")}>Cancelled</Tag>
+              </div>
+              <div className="noti-drawer-content">
+                  <h5>Mr.Beast</h5>
+                  <div className="noti-drawer-message">
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor in minus laboriosam repudiandae ipsa debitis, eius dolorum necessitatibus quod consectetur maxime quibusdam culpa eum ut architecto tenetur? Qui, ex. Id!
+                  </div>
+                  <div className="noti-drawer-time">
+                    <small>{moment().format('DD/MM/YYYY HH:mm ')}</small>
+                  </div>
+              </div>
+            </div>
+            </List.Item>
+          </List>
+        </Drawer.Body>
+      </Drawer>
       <Outlet />
     </>
   );

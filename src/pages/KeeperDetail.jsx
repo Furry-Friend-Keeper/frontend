@@ -167,7 +167,7 @@ function KeeperDetail() {
 
                                     <div className="des">
                                         <h5>Description</h5>
-                                        <p>{apiData.detail}</p>
+                                        <p className="text-break">{apiData.detail}</p>
                                     </div>
                                 </div>
                             </div>

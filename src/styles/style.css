@@ -1970,3 +1970,87 @@ div.scrollmenu a:hover {
 .rs-avatar-image {
   object-fit: cover;
 }
+
+.noti-drawer {
+  cursor: pointer;
+  position: fixed;
+  z-index: 999;
+  right: -40px;
+  top: 15%;
+  display: flex;
+  align-items: center;
+  background-color: #ffb300;
+  /* background-color: #F05941; */
+  color: white;
+  width: 100px;
+  height: 52px;
+  /* border: 2px solid var(--c-border-gray); */
+  border-radius: 26px 0 0 26px;
+  padding: 10px;
+  transition: width 0.16s ease-out;
+
+  & svg {
+    margin-left: 7px;
+    width: 2rem !important;
+    font-size: 30px !important;
+    justify-content: center;
+  }
+  & .noti-content {
+    overflow: hidden;
+    transform: translateX(20px);
+  }
+}
+
+.noti-drawer:hover {
+  width: 200px;
+
+  & .noti-content {
+    transform: translateX(10px);
+  }
+}
+
+.noti-drawer-body {
+
+  & .noti-drawer-content {
+    margin-top: 5px;
+  }
+
+  & .noti-drawer-message {
+    margin: 5px 0;
+    line-height: 20px;
+    font-size: 14px;
+    /* font-weight: 100; */
+  }
+
+  & .noti-drawer-time {
+    font-weight: 100;
+    font-size: 14px;
+  }
+
+  & .tag-pending {
+    
+    /* background-color: #ffc107 ;  
+    color: black; */
+    border: 1px solid black;
+  }
+  
+  & .tag-scheduled {
+    background-color: #e7a201; /* Cyan for scheduled tags */
+    color: white;
+  }
+  
+  & .tag-in-care {
+    background-color: #28a745; /* Green for in care tags */
+    color: white;
+  }
+  
+  & .tag-completed {
+    background-color: #007bff; /* Blue for completed tags */
+    color: white;
+  }
+  
+  & .tag-cancelled {
+    background-color: #dc3545; /* Red for cancelled tags */
+    color: white;
+  }
+}

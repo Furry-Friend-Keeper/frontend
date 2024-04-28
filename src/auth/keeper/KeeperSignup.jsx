@@ -261,7 +261,7 @@ export default function BasicFormControl() {
             </div>
           </div>
           <div className="col-md-6 pb-4">
-            <Label>Pet Category</Label>
+            <Label>Pet category</Label>
             <Controller
                 name="petCategories"
                 control={control}
@@ -275,6 +275,7 @@ export default function BasicFormControl() {
                       style={{ width: "100%" }} // Adjust the style as needed
                       onSelect={(value, item) => field.onChange(value)}
                       onClean={() => field.onChange([])}
+                      placeholder="Select pet category"
                     />
                     {errors.petCategories && (
                       <small className="error-message">{errors.petCategories.message}</small>

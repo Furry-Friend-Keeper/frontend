@@ -41,7 +41,7 @@ const DisableDate = ({ apiData, fetchData }) => {
     ].map((item) => ({ label: item, value: item }));
 
     const { register, handleSubmit, control, setValue } = useForm();
-    const { control: control2,
+    const { control: control2, setValue: setValue2,
         handleSubmit: handleSubmit2 } = useForm();
 
     const { loading, userInfo, error, success, accessToken } = useSelector(
@@ -107,17 +107,17 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     useEffect(() => {
-        setStoreStatus(apiData?.available);
+        setStoreStatus(apiData?.available || false);
         setTableData(apiData?.disableAppointment);
         const closeDay = apiData?.closedDay?.split(", ");
-        setValue("selectedDays", closeDay);
+        setValue2("selectedDays", closeDay);
     }, [apiData]);
 
     const EditDisableDays = async (value) => {
+        console.log(value)
         const dayOfWeek = moment().format("dddd");
         console.log(dayOfWeek);
-        console.log(value);
-        if (value.selectedDays.includes(dayOfWeek)) {
+        if (value.selectedDays?.includes(dayOfWeek)) {
             StoreClose(false);
         } else {
             StoreClose(true);
@@ -128,12 +128,14 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     const StoreClose = async (value) => {
-        await axiosAuth
-            .patch(
-                import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId, {})
-            .then(() => {
-                setStoreStatus(value);
-            });
+        // if(value === ture) {
+            await axiosAuth
+                .patch(
+                    import.meta.env.VITE_KEEPERS_ID + "available/" + keeperId, {})
+                .then(() => {
+                    setStoreStatus(value);
+                });
+        // }
     };
 
     const DeleteDateRange = async (value) => {
@@ -166,9 +168,9 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     const onSubmit = (data) => {
+        console.log(data)
         EditDisableDays(data);
         EditDateRange(data);
-        console.log(data);
     };
 
     return (
@@ -191,7 +193,7 @@ const DisableDate = ({ apiData, fetchData }) => {
                 </div>
             </div>
             <div className="row">
-                <Form className="mt-3" onSubmit={handleSubmit2(onSubmit)}>
+                <Form className="mt-3" onSubmit={handleSubmit2(EditDisableDays)}>
                     <Label className="pb-3">Select closed days</Label>
                     <Form.HelpText tooltip>
                         วันที่ร้านปิดเป็นประจำ
