@@ -124,8 +124,7 @@ function UserProfile(props) {
                     setOwnerDataList(newOwnerData)
                     handleModal(false)
                 })
-                .catch((err) => {
-                });
+
         }
     };
 
