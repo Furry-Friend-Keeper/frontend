@@ -72,7 +72,7 @@ function Navbar() {
   const getNotification = async () => {
       let notiURL = getRole === "Owner" ? import.meta.env.VITE_NOTIFICATION_OWNER_ALL : import.meta.env.VITE_NOTIFICATION_KEEPER_ALL
       await axiosAuth.get(notiURL + getId).then(response => {
-        console.log(response)
+        console.log(response.data)
         setNotiMessage(response.data)
       }).catch((error) => {
         console.log(error.message)
@@ -81,26 +81,62 @@ function Navbar() {
 
   useEffect(() => {
     if(isLogin){
-      // getNotification()
+      getNotification()
     }
   }, [isLogin])
 
     const getTagClassName = (status) => {
       switch (status) {
-        case 'Pending':
+        case 1:
           return 'tag-pending';
-        case 'Scheduled':
+        case 2:
           return 'tag-scheduled';
-        case 'In Care':
-          return 'tag-in-care';
-        case 'Completed':
-          return 'tag-completed';
-        case 'Cancelled':
+        case 3:
           return 'tag-cancelled';
+        case 4:
+          return 'tag-in-care';
+        case 5:
+          return 'tag-completed';
+        case 6:
+          return 'tag-completed';
         default:
           return '';
       }
     }
+    const getTagStatusName = (status) => {
+      switch (status) {
+        case 1:
+          return 'Pending';
+        case 2:
+          return 'Scheduled';
+        case 3:
+          return 'Cancelled';
+        case 4:
+          return 'In Care';
+        case 5:
+          return 'Keeper Completed';
+        case 6:
+          return 'Completed'
+        default:
+          return '';
+      }
+    }
+    // const getTagClassName = (status) => {
+    //   switch (status) {
+    //     case 'Pending':
+    //       return 'tag-pending';
+    //     case 'Scheduled':
+    //       return 'tag-scheduled';
+    //     case 'In Care':
+    //       return 'tag-in-care';
+    //     case 'Completed':
+    //       return 'tag-completed';
+    //     case 'Cancelled':
+    //       return 'tag-cancelled';
+    //     default:
+    //       return '';
+    //   }
+    // }
 
   useEffect(() => {
     dispatch(resetStore());
@@ -272,7 +308,25 @@ function Navbar() {
         <Drawer.Body>
           {/* <Placeholder.Paragraph /> */}
           <List hover>
-            <List.Item>
+          {notiMessage.length > 0 && notiMessage.map((message, index) => (
+             <List.Item key={index}>
+             <div className="noti-drawer-body">
+               <div className="drawer-tag">
+                   <Tag className={getTagClassName(message.statusId.id)}>{getTagStatusName(message.statusId.id)}</Tag>
+               </div>
+               <div className="noti-drawer-content">
+                   {/* <h5>Mr.Beast</h5> */}
+                   <div className="noti-drawer-message">
+                    {message.message}
+                   </div>
+                   <div className="noti-drawer-time">
+                     <small>{moment.unix(message.date).format('DD/MM/YYYY HH:mm ')}</small>
+                   </div>
+               </div>
+             </div>
+             </List.Item>
+          ))}
+            {/* <List.Item>
             <div className="noti-drawer-body">
               <div className="drawer-tag">
                   <Tag className={getTagClassName("Pending")}>Pending</Tag>
@@ -351,7 +405,7 @@ function Navbar() {
                   </div>
               </div>
             </div>
-            </List.Item>
+            </List.Item> */}
           </List>
         </Drawer.Body>
       </Drawer>
