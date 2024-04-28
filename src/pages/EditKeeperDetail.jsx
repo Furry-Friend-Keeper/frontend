@@ -7,14 +7,15 @@ import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 import { Button as ButtonSuite } from "rsuite";
 import { useForm } from "react-hook-form";
 import ImageIcon from "@mui/icons-material/Image";
-import { useSelector } from "react-redux";
-import { Navigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Navigate, useParams , useLocation } from "react-router-dom";
 import MapEditer from "../components/EditKeeperPage/MapEditer";
 import GalleryEditer from "../components/EditKeeperPage/GalleryEditer";
 import moment from "moment";
 import ScheduleRequest from "../components/EditKeeperPage/ScheduleRequest";
 import Overviews from "../components/Global/Overviews";
 import DisableDate from "../components/EditKeeperPage/DisableDate";
+import { changeImageProfile } from "../store/AuthSlice";
 
 function EditKeeperDetail() {
     const customWidth = import.meta.env.VITE_CUSTOM_WIDTH;
@@ -26,20 +27,27 @@ function EditKeeperDetail() {
     const [messageLog, setMessageLog] = useState("");
     const [open, setOpen] = useState(false);
     const [galleryData, setGalleryData] = useState([]);
-    const [isEditName, setIsEditName] = useState(false);
-    const [isEditContact, setIsEditContact] = useState(false);
-    const [isEditAddress, setIsEditAddress] = useState(false);
     const [isMap, setIsMap] = useState([]);
     const [getLocation, setLocation] = useState("");
     const [addressLabel, setAddressLabel] = useState("");
     const [isImg, setImg] = useState();
     const { keeperId } = useParams();
-    const [permanentDisable, setPersistentDisable] = useState("");
+    const dispatch = useDispatch()
     // const [isError, setIsError] = useState(false);
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
     const [isReview, setIsReview] = useState([]);
+    const requestRef = useRef()
+    const location = useLocation();
+
+    useEffect(() => {
+        // Scroll to target div when component mounts
+    //    console.log(location.hash())
+    if(location.hash === "#requestAll") {
+        requestRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+    },[location])
 
     const fetchData = async () => {
         try {
@@ -49,7 +57,6 @@ function EditKeeperDetail() {
                 .then((response) => {
                     const data = response.data;
                     setApiData(data);
-                    console.log(data)
                     setValue("name", data.name);
                     setValue("detail", data.detail);
                     setValue("contact", data.contact);
@@ -130,16 +137,12 @@ function EditKeeperDetail() {
                 map: getLocation,
             },
         };
-        console.log(result);
         if (!isError) {
             await axiosAuth
                 .patch(import.meta.env.VITE_KEEPERS_ID + keeperId, result)
                 .then((res) => {
                     fetchData();
                     setApiData({ ...apiData, ...result });
-                    setIsEditName(false);
-                    setIsEditContact(false);
-                    setIsEditAddress(false);
                     setOpen(true);
                     setAlertStatus("success");
                     const splitMap = getLocation
@@ -173,6 +176,8 @@ function EditKeeperDetail() {
                 )
                 .then((res) => {
                     fetchData();
+                    console.log(isImg)
+                    dispatch(changeImageProfile(isImg.name))
                     setOpen(true);
                     setAlertStatus("success");
                     // setIsError(false)
@@ -284,7 +289,7 @@ function EditKeeperDetail() {
             />
             <Container maxWidth={customWidth}>
                 <div className="row mx-auto col-11">
-                    <div className="col-lg-12">
+                    <div ref={requestRef} className="col-lg-12">
                         <ScheduleRequest keeperId={keeperId} />
                     </div>
                     <div className="col-lg-12">

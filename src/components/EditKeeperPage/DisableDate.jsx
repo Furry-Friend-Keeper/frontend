@@ -44,7 +44,6 @@ const DisableDate = ({ apiData, fetchData }) => {
     const { control: control2, setValue: setValue2,
         handleSubmit: handleSubmit2 } = useForm();
 
-    console.log(apiData)
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
@@ -187,7 +186,7 @@ const DisableDate = ({ apiData, fetchData }) => {
                                 size="lg"
                                 checkedChildren="Open"
                                 unCheckedChildren="Close"
-                                checked={storeStatus}
+                                checked={storeStatus || false}
                                 onChange={(value) => StoreClose(value)}
                             />
                         </span>

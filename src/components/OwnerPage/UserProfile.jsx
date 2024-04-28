@@ -15,7 +15,7 @@ import PhoneInput from "react-phone-input-2";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { changeImageProfile } from "/src/store/AuthSlice";
+import { changeImageProfile } from "../../store/AuthSlice";
 
 const SizedAvatar = styled(Avatar)`
   ${({ size, theme }) => `
@@ -52,11 +52,16 @@ function UserProfile(props) {
     const [backdrop, setBackdrop] = useState("true");
     const handleModal = (bool) => {
         setOpen(bool)
-        setValue("upload", [
-            {
-                url : import.meta.env.VITE_OWNER_IMAGE + ownerDataList.petOwnerId + "/" + ownerDataList?.img
-            }
-        ])
+        console.log(ownerDataList.img)
+        if(ownerDataList.img){
+            setValue("upload", [
+                {
+                    url : import.meta.env.VITE_OWNER_IMAGE + ownerDataList.petOwnerId + "/" + ownerDataList?.img
+                }
+            ])
+        }else {
+            setValue("upload", [])
+        }
     };
     const toaster = useToaster();
     const placement = "topEnd";
@@ -109,6 +114,14 @@ function UserProfile(props) {
             await axiosAuth
                 .patch(import.meta.env.VITE_OWNER_ID + ownerId, result)
                 .then((res) => {
+                    console.log(result)
+                    console.log(ownerDataList)
+                    const newOwnerData = {
+                        ...ownerDataList,
+                        ...result
+                    }
+                    console.log(newOwnerData)
+                    setOwnerDataList(newOwnerData)
                     handleModal(false)
                 })
                 .catch((err) => {

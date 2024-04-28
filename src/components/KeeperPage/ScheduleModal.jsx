@@ -226,8 +226,6 @@ function ScheduleModal(props) {
     return false;
   };
 
-  console.log(closedDays?.split(","));
-
   return (
     <>
       <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">

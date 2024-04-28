@@ -18,6 +18,13 @@ function Overviews(props) {
   const [reviewsData, setReviewsData] = useState(isOwnerReview);
   const [otherReview, setOtherReview] = useState(isReview);
   const [activeRating, setActiveRating] = useState(null);
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     setReviewsData(isOwnerReview);
@@ -35,6 +42,7 @@ function Overviews(props) {
         // console.log(reviewsData)
         // console.log({...reviewsData, ...data})
         data.date = moment(data.date).unix();
+        console.log(data)
         setReviewsData({ ...reviewsData, ...data });
         setIsEditComment(false);
       })
@@ -46,7 +54,7 @@ function Overviews(props) {
     const result = {
       reviewId: parseInt(data.reviewId),
       comment: data.comment,
-      star: data.rating,
+      stars: data.rating,
       date: moment().format(),
     };
     EditOwnerComment(result);
@@ -62,12 +70,6 @@ function Overviews(props) {
     setOtherReview(newActiveRating ? filterRating : isReview);
   };
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm();
   return (
     <div className="mt-4">
       <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-1">
@@ -138,7 +140,7 @@ function Overviews(props) {
                   <div className="col-md-4">
                     {!isEditComment ? (
                       <Rate
-                        value={isOwnerReview?.stars}
+                        value={reviewsData?.stars}
                         allowHalf
                         size="xs"
                         color="yellow"
@@ -151,11 +153,12 @@ function Overviews(props) {
                       //     emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                       //     readOnly
                       // />
+                      
                       <div className="rating">
                         <Controller
                           name="rating"
                           control={control}
-                          defaultValue={isOwnerReview?.stars}
+                          defaultValue={reviewsData?.stars}
                           render={({ field: { onChange, value } }) => (
                             <Rate
                               value={value}
@@ -182,7 +185,7 @@ function Overviews(props) {
                       <TextField
                         label="Edit Comment"
                         margin="normal"
-                        defaultValue={isOwnerReview?.comment}
+                        defaultValue={reviewsData?.comment}
                         fullWidth
                         {...register("comment", {
                           maxLength: {

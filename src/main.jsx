@@ -13,9 +13,9 @@ import store from "./store/Store.jsx"; // Assuming you've created your Redux sto
 const elementId = "root";
 
 ReactDOM.createRoot(document.getElementById(elementId)).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <RouterPage />
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

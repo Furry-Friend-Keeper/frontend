@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Favorite from "../components/OwnerPage/Favorite";
 import TakeCareDetail from "../components/OwnerPage/TakeCareDetail";
 import UserProfile from "../components/OwnerPage/UserProfile";
 import { Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AvatarIcon from "@rsuite/icons/legacy/Avatar";
 import axiosAuth from "../components/Global/AxiosService";
@@ -24,6 +24,14 @@ function OwnerDetail() {
     const [keeperData, setKeeperData] = useState([]);
     const [favoriteData, setFavoriteData] = useState([]);
     const [radioChange, setRadioChange] = useState("Pending");
+    const ownerRef = useRef()
+    const location = useLocation();
+
+    useEffect(() => {
+        if(location.hash === "#take-care") {
+            ownerRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
+    },[location])
     
     const fetchRequests = async () => {
         await axiosAuth
@@ -32,6 +40,8 @@ function OwnerDetail() {
         })
         .then((response) => {
             setRequests(response.data);
+        }).catch((error) => {
+            console.log(error.response.data)
         });
     };
     const cacheRequest = useMemo(() => requests, [requests]);
@@ -122,7 +132,7 @@ function OwnerDetail() {
                         <Favorite favorites={filterFavorites} />
                     </div>
                 </div>
-                <div className="col-md-11 mx-auto">
+                <div ref={ownerRef} className="col-md-11 mx-auto">
                     <div className=" mx-auto col-12 px-0">
                         <div className="bg-shadow p-3 p-sm-3 p-md-4 p-lg-5 bg-white mt-4">
                             <h4 className="mb-4">Taking care of my pet</h4>

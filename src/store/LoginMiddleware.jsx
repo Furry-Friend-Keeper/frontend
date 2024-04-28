@@ -26,7 +26,7 @@ export const localStorageMiddleware = store => next => action => {
   const result = next(action);
   const state = store.getState();
   if(state.auth.accessToken !== null) {
-    saveStateToLocalStorage(state);
+    saveStateToLocalStorage({ auth: state.auth});
   }
   return result;
 };

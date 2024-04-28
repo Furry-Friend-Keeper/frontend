@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Table, Button, IconButton, Radio, RadioGroup, Form, Modal } from "rsuite";
 import Box from "@mui/joy/Box";
 import { useForm, Controller } from "react-hook-form";
@@ -8,7 +8,6 @@ import axiosAuth from "../Global/AxiosService";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
-
 const { Column, HeaderCell, Cell } = Table;
 
 const rowKey = "id";
@@ -42,12 +41,13 @@ const renderRowExpanded = (rowData) => {
         <div className="request-size">
             <p>
                 Start date:{" "}
-                {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}
+                {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm A")}
             </p>
             <p>
                 End date:{" "}
-                {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm")}
+                {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm A")}
             </p>
+            <p>Owner name: {rowData.petOwner}</p>
             <p>Owner phone: {rowData.ownerPhone}</p>
             <p>Pet name: {rowData.petName}</p>
             <p>Category: {rowData.category}</p>
@@ -178,7 +178,7 @@ function ScheduleRequest(props) {
                 expandedRowKeys={expandedRowKeys}
                 loading={loading}
                 renderRowExpanded={renderRowExpanded}
-                rowExpandedHeight={200}
+                rowExpandedHeight={220}
             >
                 <Column width={70} align="center">
                     <HeaderCell>#</HeaderCell>
@@ -188,31 +188,35 @@ function ScheduleRequest(props) {
                         onChange={handleExpanded}
                     />
                 </Column>
-                <Column width={160}>
+                <Column width={150}>
                     <HeaderCell>Start date</HeaderCell>
                     <Cell>
                         {(rowData) => (
                             <span>
                                 {moment
                                     .unix(rowData.startDate)
-                                    .format("DD MMMM YYYY HH:mm")}
+                                    .format("DD MMMM YYYY HH:mm A")}
                             </span>
                         )}
                     </Cell>
                 </Column>
-                <Column width={160}>
+                <Column width={150}>
                     <HeaderCell>End date</HeaderCell>
                     <Cell>
                         {(rowData) => (
                             <span>
                                 {moment
                                     .unix(rowData.endDate)
-                                    .format("DD MMMM YYYY HH:mm")}
+                                    .format("DD MMMM YYYY HH:mm A")}
                             </span>
                         )}
                     </Cell>
                 </Column>
 
+                <Column width={120}>
+                    <HeaderCell>Owner name</HeaderCell>
+                    <Cell dataKey="petOwner" />
+                </Column>
                 <Column width={150}>
                     <HeaderCell>Owner phone</HeaderCell>
                     <Cell dataKey="ownerPhone" />
