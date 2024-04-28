@@ -244,6 +244,7 @@ function Home() {
     // reset sort distance
     setSortDistanceAsc("");
     setDistanceTitle("");
+    setSortTitle("Sort")
     // reset filter rating
     setRatingScore([0,5]);
     //reset filter categories

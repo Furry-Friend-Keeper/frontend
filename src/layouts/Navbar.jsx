@@ -272,6 +272,7 @@ function Navbar() {
           </div>
         </Container>
       </nav>
+      
       {isLogin &&
       <div className="noti-drawer" onClick={() => setOpen(true)}>
         <Badge className="noti-count"  content={notificationCount == 0 ? false : notificationCount}>

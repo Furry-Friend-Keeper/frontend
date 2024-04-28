@@ -50,13 +50,15 @@ function UserProfile(props) {
     const navigate = useNavigate()
     const [open, setOpen] = useState(false);
     const [backdrop, setBackdrop] = useState("true");
+    const imageURL = userInfo.img ? import.meta.env.VITE_OWNER_IMAGE + userInfo.id + "/" + userInfo.img : null
+
     const handleModal = (bool) => {
         setOpen(bool)
         console.log(ownerDataList.img)
         if(ownerDataList.img){
             setValue("upload", [
                 {
-                    url : import.meta.env.VITE_OWNER_IMAGE + ownerDataList.petOwnerId + "/" + ownerDataList?.img
+                    url : import.meta.env.VITE_OWNER_IMAGE + userInfo.id + "/" + userInfo.img
                 }
             ])
         }else {
@@ -109,18 +111,14 @@ function UserProfile(props) {
             phone: phoneNumber,
             email: data.email,
         };
-        console.log(result);
         if (!isError) {
             await axiosAuth
                 .patch(import.meta.env.VITE_OWNER_ID + ownerId, result)
                 .then((res) => {
-                    console.log(result)
-                    console.log(ownerDataList)
                     const newOwnerData = {
                         ...ownerDataList,
                         ...result
                     }
-                    console.log(newOwnerData)
                     setOwnerDataList(newOwnerData)
                     handleModal(false)
                 })
@@ -141,7 +139,8 @@ function UserProfile(props) {
                 handleModal(false)
                 dispatch(changeImageProfile(data.upload[0].name))
                 // console.log({...ownerDataList, img : file.name})
-                setOwnerDataList({...ownerDataList, img : file.name})
+                console.log({...ownerDataList, img : data.upload[0].name})
+                setOwnerDataList({...ownerDataList, img : data.upload[0].name})
                 // setTimeout(() => navigate(0), 500)
                 toaster.push(message("success", res.data), { placement, duration });
                 isError = false
@@ -178,7 +177,7 @@ function UserProfile(props) {
                                 <SizedAvatar
                                     size="8"
                                     alt="Remy Sharp"
-                                    src={ownerDataList.img ? import.meta.env.VITE_OWNER_IMAGE + ownerId + "/" + ownerDataList.img : null}
+                                    src={imageURL}
                                 />
                             </div>
                             <div className="profile-info-title-detail">

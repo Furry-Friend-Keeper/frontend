@@ -1,19 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import axiosAuth from "../Global/AxiosService";
-import axios from "axios";
 import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
-import { Rating, Stack, Chip } from "@mui/material/";
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import { Pagination, Rate, useToaster, Message, Tag, TagGroup, Notification, ButtonToolbar, Button } from "rsuite";
-import Skeleton from "@mui/material/Skeleton";
-import L from "leaflet";
-import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
+import { Pagination, Rate, useToaster, Message, Tag, TagGroup, Notification, ButtonToolbar } from "rsuite";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import CircleIcon from "@mui/icons-material/Circle";
 import { useSelector } from "react-redux";
-import MessageLog from "../Global/MessageLog";
 import Slider from "react-slick";
 
 function KeeperContents(props) {
@@ -190,96 +183,6 @@ function KeeperContents(props) {
               </div>
             </div>
           </div>
-          // <div
-          //   key={index}
-          //   className="col-xs-12 col-md-6 col-lg-4 col-xl-3 my-2 px-2 "
-          // >
-          //   <div className="keeper card bg-shadow text-center border-0 movedown-transition">
-          //     {item.img ? (
-          //       <Link to={`/at3/keepers/${item.id}`} className="image-status">
-
-          //         <div className="img-close-status">
-          //         {item.available === false && <div className="bg-tranparency">Closed</div>}
-          //           <img
-          //             src={
-          //               import.meta.env.VITE_KEEPER_IMAGE +
-          //               item.id +
-          //               "/" +
-          //               item.img
-          //             }
-          //             alt={item.title}
-          //           />
-          //         </div>
-          //       </Link>
-          //     ) : (
-          //       <Link to={`/at3/keepers/${item.id}`} className="image-status">
-          //         <div className="img-close-status">
-          //           {item.available === false && <div className="bg-tranparency">Closed</div>}
-          //           <ImageNotSupportedIcon className="notImage" />
-          //         </div>
-          //       </Link>
-          //     )}
-          //     <div className="card-body keeper-radius keeeper-container">
-          //       <div className="keeeper-warpper">
-          //         <div className="border-2 border-bottom-0 mb-2 ">
-          //           {distance ? (
-          //             <div className="distance-keeper d-flex justify-content-between align-items-center mb-2">
-          //               <div className="d-flex align-items-end">
-          //                 <PlaceOutlinedIcon />
-          //                 <p className="mt-0 fs-6">{distance} km</p>
-          //               </div>
-          //                 {userInfo.role === "Owner" && 
-          //                   <div className="favorite-icon">
-          //                     {favorites && favorites?.includes(item.id) ? (
-          //                       <FavoriteIcon onClick={() => handleFavorite(item)} className="favorite-icon" />
-          //                     ) : (
-          //                       <FavoriteBorderIcon onClick={() => handleFavorite(item)} className="favorite-icon" />
-          //                     )}
-          //                   </div>
-          //                 }
-          //             </div>
-          //           ) : (
-          //             <Skeleton className="mx-auto mt-2" width={100} />
-          //           )}
-          //         </div>
-          //         <div className="d-flex justify-content-center mb-2">
-          //           <h5 className="text-overflow">
-          //             <Link
-          //               to={`/at3/keepers/${item.id}`}
-          //               className="text-black"
-          //             >
-          //               {item.name}
-          //             </Link>
-          //           </h5>
-          //         </div>
-          //         <div>
-          //           <Rate
-          //             className="mb-2"
-          //             value={item.reviewStars}
-          //             size="xs"
-          //             color="yellow"
-          //             readOnly
-          //           />
-          //           <Stack
-          //             direction="row"
-          //             spacing={1}
-          //             className="justify-content-center d-block"
-          //           >
-          //             {item.categories &&
-          //               item.categories.map((category, i) => (
-          //                 <Chip
-          //                   className="keeper-tag"
-          //                   key={i}
-          //                   label={category}
-          //                   size="small"
-          //                 />
-          //               ))}
-          //           </Stack>
-          //         </div>
-          //       </div>
-          //     </div>
-          //   </div>
-          // </div>
         );
       }) :
         <div className="text-center fw-bold mt-5 fs-4">
