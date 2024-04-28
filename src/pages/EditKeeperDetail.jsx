@@ -49,6 +49,7 @@ function EditKeeperDetail() {
                 .then((response) => {
                     const data = response.data;
                     setApiData(data);
+                    console.log(data)
                     setValue("name", data.name);
                     setValue("detail", data.detail);
                     setValue("contact", data.contact);
@@ -160,7 +161,7 @@ function EditKeeperDetail() {
         if (isImg !== undefined) {
             const formData = new FormData();
             formData.append("file", isImg);
-            await axios
+            await axiosAuth
                 .patch(
                     import.meta.env.VITE_KEEPERS_ID + keeperId + "/profile-img",
                     formData,

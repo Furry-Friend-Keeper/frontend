@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { styled } from "@mui/system";
 // import clsx from "clsx";
 import { Controller, useForm } from "react-hook-form";
-import {Tooltip,Box, Button, Snackbar, Alert, AlertTitle, IconButton } from "@mui/material";
+import { Tooltip, Box, Button, Snackbar, Alert, AlertTitle, IconButton } from "@mui/material";
 import { Button as ButtonSuite } from "rsuite";
 import { Select, Chip, Option } from "@mui/joy";
 import InputAddress from "react-thailand-address-autocomplete";
@@ -64,7 +64,7 @@ export default function BasicFormControl() {
       //   navigate("/at3/login");
       // }, 3000);
       navigate('/at3/login')
-    } else if(error) {
+    } else if (error) {
       toaster.push(message, { placement, duration: 3000 })
     }
   }, [success, error])
@@ -116,7 +116,7 @@ export default function BasicFormControl() {
   password.current = watch("password", "");
 
   function onSelect(fulladdress) {
-    const { subdistrict ,district, province, zipcode } = fulladdress;
+    const { subdistrict, district, province, zipcode } = fulladdress;
     setSubdistrict(subdistrict);
     setDistrict(district);
     setProvince(province);
@@ -163,7 +163,7 @@ export default function BasicFormControl() {
             <Label>
               Pet keeper name &nbsp;
               <Tooltip title="ชื่อร้าน">
-                 <HelpOutlineIcon fontSize="inherit"/>
+                <HelpOutlineIcon fontSize="inherit" />
               </Tooltip>
             </Label>
             <input
@@ -187,7 +187,7 @@ export default function BasicFormControl() {
             <Label>Email</Label>
             <input
               className={`form-control ${errors.email ? "is-invalid" : ""} py-2`}
-              placeholder="Example@mail.com"
+              placeholder="Ex. example@mail.com"
               {...register("email", {
                 required: "Please enter your email address.",
                 maxLength: 100,
@@ -206,7 +206,7 @@ export default function BasicFormControl() {
             <div className="form-password">
               <input
                 className={`form-control ${errors.password ? "is-invalid" : ""} py-2`}
-                placeholder="12345678"
+                placeholder="Write your password here"
                 type={showPassword1 ? "text" : "password"}
                 {...register("password", {
                   required: "Please enter your password.",
@@ -220,9 +220,9 @@ export default function BasicFormControl() {
                   },
                 })}
               />
-            {errors.password && (
-              <small className="invalid-feedback">{errors.password.message}</small>
-            )}
+              {errors.password && (
+                <small className="invalid-feedback">{errors.password.message}</small>
+              )}
               <div className="toggle-password">
                 <IconButton onClick={() => { setShowPassword1(!showPassword1) }} edge="end">
                   {showPassword1 ? <VisibilityOff /> : <Visibility />}
@@ -234,13 +234,12 @@ export default function BasicFormControl() {
             <Label>Confirm password</Label>
             <div className="form-password">
               <input
-                className={`form-control ${
-                  errors.confirmPassword ? "is-invalid" : ""
-                } py-2`}
-                placeholder="12345678"
+                className={`form-control ${errors.confirmPassword ? "is-invalid" : ""
+                  } py-2`}
+                placeholder="Please confirm your password"
                 type={showPassword2 ? "text" : "password"}
                 {...register("confirmPassword", {
-                  required: "Please enter your confirm password.",
+                  required: "Please confirm your password.",
                   validate: (val) => {
                     if (watch('password') != val) {
                       return "Your passwords do no match";
@@ -248,16 +247,16 @@ export default function BasicFormControl() {
                   }
                 })}
               />
-            {errors.confirmPassword && (
-              <small className="invalid-feedback">
-                {errors.confirmPassword.message}
-              </small>
-            )}
-                <div className="toggle-password">
-                  <IconButton onClick={() => { setShowPassword2(!showPassword2) }} edge="end">
-                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </div>
+              {errors.confirmPassword && (
+                <small className="invalid-feedback">
+                  {errors.confirmPassword.message}
+                </small>
+              )}
+              <div className="toggle-password">
+                <IconButton onClick={() => { setShowPassword2(!showPassword2) }} edge="end">
+                  {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </div>
             </div>
           </div>
           <div className="col-md-6 pb-4">
@@ -318,34 +317,35 @@ export default function BasicFormControl() {
           <div className="col-md-6 pb-4">
             <Label>Phone</Label>
             <Controller
-                control={control}
-                name="phone"
-                rules={{ required: "Please enter your phone number.",
-                        maxLength: { value:11, message: "Phone number must be 10 digits"},
-                        minLength : { value:11, message: "Phone number must be 10 digits"}
+              control={control}
+              name="phone"
+              rules={{
+                required: "Please enter your phone number.",
+                maxLength: { value: 11, message: "Phone number must be 10 digits" },
+                minLength: { value: 11, message: "Phone number must be 10 digits" }
 
-                    }}
-                // className="form-control"
-                render={({ field: { ref, ...field } }) => (
-                    <PhoneInput
-                    {...field}
-                    inputProps={{
-                        ref,
-                        required: true,
-                        autoFocus: true,
-                        // className: "form-control py-2"
-                    }}
-                    masks={{th: '.. ... ....', }}
-                    inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
-                    inputStyle={{ width: "100%"}}
-                    specialLabel={""}
-                    disableDropdown={true}
-                    country={"th"}
-                    countryCodeEditable={false}
-                    placeholder="Enter phone number"
-                    />
-                )}
+              }}
+              // className="form-control"
+              render={({ field: { ref, ...field } }) => (
+                <PhoneInput
+                  {...field}
+                  inputProps={{
+                    ref,
+                    required: true,
+                    autoFocus: true,
+                    // className: "form-control py-2"
+                  }}
+                  masks={{ th: '.. ... ....', }}
+                  inputClass={`${errors.phone ? "is-invalid" : ""} py-2`}
+                  inputStyle={{ width: "100%" }}
+                  specialLabel={""}
+                  disableDropdown={true}
+                  country={"th"}
+                  countryCodeEditable={false}
+                  placeholder="Enter phone number"
                 />
+              )}
+            />
             {errors.phone && <small className="error-message">{errors.phone.message}</small>}
           </div>
           <div className="col-md-6 pb-4">
@@ -367,85 +367,92 @@ export default function BasicFormControl() {
           </div>
           <div className="col-md-12 pb-4">
             <Label>Detail (Optional) &nbsp;
-            <Tooltip title="รายละเอียดของร้าน (เลือกกรอก)">
-                 <HelpOutlineIcon fontSize="inherit"/>
+              <Tooltip title="รายละเอียดของร้าน (เลือกกรอก)">
+                <HelpOutlineIcon fontSize="inherit" />
               </Tooltip>
-              </Label>
-
-                <textarea
-                    id="message"
-                    name="message"
-                    className="form-control"
-                    rows="4"
-                    placeholder="Enter your message"
-                    {...register("detail", { maxLength: 200 })}
-                    />
+            </Label>
+            <textarea
+              id="detail"
+              name="detail"
+              className={`form-control ${errors.detail ? "is-invalid" : ""} py-2`}
+              rows="4"
+              placeholder="Enter store detail"
+              {...register("detail", {
+                maxLength: {
+                  value: 200,
+                  message: "Detail must not more than 200 characters",
+                },
+              })}
+            />
+            {errors.detail && (
+              <small className="invalid-feedback">{errors.detail.message}</small>
+            )}
           </div>
           <div className="col-md-12 pb-4">
             <Map idName="map" getLocation={setLocation} getLocationLabel={setAddressLabel} />
           </div>
           <div className="row">
             <div className="col-md-12 pb-4">
-                <Label>Address</Label>
-                <input
+              <Label>Address</Label>
+              <input
                 className={`form-control py-2`}
                 placeholder="Street address"
                 value={addressLabel}
                 onChange={(event) => setAddressLabel(event.target.value)}
                 required
-                />
+              />
             </div>
             <div className="col-md-6 pb-4">
-                <Label>Subdistrict</Label>
-                <div className="autocomplete">
+              <Label>Subdistrict</Label>
+              <div className="autocomplete">
                 <InputAddress
-                    id="auto-1"
-                    placeholder="กรุณาเลือกตำบล"
-                    address="subdistrict"
-                    value={subdistrict}
-                    onChange={(e) => setSubdistrict(e.target.value)}
-                    onSelect={onSelect}
+                  id="auto-1"
+                  placeholder="กรุณาเลือกตำบล"
+                  address="subdistrict"
+                  value={subdistrict}
+                  onChange={(e) => setSubdistrict(e.target.value)}
+                  onSelect={onSelect}
                 />
-                </div>
+              </div>
             </div>
             <div className="col-md-6 pb-4">
-                <Label>District</Label>
-                <div className="autocomplete ">
+              <Label>District</Label>
+              <div className="autocomplete ">
                 <InputAddress
-                    id="auto-2"
-                    placeholder="กรุณาเลือกอำเภอ"
-                    address="district"
-                    value={district}
-                    onChange={(e) => setDistrict(e.target.value)}
-                    onSelect={onSelect}
+                  id="auto-2"
+                  placeholder="กรุณาเลือกอำเภอ"
+                  address="district"
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  onSelect={onSelect}
                 />
-                </div>
+              </div>
             </div>
             <div className="col-md-6 pb-4">
-                <Label>Province</Label>
-                <div className="autocomplete">
+              <Label>Province</Label>
+              <div className="autocomplete">
                 <InputAddress
-                    id="auto-3"
-                    placeholder="กรุณาเลือกจังหวัด"
-                    address="province"
-                    value={province}
-                    onChange={(e) => setProvince(e.target.value)}
-                    onSelect={onSelect}
+                  id="auto-3"
+                  placeholder="กรุณาเลือกจังหวัด"
+                  address="province"
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  onSelect={onSelect}
                 />
-                </div>
+              </div>
             </div>
             <div className="col-md-6 pb-4">
-                <Label>Postal Code</Label>
-                <div className="autocomplete">
+              <Label>Postal Code</Label>
+              <div className="autocomplete">
                 <InputAddress
-                    id="auto-4"
-                    placeholder="กรุณาเลือกรหัสไปรษณีย์"
-                    address="zipcode"
-                    value={zipcode}
-                    onChange={(e) => setZipcode(e.target.value)}
-                    onSelect={onSelect}
+                  id="auto-4"
+                  placeholder="กรุณาเลือกรหัสไปรษณีย์"
+                  address="zipcode"
+                  value={zipcode}
+                  onChange={(e) => setZipcode(e.target.value)}
+                  onSelect={onSelect}
                 />
-                </div>
+              </div>
             </div>
           </div>
 

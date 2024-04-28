@@ -44,6 +44,7 @@ const DisableDate = ({ apiData, fetchData }) => {
     const { control: control2, setValue: setValue2,
         handleSubmit: handleSubmit2 } = useForm();
 
+    console.log(apiData)
     const { loading, userInfo, error, success, accessToken } = useSelector(
         (state) => state.auth
     );
@@ -107,11 +108,12 @@ const DisableDate = ({ apiData, fetchData }) => {
     };
 
     useEffect(() => {
-        setStoreStatus(apiData?.available || false);
+        console.log(apiData)
+        setStoreStatus(apiData?.available);
         setTableData(apiData?.disableAppointment);
         const closeDay = apiData?.closedDay?.split(", ");
         setValue2("selectedDays", closeDay);
-    }, [apiData]);
+    }, [apiData, setValue2]);
 
     const EditDisableDays = async (value) => {
         console.log(value)

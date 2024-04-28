@@ -41,15 +41,15 @@ const renderRowExpanded = (rowData) => {
     return (
         <div className="request-size">
             <p>
-                Start Date:{" "}
+                Start date:{" "}
                 {moment.unix(rowData.startDate).format("DD MMMM YYYY HH:mm")}
             </p>
             <p>
-                End Date:{" "}
+                End date:{" "}
                 {moment.unix(rowData.endDate).format("DD MMMM YYYY HH:mm")}
             </p>
-            <p>Owner Phone: {rowData.ownerPhone}</p>
-            <p>Pet Name: {rowData.petName}</p>
+            <p>Owner phone: {rowData.ownerPhone}</p>
+            <p>Pet name: {rowData.petName}</p>
             <p>Category: {rowData.category}</p>
             <p>Message: {rowData.message}</p>
         </div>
@@ -164,9 +164,9 @@ function ScheduleRequest(props) {
                 value={radioChange}
                 onChange={(value) => setRadioChange(value)}
             >
-                <Radio value="Pending">Incoming Request</Radio>
+                <Radio value="Pending">Incoming request</Radio>
                 <Radio value="Scheduled">Scheduled</Radio>
-                <Radio value="In Care">In Care</Radio>
+                <Radio value="In Care">In care</Radio>
                 <Radio value="Cancelled">Cancelled</Radio>
             </RadioGroup>
             <Table
@@ -189,7 +189,7 @@ function ScheduleRequest(props) {
                     />
                 </Column>
                 <Column width={160}>
-                    <HeaderCell>Start Date</HeaderCell>
+                    <HeaderCell>Start date</HeaderCell>
                     <Cell>
                         {(rowData) => (
                             <span>
@@ -201,7 +201,7 @@ function ScheduleRequest(props) {
                     </Cell>
                 </Column>
                 <Column width={160}>
-                    <HeaderCell>End Date</HeaderCell>
+                    <HeaderCell>End date</HeaderCell>
                     <Cell>
                         {(rowData) => (
                             <span>
@@ -214,12 +214,12 @@ function ScheduleRequest(props) {
                 </Column>
 
                 <Column width={150}>
-                    <HeaderCell>Owner Phone</HeaderCell>
+                    <HeaderCell>Owner phone</HeaderCell>
                     <Cell dataKey="ownerPhone" />
                 </Column>
 
                 <Column width={100}>
-                    <HeaderCell>Pet Name</HeaderCell>
+                    <HeaderCell>Pet name</HeaderCell>
                     <Cell dataKey="petName" />
                 </Column>
 
@@ -265,13 +265,13 @@ function ScheduleRequest(props) {
                                             InCareCompleted(rowData);
                                         }}
                                     >
-                                        In Care
+                                        In care
                                     </Button>
                                 ) : (
                                     <Button
                                         appearance="link"
                                         onClick={() => {
-                                            InCareCompleted(rowData);
+                                            KeeperCompleted(rowData);
                                         }}
                                     >
                                         Completed

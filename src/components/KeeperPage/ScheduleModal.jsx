@@ -111,8 +111,6 @@ function ScheduleModal(props) {
         toaster.push(message("error", "Can't select a date that the store has closed. Please try again."), { placement, duration })
         console.log(err);
       })
-
-    // SignUpForm(data);
   };
 
   const PetKeeperCategories = async () => {
@@ -133,16 +131,32 @@ function ScheduleModal(props) {
         console.log(err);
       });
   };
+  
+  const currentDate = moment().unix();
+  const validDates = disableDate ? disableDate.filter(date => {
+    return date.startDate > currentDate;
+  }) : [];
 
-  // const handleChange = (value, name) => {
-  //     setFormData({ ...formData, [name]: value });
-  // };
+  let displayDate = null;
 
-  // const handleSubmit = async () => {
-  //     // Here, send the formData to your backend
-  //     console.log(formData);
-  //     handleClose();
-  // };
+  if (validDates.length > 0) {
+    const closestDate = validDates.reduce((prev, curr) => {
+      return Math.abs(curr.startDate - currentDate) < Math.abs(prev.startDate - currentDate) ? curr : prev;
+    });
+    displayDate = (
+      <div>
+        <div>
+        Closed period: <span className="text-danger">{moment.unix(closestDate.startDate).format('DD MMMM, YYYY')} - {moment.unix(closestDate.endDate).format('DD MMMM, YYYY')}
+          </span>
+        </div>
+        <div>
+        Message: <span className="text-danger text-break">{closestDate.message}</span>
+        </div>
+      </div>
+    );
+  } else {
+    displayDate = <p>Closed period: <span className="text-danger">There are no closed periods.</span></p>;
+  }
 
   const disabledDaysArray =
     closedDays
@@ -159,11 +173,10 @@ function ScheduleModal(props) {
       };
     }) || [];
 
-  // console.log(disableDateRangeTest)
-  // console.log(closedDays)
-  // console.log(disabledDaysArray)
-
-  // const disabledDaysArray = ["Sunday", "Monday", "Tuesday"];
+    // disableDate.forEach(date => {
+    //   console.log(date.startDate);
+    // });
+  
 
   const handleSelect = (value) => {
     let range = dateRange;
@@ -213,14 +226,14 @@ function ScheduleModal(props) {
     return false;
   };
 
-  console.log();
+  console.log(closedDays?.split(","));
 
   return (
     <>
       <div className="bg-shadow p-2 p-sm-3 p-md-3 bg-white mt-4">
         <div className="title">
           <h4 className="mb-2">Schedule</h4>
-          <p>For the purpose of reserving a pet boarding period</p>
+          <p>For the purpose of reserving a pet boarding period and <span className="text-danger"> can not select date that overlap </span>store close dates. In the calendar, it will <span className="text-danger"> disable next three dates</span>, and can book after that to send a request for approval by the Pet keeper.</p>
         </div>
         {!accessToken ? (
           <div className="mt-3 d-flex justify-content-center align-items-center">
@@ -249,7 +262,7 @@ function ScheduleModal(props) {
           </div>
         ) : (
           <div className="mt-3 d-flex justify-content-center align-items-center">
-            <p className="fw-bold ">Schedule not available for Keeper</p>
+            <p className="fw-bold ">Schedule not available for Pet keeper</p>
           </div>
         )}
       </div>
@@ -269,13 +282,31 @@ function ScheduleModal(props) {
             {/* <Placeholder.Paragraph /> */}
             <div className="modal-body">
               <div className="mb-3">
-                {closedDays === null ? <div className="mb-3">
-                  Closed Day: <span className="text-danger">No close day</span>
+                {closedDays === "" || closedDays === null ? <div className="mb-3">
+                  Closed day: <span className="text-danger">There is no closing date.</span>
                 </div> : <div className="mb-3">
-                  Closed Day: <span className="text-danger">{closedDays}</span>
+                  Closed day: <span className="text-danger">{closedDays?.split(",")}</span>
                 </div>}
+                <div className="mb-3">
+                  {displayDate}
+                </div>
+                {/* <div className="mb-3">
+                      Disable date: <span className="text-danger">test</span>
+                    </div> */}
+                {/* <div>
+                  {disableDate.length > 0 ? (
+                    <div className="mb-3">
+                      Disable date: <span className="text-danger">No disable date</span>
+                    </div>
+                  ) : (
+                    <div className="mb-3">
+                      Disable date: <span className="text-danger">{disableDate}</span>
+                    </div>
+                  )}
+                </div> */}
+
                 <label htmlFor="message" className="form-label">
-                  Booking Period
+                  Booking period
                 </label>
                 <Form.HelpText tooltip>
                   ระบุช่วงวันที่และเวลาฝากสัตว์เลี้ยง
@@ -311,7 +342,7 @@ function ScheduleModal(props) {
               </div>
               <div className="mb-3">
                 <label htmlFor="petCategory" className="form-label">
-                  Pet Category
+                  Pet category
                 </label>
                 <Form.HelpText tooltip>
                   ระบุประเภทสัตว์เลี้ยง
@@ -332,19 +363,13 @@ function ScheduleModal(props) {
                       placeholder="Select pet category..."
                       block
                     />
-                    // <TagPicker
-                    //     {...field}
-                    //     data={petCategories}
-                    //     className="form-control"
-                    //     onChange={field.onChange}
-                    // />
                   )}
                 />
                 {errors.tags && <small className="error-message">{errors.tags.message}</small>}
               </div>
               <div className="mb-3">
                 <label htmlFor="petName" className="form-label">
-                  Pet Name (Optional)
+                  Pet name (Optional)
                 </label>
                 <Form.HelpText tooltip>
                   ชื่อสัตว์เลี้ยง (เลือกกรอก)
@@ -389,17 +414,9 @@ function ScheduleModal(props) {
                 ></textarea>
                 {errors.message && <small className="error-message">{errors.message.message}</small>}
               </div>
-              {/* <div className="mb-3">
-                    <label htmlFor="startdate" className="form-label">Start Date</label>
-                    <input type="date" className="form-control" id="startdate" name="startdate" value={formData.startdate} onChange={handleChange} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="enddate" className="form-label">End Date</label>
-                    <input type="date" className="form-control" id="enddate" name="enddate" value={formData.enddate} onChange={handleChange} />
-                  </div> */}
               <div className="mb-3">
                 <label htmlFor="ownerPhone" className="form-label">
-                  Owner Phone
+                  Owner phone
                 </label>
                 <Form.HelpText tooltip>
                   เบอร์โทร (ประเทษไทย)
@@ -453,49 +470,6 @@ function ScheduleModal(props) {
           </Modal.Footer>
         </Form>
       </Modal>
-      {/* <Modal show={show} onHide={handleClose}>
-        <Modal.Header>
-          <Modal.Title>Booking Form</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit}>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label htmlFor="message" className="form-label">Message</label>
-                  <textarea className="form-control" id="message" name="message" value={formData.message} onChange={handleChange}></textarea>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="startdate" className="form-label">Start Date</label>
-                  <input type="date" className="form-control" id="startdate" name="startdate" value={formData.startdate} onChange={handleChange} />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="enddate" className="form-label">End Date</label>
-                  <input type="date" className="form-control" id="enddate" name="enddate" value={formData.enddate} onChange={handleChange} />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="ownerPhone" className="form-label">Owner Phone</label>
-                  <input type="text" className="form-control" id="ownerPhone" name="ownerPhone" value={formData.ownerPhone} onChange={handleChange} />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="petName" className="form-label">Pet Name</label>
-                  <input type="text" className="form-control" id="petName" name="petName" value={formData.petName} onChange={handleChange} />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleClose}>Close</button>
-                <button type="submit" className="btn btn-primary">Submit</button>
-              </div>
-            </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleSubmit} appearance="primary">
-            Submit
-          </Button>
-          <Button onClick={handleClose} appearance="subtle">
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </>
   );
 }

@@ -254,7 +254,6 @@ function KeeperDetail() {
                         isReview={isReview} 
                         isOwnerReview={isOwnerReview}
                     />
-                    
                 </div>
             {/* </div> */}
             </Container>

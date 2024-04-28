@@ -152,11 +152,11 @@ function Login() {
                   ),
                 }}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
-              <div className="blue-btn mb-2">
+              /> */}
+              <div className="blue-btn mb-2 mt-3">
                 <ButtonSuite
                   type="submit"
                   appearance="primary" block

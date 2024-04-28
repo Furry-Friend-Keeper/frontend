@@ -280,7 +280,7 @@ function Overviews(props) {
                 ))}
               {otherReview.length === 0 && (
                 <h5 className="text-center mt-5">
-                  No reviews found for Pet keeper
+                  No reviews found
                 </h5>
               )}
             </div>
