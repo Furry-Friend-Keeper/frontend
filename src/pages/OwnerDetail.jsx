@@ -54,11 +54,6 @@ function OwnerDetail() {
             const apiUrl = import.meta.env.VITE_OWNER_ID + ownerId;
             await axiosAuth
                 .get(apiUrl
-                //     , {
-                //     headers: {
-                //         Authorization: "Bearer " + accessToken,
-                //     },
-                // }
             )
                 .then((response) => {
                     const data = response.data;

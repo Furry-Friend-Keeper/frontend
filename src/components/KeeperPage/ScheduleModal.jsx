@@ -54,19 +54,19 @@ function ScheduleModal(props) {
     );
   }
 
-  const Ranges = [
-    {
-      label: "today",
-      value: [moment().startOf("day").toDate(), moment().endOf("day").toDate()],
-    },
-    {
-      label: "Next 7 Days",
-      value: [
-        moment().startOf("day").toDate(),
-        moment().add(6, "days").endOf("day").toDate(),
-      ],
-    },
-  ];
+  // const Ranges = [
+  //   {
+  //     label: "today",
+  //     value: [moment().startOf("day").toDate(), moment().endOf("day").toDate()],
+  //   },
+  //   {
+  //     label: "Next 7 Days",
+  //     value: [
+  //       moment().startOf("day").toDate(),
+  //       moment().add(6, "days").endOf("day").toDate(),
+  //     ],
+  //   },
+  // ];
 
   useEffect(() => {
     PetKeeperCategories();
@@ -202,8 +202,16 @@ function ScheduleModal(props) {
     const momentDate = moment(date);
     // Get today's date at the start of the day for comparison
     const today = moment().startOf("day");
+    const threeDaysFromNow = moment().add(3, "days").startOf("day");
 
-    // Disable dates before today
+    if (momentDate.isSame(today, "day")) {
+      return true;
+    }
+
+    if (momentDate.isBetween(today, threeDaysFromNow, "day", "[]")) {
+      return true;
+    }
+    
     if (momentDate.isBefore(today)) {
       return true;
     }
@@ -226,7 +234,7 @@ function ScheduleModal(props) {
     return false;
   };
 
-  console.log(closedDays?.split(","));
+  // console.log(closedDays?.split(","));
 
   return (
     <>
@@ -279,7 +287,6 @@ function ScheduleModal(props) {
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Modal.Body>
-            {/* <Placeholder.Paragraph /> */}
             <div className="modal-body">
               <div className="mb-3">
                 {closedDays === "" || closedDays === null ? <div className="mb-3">
@@ -304,7 +311,6 @@ function ScheduleModal(props) {
                     </div>
                   )}
                 </div> */}
-
                 <label htmlFor="message" className="form-label">
                   Booking period
                 </label>
@@ -326,7 +332,7 @@ function ScheduleModal(props) {
                       showHeader={false}
                       onSelect={handleSelect}
                       shouldDisableDate={disableDays}
-                      ranges={Ranges}
+                      // ranges={Ranges}
                       showOk
                       placement="bottomEnd"
                       preventOverflow
