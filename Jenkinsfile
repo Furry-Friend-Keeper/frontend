@@ -28,7 +28,7 @@ pipeline {
                     sh """
                     docker run -d \
                     --name frontend \
-                    --network FFK-network \
+                    --network FFK-networks \
                     -p 3000:80 \
                     --restart on-failure \
                     frontendimg
