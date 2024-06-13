@@ -49,7 +49,8 @@ function RouterPage() {
             <Route path="/at3/signup/keeper" element={<KeeperSignup />} />
             <Route path="/at3/keepers/:id" element={<KeeperDetail />} />
             <Route path="/at3/owner/:ownerId" element={<OwnerDetail />} />
-            <Route path="/at3/keeper-edit/:keeperId" element={<ProtectedKeeperRoute element={EditKeeperDetail} />} />
+            <Route path="/at3/keeper-edit/:keeperId" 
+            element={<ProtectedKeeperRoute element={EditKeeperDetail} />} />
             <Route path="/at3/about-us" element={<About />} />
             {/* Add more routes as needed */}
             <Route path="/at3/unauthorized" element={<Unauthorized />} />
